@@ -1,4 +1,4 @@
-package com.learn.restapiwithboot.meeting.domain.sub;
+package com.learn.restapiwithboot.meeting.domain.embed;
 
 import lombok.Builder;
 import lombok.Getter;

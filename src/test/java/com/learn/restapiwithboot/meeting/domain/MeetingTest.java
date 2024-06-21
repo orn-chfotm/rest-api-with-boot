@@ -2,8 +2,8 @@ package com.learn.restapiwithboot.meeting.domain;
 
 import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
 import com.learn.restapiwithboot.meeting.domain.enums.PlaceType;
-import com.learn.restapiwithboot.meeting.domain.sub.Address;
-import com.learn.restapiwithboot.meeting.domain.sub.Place;
+import com.learn.restapiwithboot.meeting.domain.embed.Address;
+import com.learn.restapiwithboot.meeting.domain.embed.Place;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

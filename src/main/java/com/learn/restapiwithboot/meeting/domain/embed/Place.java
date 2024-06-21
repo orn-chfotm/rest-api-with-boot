@@ -1,4 +1,4 @@
-package com.learn.restapiwithboot.meeting.domain.sub;
+package com.learn.restapiwithboot.meeting.domain.embed;
 
 import com.learn.restapiwithboot.meeting.domain.enums.PlaceType;
 import lombok.Builder;

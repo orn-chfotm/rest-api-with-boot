@@ -1,8 +1,8 @@
 package com.learn.restapiwithboot.meeting.domain;
 
 import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
-import com.learn.restapiwithboot.meeting.domain.sub.Address;
-import com.learn.restapiwithboot.meeting.domain.sub.Place;
+import com.learn.restapiwithboot.meeting.domain.embed.Address;
+import com.learn.restapiwithboot.meeting.domain.embed.Place;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,10 +15,13 @@ public class Meeting {
     @Id @GeneratedValue
     private Long id;
 
+    @Column
     private String title;
 
+    @Column
     private String content;
 
+    @Column
     private String description;
 
     @Enumerated(EnumType.STRING)
