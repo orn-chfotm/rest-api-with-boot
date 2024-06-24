@@ -16,9 +16,13 @@ public class MeetingService {
 
     private final MeetingRepository meetingRepository;
 
+    private final ObjectMapper objectMapper;
+
     @Autowired
-    MeetingService(MeetingRepository meetingRepository) {
+    MeetingService(MeetingRepository meetingRepository,
+                   ObjectMapper objectMapper) {
         this.meetingRepository = meetingRepository;
+        this.objectMapper = objectMapper;
     }
 
     public List<Meeting> getAllMeeting() {
@@ -28,11 +32,6 @@ public class MeetingService {
     public MeetingResponseDto getMeeting(Long id) {
         Meeting meeting = meetingRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 회의가 없습니다."));
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        objectMapper.configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, false);
-
         return objectMapper.convertValue(meeting, MeetingResponseDto.class);
     }
 

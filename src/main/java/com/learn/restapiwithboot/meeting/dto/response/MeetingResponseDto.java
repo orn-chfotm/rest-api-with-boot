@@ -1,6 +1,11 @@
 package com.learn.restapiwithboot.meeting.dto.response;
 
+import com.learn.restapiwithboot.meeting.domain.embed.Address;
+import com.learn.restapiwithboot.meeting.domain.embed.Place;
+import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
 import lombok.*;
+
+import javax.persistence.Embedded;
 
 @Data
 @AllArgsConstructor @NoArgsConstructor
@@ -14,4 +19,10 @@ public class MeetingResponseDto {
     private String content;
 
     private String description;
+
+    private MeetingType meetingType;
+
+    private Place place;
+
+    private Address address;
 }

@@ -38,7 +38,7 @@ class MeetingControllerTest extends BaseTest {
         meetingRepository.save(createMeeting());
 
         // Given
-        Long id = 1L;
+        Long id = 3L;
 
         // When && Then
         mockMvc.perform(get("/api/meeting/{id}", id))
