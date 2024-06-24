@@ -4,6 +4,7 @@ import com.learn.restapiwithboot.meeting.domain.enums.PlaceType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
@@ -13,8 +14,10 @@ import javax.persistence.Enumerated;
 @Embeddable
 public class Place {
 
+    @Comment("장소명")
     private String name;
 
+    @Comment("장소 타입")
     @Enumerated(EnumType.STRING)
     private PlaceType palceType;
 
