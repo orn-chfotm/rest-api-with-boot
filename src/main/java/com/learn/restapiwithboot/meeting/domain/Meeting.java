@@ -27,6 +27,10 @@ public class Meeting {
     @Comment("설명")
     @Column
     private String description;
+    
+    @Comment("모임 회비")
+    @Column
+    private Integer dues;
 
     @Comment("모임 타입")
     @Enumerated(EnumType.STRING)
@@ -48,6 +52,10 @@ public class Meeting {
         this.meetingType = meetingType;
         this.place = place;
         this.address = address;
+    }
+
+    public Boolean isServiceDues() {
+        return !this.meetingType.equals(MeetingType.SERVICE) || this.dues >= 0;
     }
 
 }
