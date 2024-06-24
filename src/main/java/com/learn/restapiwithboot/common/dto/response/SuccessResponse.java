@@ -1,9 +1,11 @@
 package com.learn.restapiwithboot.common.dto.response;
 
 import com.learn.restapiwithboot.common.dto.BasicResponse;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+@Getter
 public class SuccessResponse<T> extends BasicResponse {
 
     private final T data;
