@@ -34,9 +34,6 @@ class ReservationControllerTest extends BaseTest {
     @Autowired
     ReservationRepository reservationRepository;
 
-    @Autowired
-    ObjectMapper objectMapper;
-
     @BeforeEach
     void setUp() {
         reservationRepository.deleteAll();

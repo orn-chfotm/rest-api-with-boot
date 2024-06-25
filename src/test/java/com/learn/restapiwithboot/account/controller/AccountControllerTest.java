@@ -18,9 +18,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class AccountControllerTest extends BaseTest {
 
-    @Autowired
-    ObjectMapper objectMapper;
-
     private Account createAccount() {
         return Account.builder()
                 .email("user@email.com")
