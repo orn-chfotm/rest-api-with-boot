@@ -36,11 +36,8 @@ class MeetingControllerTest extends BaseTest {
     @DisplayName("특정 회의를 조회한다. - 성공 시")
     void testGetMeeting() throws Exception {
         Meeting meeting = createMeeting();
-        meeting.isPayDues();
-        meetingRepository.save(meeting);
-
         // Given
-        Long id = 1L;
+        Long id = meeting.getId();
 
         // When && Then
         mockMvc.perform(get("/api/meeting/{id}", id))
@@ -86,6 +83,7 @@ class MeetingControllerTest extends BaseTest {
                         .build())
                 .address(null)
                 .build();
-        return meeting;
+        meeting.isPayDues();
+        return meetingRepository.save(meeting);
     }
 }

@@ -42,6 +42,7 @@ class ReservationControllerTest extends BaseTest {
     }
 
     @Test
+    @DisplayName("예약을 생성한다.")
     void getReservations() throws Exception {
         // Given
         Account account = createAccount();
@@ -69,7 +70,7 @@ class ReservationControllerTest extends BaseTest {
         Long accountId = accountRepository.findIdByEmail(account.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("해당 이메일을 가진 계정이 없습니다."));
         // Then
-        assertThat(accountId).isEqualTo(1L);
+        assertThat(accountId).isNotNull();
     }
 
     private Account createAccount() {
