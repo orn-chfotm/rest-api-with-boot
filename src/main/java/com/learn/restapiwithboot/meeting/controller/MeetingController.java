@@ -31,6 +31,7 @@ public class MeetingController {
 
     @PostMapping
     public ResponseEntity<?> createMeeting(@RequestBody Meeting meeting) {
+        meeting.isPayDues();
         return SuccessResponse.of(meetingService.createMeeting(meeting));
     }
 }

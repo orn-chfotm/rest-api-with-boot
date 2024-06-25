@@ -11,7 +11,9 @@ public class GlobalExceptionHandler {
 
     /**
      * Exception 예외 처리
-     * @deprecated Root Exception 예외 처리로 Exception을 처리하면 모든 예외를 처리할 수 있다.
+     * <p>
+     *      Root Exception 예외 처리로 Exception을 처리하면 모든 예외를 처리할 수 있다.
+     * </p>
      */
     @ExceptionHandler({Exception.class})
     protected ResponseEntity<FailResponse> hadelException(Exception e) {
@@ -25,7 +27,9 @@ public class GlobalExceptionHandler {
 
     /**
      * RuntimeException 예외 처리
-     * @deprecated  Root RuntimeException 예외 처리로 Exception을 처리하면 모든 예외를 처리할 수 있다.
+     * <p>
+     *      Root RuntimeException 예외 처리로 Exception을 처리하면 모든 예외를 처리할 수 있다.
+     * </p>
      */
     @ExceptionHandler({RuntimeException.class})
     protected ResponseEntity<FailResponse> handelRuntimeException(RuntimeException e) {

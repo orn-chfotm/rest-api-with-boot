@@ -5,9 +5,6 @@ import com.learn.restapiwithboot.meeting.domain.embed.Place;
 import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
 import lombok.*;
 
-import javax.persistence.Embedded;
-
-@Data
 @AllArgsConstructor @NoArgsConstructor
 @Getter @Setter
 public class MeetingResponseDto {
@@ -25,4 +22,8 @@ public class MeetingResponseDto {
     private Place place;
 
     private Address address;
+
+    private Integer dues;
+
+    private Boolean isDues;
 }

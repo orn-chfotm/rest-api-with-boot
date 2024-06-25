@@ -1,5 +1,6 @@
 package com.learn.restapiwithboot.meeting.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
 import com.learn.restapiwithboot.meeting.domain.embed.Address;
 import com.learn.restapiwithboot.meeting.domain.embed.Place;
@@ -8,7 +9,8 @@ import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
 
-@NoArgsConstructor @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor
 @Getter @EqualsAndHashCode(of = "id")
 @Entity
 public class Meeting {
@@ -30,7 +32,11 @@ public class Meeting {
     
     @Comment("모임 회비")
     @Column
-    private Integer dues;
+    private Integer dues = 0;
+
+    @Comment("모임 회비 여부")
+    @Column
+    private Boolean isDues = false;
 
     @Comment("모임 타입")
     @Enumerated(EnumType.STRING)
@@ -45,17 +51,25 @@ public class Meeting {
     private Address address;
 
     @Builder
-    public Meeting(String title, String content, String description, MeetingType meetingType, Place place, Address address) {
+    public Meeting(Long id, String title, String content, String description, Integer dues, Boolean isDues, MeetingType meetingType, Place place, Address address) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.description = description;
+        this.dues = dues;
+        this.isDues = isDues;
         this.meetingType = meetingType;
         this.place = place;
         this.address = address;
     }
 
-    public Boolean isServiceDues() {
-        return !this.meetingType.equals(MeetingType.SERVICE) || this.dues >= 0;
+    public void isPayDues() {
+        if (this.dues == null) {
+            this.isDues = false;
+            this.dues = 0;
+        } else {
+            this.isDues = true;
+        }
     }
 
 }

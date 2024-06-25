@@ -35,8 +35,8 @@ public class MeetingService {
         return objectMapper.convertValue(meeting, MeetingResponseDto.class);
     }
 
-    public Integer createMeeting(Meeting meeting) {
+    public MeetingResponseDto createMeeting(Meeting meeting) {
         Meeting saveMettring = meetingRepository.save(meeting);
-        return saveMettring.getId().intValue();
+        return objectMapper.convertValue(saveMettring, MeetingResponseDto.class);
     }
 }

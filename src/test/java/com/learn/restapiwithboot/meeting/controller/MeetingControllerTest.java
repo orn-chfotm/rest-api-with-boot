@@ -35,15 +35,28 @@ class MeetingControllerTest extends BaseTest {
     @Test
     @DisplayName("특정 회의를 조회한다. - 성공 시")
     void testGetMeeting() throws Exception {
-        meetingRepository.save(createMeeting());
+        Meeting meeting = createMeeting();
+        meeting.isPayDues();
+        meetingRepository.save(meeting);
 
         // Given
-        Long id = 3L;
+        Long id = 1L;
 
         // When && Then
         mockMvc.perform(get("/api/meeting/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("특정 회의를 조회한다. - 실패 시")
+    void testExceptionGetMeeting() throws Exception {
+        // Given
+        Long id = 3L;
+        // When && Then
+        mockMvc.perform(get("/api/meeting/{id}", id))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 
     @Test
