@@ -17,6 +17,7 @@ public class Reservation {
     private String userId;
 
     @Comment("모임 ID")
+    @Column(name = "meeting_id")
     private String meetingId;
 
     @OneToOne
