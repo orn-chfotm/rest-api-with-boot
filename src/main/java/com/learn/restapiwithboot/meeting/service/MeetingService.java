@@ -1,11 +1,13 @@
 package com.learn.restapiwithboot.meeting.service;
 
 import com.learn.restapiwithboot.meeting.domain.Meeting;
+import com.learn.restapiwithboot.meeting.dto.request.MeetingRequest;
 import com.learn.restapiwithboot.meeting.dto.response.MeetingResponse;
 import com.learn.restapiwithboot.meeting.repsitory.MeetingRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -34,7 +36,13 @@ public class MeetingService {
     }
 
     public MeetingResponse createMeeting(Meeting meeting) {
+        meeting.isPayDues();
         Meeting saveMettring = meetingRepository.save(meeting);
         return modelMapper.map(saveMettring, MeetingResponse.class);
+    }
+
+    @Transactional
+    public MeetingResponse updateMeeting(MeetingRequest meetingRequest) {
+
     }
 }
