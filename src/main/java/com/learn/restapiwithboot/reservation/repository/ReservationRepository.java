@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
 
-    List<Reservation> findAllByUserId(String userId);
+    List<Reservation> findAllByAccountId(Long accountId);
 }

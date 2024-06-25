@@ -19,7 +19,7 @@ public class ReservationController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getReservation(@RequestParam(name = "userId") String userId) {
-        return SuccessResponse.of(reservationService.getReservation(userId));
+    public ResponseEntity<?> getAllReservation(@RequestParam(name = "email") String email) {
+        return SuccessResponse.of(reservationService.getReservation(email));
     }
 }
