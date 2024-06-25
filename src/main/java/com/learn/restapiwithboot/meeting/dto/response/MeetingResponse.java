@@ -7,7 +7,7 @@ import lombok.*;
 
 @AllArgsConstructor @NoArgsConstructor
 @Getter @Setter
-public class MeetingResponseDto {
+public class MeetingResponse {
 
     private Long id;
 
