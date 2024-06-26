@@ -27,14 +27,8 @@ public class MeetingService {
         this.modelMapper = modelMapper;
     }
 
-    public List<MeetingResponse> getAllMeeting() {
-        List<Meeting> allMeeting = meetingRepository.findAll();
-        allMeeting.stream()
-                .forEach(System.out::println);
-
-        return allMeeting.stream()
-                .map(meeting -> modelMapper.map(meeting, MeetingResponse.class))
-                .collect(Collectors.toList());
+    public List<Meeting> getAllMeeting() {
+        return meetingRepository.findAll();
     }
 
     public MeetingResponse getMeeting(Long id) {
