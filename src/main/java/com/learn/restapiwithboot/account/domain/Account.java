@@ -2,7 +2,6 @@ package com.learn.restapiwithboot.account.domain;
 
 import com.learn.restapiwithboot.account.domain.enums.AccountRole;
 import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.util.Set;

@@ -90,7 +90,6 @@ class MeetingControllerTest extends BaseTest {
                         .build())
                 .build();
         MeetingRequest meetingRequest = MeetingRequest.builder()
-                .title("수정된 회의 제목")
                 .content("수정된 회의 내용")
                 .description("수정된 회의 설명")
                 .meetingType(MeetingType.OFFLINE)

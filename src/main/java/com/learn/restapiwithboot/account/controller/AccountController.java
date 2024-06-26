@@ -3,9 +3,11 @@ package com.learn.restapiwithboot.account.controller;
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.service.AccountService;
 import com.learn.restapiwithboot.common.dto.response.SuccessResponse;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/account")
@@ -19,7 +21,6 @@ public class AccountController {
 
     @PostMapping
     public ResponseEntity<?> createAccount(@RequestBody Account account) {
-        ModelMapper modelMapper = new ModelMapper();
         return SuccessResponse.of(accountService.createAccount(account));
     }
 

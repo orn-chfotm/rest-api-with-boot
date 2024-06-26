@@ -11,6 +11,7 @@ import org.hibernate.annotations.Comment;
 import javax.persistence.*;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @Entity
 public class Reservation {

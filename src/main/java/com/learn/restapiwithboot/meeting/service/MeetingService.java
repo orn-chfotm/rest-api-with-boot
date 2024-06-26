@@ -1,46 +1,50 @@
 package com.learn.restapiwithboot.meeting.service;
 
+import com.learn.restapiwithboot.core.mappers.MeetingMapper;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
 import com.learn.restapiwithboot.meeting.dto.request.MeetingRequest;
 import com.learn.restapiwithboot.meeting.dto.response.MeetingResponse;
 import com.learn.restapiwithboot.meeting.repsitory.MeetingRepository;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class MeetingService {
 
     private final MeetingRepository meetingRepository;
 
-    private final ModelMapper modelMapper;
+    private final MeetingMapper meetingMapper;
 
-    @Autowired
-    MeetingService(MeetingRepository meetingRepository,
-                   ModelMapper modelMapper) {
+    MeetingService(MeetingRepository meetingRepository) {
         this.meetingRepository = meetingRepository;
-        this.modelMapper = modelMapper;
+        this.meetingMapper = MeetingMapper.INSTANCE;
     }
 
-    public List<Meeting> getAllMeeting() {
-        return meetingRepository.findAll();
+    public List<MeetingResponse> getAllMeeting() {
+        List<Meeting> allMeeting = meetingRepository.findAll();
+
+        return allMeeting.stream()
+                .map(meetingMapper::meetingToMeetingResponse)
+                .collect(Collectors.toList());
     }
 
     public MeetingResponse getMeeting(Long id) {
         Meeting meeting = meetingRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 회의가 없습니다."));
-        return modelMapper.map(meeting, MeetingResponse.class);
+
+        return meetingMapper.meetingToMeetingResponse(meeting);
     }
 
     public MeetingResponse createMeeting(MeetingRequest meetingRequest) {
-        Meeting meeting = modelMapper.map(meetingRequest, Meeting.class);
+        Meeting meeting = meetingMapper.meetingReqeustToMeeting(meetingRequest);
+
+        meeting.isPayDues();
         Meeting saveMettring = meetingRepository.save(meeting);
-        return modelMapper.map(saveMettring, MeetingResponse.class);
+
+        return meetingMapper.meetingToMeetingResponse(saveMettring);
     }
 
     @Transactional
@@ -48,9 +52,9 @@ public class MeetingService {
         Meeting meeting = meetingRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 회의가 없습니다."));
 
-        modelMapper.map(meetingRequest, meeting);
+        meetingMapper.updateMeetingFromRequest(meetingRequest, meeting);
         meeting.isPayDues();
 
-        return modelMapper.map(meeting, MeetingResponse.class);
+        return meetingMapper.meetingToMeetingResponse(meeting);
     }
 }

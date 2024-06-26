@@ -43,7 +43,7 @@ class ReservationControllerTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("예약을 생성한다.")
+    @DisplayName("계정 Email 기준으로 예약을 조회한다.")
     void getReservations() throws Exception {
         // Given
         Account account = createAccount();
@@ -94,8 +94,10 @@ class ReservationControllerTest extends BaseTest {
                         .palceType(PlaceType.CAFE)
                         .address(Address.builder().build())
                         .build())
+                .dues(10000)
                 .build();
 
+        meeting.isPayDues();
         return meetingRepository.save(meeting);
     }
 

@@ -1,7 +1,6 @@
 package com.learn.restapiwithboot.meeting.controller;
 
 import com.learn.restapiwithboot.common.dto.response.SuccessResponse;
-import com.learn.restapiwithboot.meeting.domain.Meeting;
 import com.learn.restapiwithboot.meeting.dto.request.MeetingRequest;
 import com.learn.restapiwithboot.meeting.service.MeetingService;
 import org.springframework.beans.factory.annotation.Autowired;

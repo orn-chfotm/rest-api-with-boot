@@ -1,7 +1,9 @@
 package com.learn.restapiwithboot.account.service;
 
 import com.learn.restapiwithboot.account.domain.Account;
+import com.learn.restapiwithboot.account.dto.response.AccountResponse;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
+import com.learn.restapiwithboot.core.mappers.AccountMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,14 +14,19 @@ public class AccountService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final AccountMapper accountMapper;
+
     public AccountService(AccountRepository accountRepository,
                           PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
+        this.accountMapper = AccountMapper.INSTANCE;
     }
 
-    public Account createAccount(Account account) {
+    public AccountResponse createAccount(Account account) {
         account.setPassword(this.passwordEncoder.encode(account.getPassword()));
-        return accountRepository.save(account);
+        Account saveAccount = accountRepository.save(account);
+        System.out.println(saveAccount);
+        return accountMapper.accountToAccountResponse(saveAccount);
     }
 }
