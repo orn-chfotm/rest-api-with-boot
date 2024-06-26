@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.util.Set;
 
 @Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
 public class AccountResponse {
 
     private String email;

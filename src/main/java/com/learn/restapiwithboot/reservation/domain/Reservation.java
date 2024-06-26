@@ -2,17 +2,13 @@ package com.learn.restapiwithboot.reservation.domain;
 
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Getter @Setter @NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 @Entity
 public class Reservation {
 

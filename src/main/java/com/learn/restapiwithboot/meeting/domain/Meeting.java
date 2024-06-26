@@ -1,15 +1,15 @@
 package com.learn.restapiwithboot.meeting.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
-import com.learn.restapiwithboot.meeting.domain.embed.Address;
 import com.learn.restapiwithboot.meeting.domain.embed.Place;
-import lombok.*;
+import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
 @Getter @EqualsAndHashCode(of = "id")
 @Entity
