@@ -27,12 +27,12 @@ class MeetingTest {
         Place place = Place.builder()
                 .name("name")
                 .palceType(PlaceType.CAFE)
+                .address(address)
                 .build();
         Meeting meeting = Meeting.builder()
                 .title(title)
                 .content(content)
                 .meetingType(meetingType)
-                .address(address)
                 .place(place)
                 .build();
 
@@ -41,7 +41,7 @@ class MeetingTest {
         assertEquals(title, meeting.getTitle());
         assertEquals(content, meeting.getContent());
         assertEquals(meetingType, meeting.getMeetingType());
-        assertEquals(address, meeting.getAddress());
+        assertEquals(address, meeting.getPlace().getAddress());
         assertEquals(place, meeting.getPlace());
     }
 

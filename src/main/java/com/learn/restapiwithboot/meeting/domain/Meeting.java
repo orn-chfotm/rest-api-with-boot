@@ -46,12 +46,8 @@ public class Meeting {
     @Embedded
     private Place place;
 
-    @Comment("모임 주소")
-    @Embedded
-    private Address address;
-
     @Builder
-    public Meeting(Long id, String title, String content, String description, Integer dues, Boolean isDues, MeetingType meetingType, Place place, Address address) {
+    public Meeting(Long id, String title, String content, String description, Integer dues, Boolean isDues, MeetingType meetingType, Place place) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -60,7 +56,34 @@ public class Meeting {
         this.isDues = isDues;
         this.meetingType = meetingType;
         this.place = place;
-        this.address = address;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setDues(Integer dues) {
+        this.dues = dues;
+    }
+
+    public void setMeetingType(MeetingType meetingType) {
+        this.meetingType = meetingType;
+    }
+
+    public void setPlace(Place place) {
+        this.place = place;
     }
 
     public void isPayDues() {
@@ -71,5 +94,6 @@ public class Meeting {
             this.isDues = true;
         }
     }
+
 
 }

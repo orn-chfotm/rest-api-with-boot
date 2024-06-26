@@ -5,6 +5,7 @@ import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.meeting.common.BaseTest;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
+import com.learn.restapiwithboot.meeting.domain.embed.Address;
 import com.learn.restapiwithboot.meeting.domain.embed.Place;
 import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
 import com.learn.restapiwithboot.meeting.domain.enums.PlaceType;
@@ -91,8 +92,8 @@ class ReservationControllerTest extends BaseTest {
                 .place(Place.builder()
                         .name("장소 이름")
                         .palceType(PlaceType.CAFE)
+                        .address(Address.builder().build())
                         .build())
-                .address(null)
                 .build();
 
         return meetingRepository.save(meeting);

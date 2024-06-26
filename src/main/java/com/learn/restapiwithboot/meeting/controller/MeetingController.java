@@ -2,6 +2,7 @@ package com.learn.restapiwithboot.meeting.controller;
 
 import com.learn.restapiwithboot.common.dto.response.SuccessResponse;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
+import com.learn.restapiwithboot.meeting.dto.request.MeetingRequest;
 import com.learn.restapiwithboot.meeting.service.MeetingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,8 +31,12 @@ public class MeetingController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createMeeting(@RequestBody Meeting meeting) {
-        meeting.isPayDues();
-        return SuccessResponse.of(meetingService.createMeeting(meeting));
+    public ResponseEntity<?> createMeeting(@RequestBody MeetingRequest meetingRequest) {
+        return SuccessResponse.of(meetingService.createMeeting(meetingRequest));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateMeeting(@PathVariable Long id, @RequestBody MeetingRequest meetingRequest) {
+        return SuccessResponse.of(meetingService.updateMeeting(id, meetingRequest));
     }
 }

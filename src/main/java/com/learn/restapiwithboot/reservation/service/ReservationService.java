@@ -1,5 +1,7 @@
 package com.learn.restapiwithboot.reservation.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.dto.response.AccountResponse;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
@@ -8,8 +10,11 @@ import com.learn.restapiwithboot.reservation.domain.Reservation;
 import com.learn.restapiwithboot.reservation.dto.response.ReservationResponse;
 import com.learn.restapiwithboot.reservation.repository.ReservationRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +26,9 @@ public class ReservationService {
     private final AccountRepository accountRepository;
 
     private final ModelMapper modelMapper;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     public ReservationService(ReservationRepository reservationRepository,
                                 AccountRepository accountRepository,

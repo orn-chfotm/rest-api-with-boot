@@ -21,8 +21,6 @@ public class MeetingResponse {
 
     private Place place;
 
-    private Address address;
-
     private Integer dues;
 
     private Boolean isDues;

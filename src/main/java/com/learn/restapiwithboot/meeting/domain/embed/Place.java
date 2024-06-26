@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
@@ -21,9 +22,14 @@ public class Place {
     @Enumerated(EnumType.STRING)
     private PlaceType palceType;
 
+    @Comment("모임 장소 주소")
+    @Embedded
+    private Address address;
+
     @Builder
-    public Place(String name, PlaceType palceType) {
+    public Place(String name, PlaceType palceType, Address address) {
         this.name = name;
         this.palceType = palceType;
+        this.address = address;
     }
 }
