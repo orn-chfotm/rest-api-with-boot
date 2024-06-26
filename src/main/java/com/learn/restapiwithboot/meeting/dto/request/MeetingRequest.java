@@ -15,11 +15,12 @@ public class MeetingRequest {
 
     private String description;
 
+    private Integer dues;
+
     private MeetingType meetingType;
 
     private Place place;
 
-    private Integer dues;
 
     @Builder
     public MeetingRequest(String title, String content, String description, MeetingType meetingType, Place place, Integer dues) {
