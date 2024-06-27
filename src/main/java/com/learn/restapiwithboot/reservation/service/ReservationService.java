@@ -76,9 +76,16 @@ public class ReservationService {
         }
 
         Reservation reservation = reservationMapper.reservationRequestToReservation(reservationRequest);
-
+        reservation.setAccountId(accountId);
         reservationRepository.save(reservation);
 
         return reservationMapper.reservationToReservationResponse(reservation);
+    }
+
+    public void deleteReservation(Long id) {
+        if(!reservationRepository.existsById(id)) {
+            throw new ResourceNotFoundException("해당하는 회의가 없습니다.");
+        }
+        reservationRepository.deleteById(id);
     }
 }

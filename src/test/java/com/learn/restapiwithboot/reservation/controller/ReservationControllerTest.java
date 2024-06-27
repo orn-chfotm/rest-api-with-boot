@@ -19,12 +19,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -85,7 +85,7 @@ class ReservationControllerTest extends BaseTest {
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("data.reservationId").exists())
+                .andExpect(jsonPath("data.id").exists())
         ;
     }
 
@@ -93,7 +93,7 @@ class ReservationControllerTest extends BaseTest {
     @DisplayName("예약을 생성한다. - 실패")
     void createReservationFail() throws Exception {
         // Given
-        Reservation reservation = Reservation.builder()
+        Reservation request = Reservation.builder()
                 .accountId(1L)
                 .meetingId(1L)
                 .build();
@@ -101,9 +101,43 @@ class ReservationControllerTest extends BaseTest {
         // When && Then
         mockMvc.perform(post("/api/reservation")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(reservation)))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("예약을 취소한다.")
+    void deleteReservation() throws Exception {
+        // Given
+        Account account = this.createAccount();
+        Meeting meeting = this.createMeeting();
+
+        ReservationRequest request = ReservationRequest.builder()
+                .email(account.getEmail())
+                .meetingId(meeting.getId())
+                .build();
+
+        ResultActions resultActions = mockMvc.perform(post("/api/reservation")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        String contentAsString = resultActions.andReturn().getResponse().getContentAsString();
+        JsonNode jsonNode = objectMapper.readTree(contentAsString);
+        String reservationId = jsonNode.path("data.id").toString();
+        System.out.println(reservationId);
+
+        // When
+        ResultActions perform = mockMvc.perform(delete("/api/reservation/{id}", reservationId));
+
+        // Then
+        perform
+                .andDo(print())
+                .andExpect(status().isOk())
+        ;
+
     }
 
     @Test

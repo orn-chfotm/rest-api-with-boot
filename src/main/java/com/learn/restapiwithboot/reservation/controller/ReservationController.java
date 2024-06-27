@@ -27,4 +27,9 @@ public class ReservationController {
     public ResponseEntity<?> createReservation(@RequestBody @Valid ReservationRequest reservationRequest) {
         return SuccessResponse.of(reservationService.createReservation(reservationRequest));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteReservation(@RequestParam Long id) {
+        return SuccessResponse.of(null);
+    }
 }
