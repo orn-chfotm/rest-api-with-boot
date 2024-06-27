@@ -10,15 +10,15 @@ import javax.validation.constraints.NotNull;
 
 @Getter @Setter @NoArgsConstructor
 public class ReservationRequest {
-    @NotNull(message = "유저 ID가 필요합니다.")
-    private Long accountId;
+    @NotNull(message = "email이 필요합니다.")
+    private String email;
 
     @NotNull(message = "모임 ID가 필요합니다.")
     private Long meetingId;
 
     @Builder
-    public ReservationRequest(Long accountId, Long meetingId) {
-        this.accountId = accountId;
+    public ReservationRequest(String email, Long meetingId) {
+        this.email = email;
         this.meetingId = meetingId;
     }
 }

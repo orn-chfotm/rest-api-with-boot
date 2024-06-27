@@ -10,6 +10,8 @@ public class ReservationResponse {
 
     private Long id;
 
+    private Long meetingId;
+
     private AccountResponse accountResponse;
 
     private MeetingResponse meetingResponse;

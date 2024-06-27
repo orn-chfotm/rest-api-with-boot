@@ -65,7 +65,10 @@ public class ReservationService {
 
     public ReservationResponse createReservation(ReservationRequest reservationRequest) {
 
-        if (!accountRepository.existsById(reservationRequest.getAccountId())) {
+        Long accountId = accountRepository.findIdByEmail(reservationRequest.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("해당하는 사용자가 없습니다."));
+
+        if (!accountRepository.existsById(accountId)) {
             throw new ResourceNotFoundException("해당하는 사용자가 없습니다.");
         }
         if (!meetingRepository.existsById(reservationRequest.getMeetingId())) {

@@ -12,6 +12,7 @@ import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
 import com.learn.restapiwithboot.meeting.domain.enums.PlaceType;
 import com.learn.restapiwithboot.meeting.repsitory.MeetingRepository;
 import com.learn.restapiwithboot.reservation.domain.Reservation;
+import com.learn.restapiwithboot.reservation.dto.request.ReservationRequest;
 import com.learn.restapiwithboot.reservation.repository.ReservationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +26,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class ReservationControllerTest extends BaseTest {
@@ -71,8 +73,8 @@ class ReservationControllerTest extends BaseTest {
         Account account = createAccount();
         Meeting meeting = createMeeting();
 
-        Reservation reservation = Reservation.builder()
-                .accountId(account.getId())
+        ReservationRequest reservation = ReservationRequest.builder()
+                .email(account.getEmail())
                 .meetingId(meeting.getId())
                 .build();
 
@@ -83,13 +85,7 @@ class ReservationControllerTest extends BaseTest {
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(result -> {
-                    String contentAsString = result.getResponse().getContentAsString();
-                    JsonNode jsonNode = objectMapper.readTree(contentAsString).path("data");
-                    assertThat(jsonNode.path("id").asLong()).isNotNull();
-                    assertThat(jsonNode.path("accountResponse")).isNotNull();
-                    assertThat(jsonNode.path("meetingResponse")).isNotNull();
-                })
+                .andExpect(jsonPath("data.reservationId").exists())
         ;
     }
 
