@@ -1,4 +1,4 @@
-package com.learn.restapiwithboot.core.mappers;
+package com.learn.restapiwithboot.account.mapper;
 
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.dto.response.AccountResponse;
