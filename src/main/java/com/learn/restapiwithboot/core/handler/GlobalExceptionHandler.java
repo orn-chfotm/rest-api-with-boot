@@ -3,8 +3,13 @@ package com.learn.restapiwithboot.core.handler;
 import com.learn.restapiwithboot.common.dto.response.FailResponse;
 import com.learn.restapiwithboot.core.enums.Exceptions;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -16,11 +21,10 @@ public class GlobalExceptionHandler {
      * </p>
      */
     @ExceptionHandler({Exception.class})
-    protected ResponseEntity<FailResponse> hadelException(Exception e) {
+    protected ResponseEntity<FailResponse> hadelException(Exception exception) {
         Exceptions invalidJwtDecode = Exceptions.INVALID_JWT_DECODE;
         return ResponseEntity.badRequest().body(new FailResponse(
                 invalidJwtDecode.getStatus(),
-                e.getMessage(),
                 invalidJwtDecode.getMessage()
         ));
     }
@@ -32,12 +36,32 @@ public class GlobalExceptionHandler {
      * </p>
      */
     @ExceptionHandler({RuntimeException.class})
-    protected ResponseEntity<FailResponse> handelRuntimeException(RuntimeException e) {
+    protected ResponseEntity<FailResponse> handelRuntimeException(RuntimeException exception) {
         Exceptions notFound = Exceptions.NOT_FOUND;
         return ResponseEntity.badRequest().body(new FailResponse(
                 notFound.getStatus(),
-                e.getMessage(),
                 notFound.getMessage()
+        ));
+    }
+
+    /**
+     *  '@Valuid' 예외 처리
+     *  <p>
+     *      message와 field를 추출하여 반환한다.
+     *  </p>
+     */
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    protected ResponseEntity<FailResponse> hadleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+        Exceptions invalidInputValue = Exceptions.INVALID_INPUT_VALUE;
+        Map<String, String> errMessageMap = new HashMap<>();
+        for (FieldError fieldError : exception.getFieldErrors()) {
+            errMessageMap.put(fieldError.getField(), fieldError.getDefaultMessage());
+        }
+
+        return ResponseEntity.badRequest().body(new FailResponse(
+                invalidInputValue.getStatus(),
+                invalidInputValue.getMessage(),
+                errMessageMap
         ));
     }
 

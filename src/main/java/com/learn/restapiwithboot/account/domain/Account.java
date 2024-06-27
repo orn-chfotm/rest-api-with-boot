@@ -2,6 +2,7 @@ package com.learn.restapiwithboot.account.domain;
 
 import com.learn.restapiwithboot.account.domain.enums.AccountRole;
 import lombok.*;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -14,6 +15,7 @@ public class Account {
     @Id @GeneratedValue
     private Long id;
 
+    @Column(unique = true)
     private String email;
 
     private String password;
