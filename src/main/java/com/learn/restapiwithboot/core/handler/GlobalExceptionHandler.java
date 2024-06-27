@@ -2,6 +2,7 @@ package com.learn.restapiwithboot.core.handler;
 
 import com.learn.restapiwithboot.common.dto.response.FailResponse;
 import com.learn.restapiwithboot.core.enums.Exceptions;
+import com.learn.restapiwithboot.core.exceptions.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -62,6 +63,14 @@ public class GlobalExceptionHandler {
                 invalidInputValue.getStatus(),
                 invalidInputValue.getMessage(),
                 errMessageMap
+        ));
+    }
+
+    @ExceptionHandler({ResourceNotFoundException.class})
+    protected ResponseEntity<FailResponse> hadleResourceNotFoundException(ResourceNotFoundException exception) {
+        return ResponseEntity.badRequest().body(new FailResponse(
+                exception.getStatus(),
+                exception.getDetailMessage()
         ));
     }
 

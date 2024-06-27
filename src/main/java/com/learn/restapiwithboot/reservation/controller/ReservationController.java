@@ -1,13 +1,12 @@
 package com.learn.restapiwithboot.reservation.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.learn.restapiwithboot.common.dto.response.SuccessResponse;
+import com.learn.restapiwithboot.reservation.dto.request.ReservationRequest;
 import com.learn.restapiwithboot.reservation.service.ReservationService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/reservation")
@@ -22,5 +21,10 @@ public class ReservationController {
     @GetMapping
     public ResponseEntity<?> getAllReservation(@RequestParam(name = "email") String email) {
         return SuccessResponse.of(reservationService.getReservation(email));
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createReservation(@RequestBody @Valid ReservationRequest reservationRequest) {
+        return SuccessResponse.of(reservationService.createReservation(reservationRequest));
     }
 }

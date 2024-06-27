@@ -1,5 +1,6 @@
 package com.learn.restapiwithboot.reservation.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
@@ -16,11 +17,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -59,6 +62,52 @@ class ReservationControllerTest extends BaseTest {
                         .param("email", account.getEmail()))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("예약을 생성한다. - 성공")
+    void createReservation() throws Exception {
+        // Given
+        Account account = createAccount();
+        Meeting meeting = createMeeting();
+
+        Reservation reservation = Reservation.builder()
+                .accountId(account.getId())
+                .meetingId(meeting.getId())
+                .build();
+
+        // When
+        mockMvc.perform(post("/api/reservation")
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .content(objectMapper.writeValueAsString(reservation))
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(result -> {
+                    String contentAsString = result.getResponse().getContentAsString();
+                    JsonNode jsonNode = objectMapper.readTree(contentAsString).path("data");
+                    assertThat(jsonNode.path("id").asLong()).isNotNull();
+                    assertThat(jsonNode.path("accountResponse")).isNotNull();
+                    assertThat(jsonNode.path("meetingResponse")).isNotNull();
+                })
+        ;
+    }
+
+    @Test
+    @DisplayName("예약을 생성한다. - 실패")
+    void createReservationFail() throws Exception {
+        // Given
+        Reservation reservation = Reservation.builder()
+                .accountId(1L)
+                .meetingId(1L)
+                .build();
+
+        // When && Then
+        mockMvc.perform(post("/api/reservation")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(reservation)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 
     @Test

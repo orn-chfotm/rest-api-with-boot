@@ -35,6 +35,7 @@ public enum Exceptions {
     INVALID_JWT_KEY(401, "Invalid JWT Key"),
     INVALID_JWT_ENCRYPT(401, "Invalid JWT Encrypt"),
     NOT_FOUND(404, "Not Found"),
+    RESOURCE_NOT_FOUND(404, "Resource Not Found"),
     ;
 
     private final Integer status;
