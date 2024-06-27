@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/meeting")
 public class MeetingController {
@@ -30,12 +32,12 @@ public class MeetingController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createMeeting(@RequestBody MeetingRequest meetingRequest) {
+    public ResponseEntity<?> createMeeting(@RequestBody @Valid MeetingRequest meetingRequest) {
         return SuccessResponse.of(meetingService.createMeeting(meetingRequest));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateMeeting(@PathVariable Long id, @RequestBody MeetingRequest meetingRequest) {
+    public ResponseEntity<?> updateMeeting(@PathVariable Long id, @RequestBody @Valid MeetingRequest meetingRequest) {
         return SuccessResponse.of(meetingService.updateMeeting(id, meetingRequest));
     }
 }

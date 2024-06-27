@@ -6,7 +6,9 @@ import com.learn.restapiwithboot.meeting.domain.embed.Address;
 import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
 import com.learn.restapiwithboot.meeting.domain.enums.PlaceType;
 import com.learn.restapiwithboot.meeting.domain.embed.Place;
+import com.learn.restapiwithboot.meeting.dto.request.AddressRequest;
 import com.learn.restapiwithboot.meeting.dto.request.MeetingRequest;
+import com.learn.restapiwithboot.meeting.dto.request.PlaceRequest;
 import com.learn.restapiwithboot.meeting.repsitory.MeetingRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,7 +66,7 @@ class MeetingControllerTest extends BaseTest {
     @DisplayName("회의를 등록한다. - 성공 시")
     void testCreateMeeting() throws Exception {
         // Given
-        MeetingRequest meeting = createReqeustMeeting();
+        MeetingRequest meeting = createSusseccReqeustMeeting();
         // When && Then
         mockMvc.perform(post("/api/meeting")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -76,24 +78,44 @@ class MeetingControllerTest extends BaseTest {
     }
 
     @Test
+    @DisplayName("회의를 등록한다. - 실패 시")
+    void testFailCreateMeeting() throws Exception {
+        // Given
+        MeetingRequest meeting = createFailReqeustMeeting();
+
+        // When && Then
+        mockMvc.perform(post("/api/meeting")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(meeting))
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+        ;
+    }
+
+    @Test
     @DisplayName("회의를 수정한다 - 성공 시")
     void testUpdateMeeting() throws Exception {
         // Given
         Meeting meeting = createMeeting();
 
-        Place place = Place.builder()
+        PlaceRequest place = PlaceRequest.builder()
                 .name("수정된 장소 이름")
-                .palceType(PlaceType.RESTAURANT)
-                .address(Address.builder()
+                .palceType("RESTAURANT")
+                .address(AddressRequest.builder()
                         .city("서울시")
                         .roadName("서울로")
+                        .postalCode("12345")
+                        .state("서울")
                         .build())
                 .build();
         MeetingRequest meetingRequest = MeetingRequest.builder()
+                .title("수정된 회의 제목")
                 .content("수정된 회의 내용")
                 .description("수정된 회의 설명")
-                .meetingType(MeetingType.OFFLINE)
+                .meetingType("OFFLINE")
                 .place(place)
+                .dues(0)
                 .build();
 
         // When && Then
@@ -106,17 +128,42 @@ class MeetingControllerTest extends BaseTest {
         ;
     }
 
-    private MeetingRequest createReqeustMeeting() {
-        Place place = Place.builder()
+    private MeetingRequest createSusseccReqeustMeeting() {
+        PlaceRequest place = PlaceRequest.builder()
                 .name("장소 이름")
-                .palceType(PlaceType.CAFE)
-                .address(Address.builder().build())
+                .palceType("CAFE")
+                .address(AddressRequest.builder()
+                        .city("서울시")
+                        .roadName("서울로")
+                        .postalCode("12345")
+                        .state("서울")
+                        .build())
                 .build();
         return MeetingRequest.builder()
                 .title("회의 제목")
                 .content("회의 내용")
                 .description("회의 설명")
-                .meetingType(MeetingType.ONLINE)
+                .meetingType("ONLINE")
+                .place(place)
+                .dues(0)
+                .build();
+    }
+
+    private MeetingRequest createFailReqeustMeeting() {
+        PlaceRequest place = PlaceRequest.builder()
+                .name("장소 이름")
+                .palceType("CAFE")
+                .address(AddressRequest.builder()
+                        .city("서울시")
+                        .roadName("서울로")
+                        .postalCode("12345")
+                        .state("서울")
+                        .build())
+                .build();
+        return MeetingRequest.builder()
+                .title("회의 제목")
+                .content("회의 내용")
+                .description("회의 설명")
                 .place(place)
                 .build();
     }

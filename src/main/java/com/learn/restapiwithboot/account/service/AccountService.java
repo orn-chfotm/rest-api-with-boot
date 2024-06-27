@@ -3,7 +3,7 @@ package com.learn.restapiwithboot.account.service;
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.dto.response.AccountResponse;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
-import com.learn.restapiwithboot.core.mappers.AccountMapper;
+import com.learn.restapiwithboot.account.mapper.AccountMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

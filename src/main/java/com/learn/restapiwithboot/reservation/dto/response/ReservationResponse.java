@@ -10,14 +10,14 @@ public class ReservationResponse {
 
     private Long id;
 
-    private AccountResponse accountResponseDto;
+    private AccountResponse accountResponse;
 
-    private MeetingResponse meetingResponseDto;
+    private MeetingResponse meetingResponse;
 
     @Builder
-    public ReservationResponse(Long id, AccountResponse accountResponseDto, MeetingResponse meetingResponseDto) {
+    public ReservationResponse(Long id, AccountResponse accountResponse, MeetingResponse meetingResponse) {
         this.id = id;
-        this.accountResponseDto = accountResponseDto;
-        this.meetingResponseDto = meetingResponseDto;
+        this.accountResponse = accountResponse;
+        this.meetingResponse = meetingResponse;
     }
 }

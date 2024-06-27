@@ -2,7 +2,7 @@ package com.learn.restapiwithboot.reservation.service;
 
 import com.learn.restapiwithboot.account.dto.response.AccountResponse;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
-import com.learn.restapiwithboot.core.mappers.ReservationMapper;
+import com.learn.restapiwithboot.reservation.mapper.ReservationMapper;
 import com.learn.restapiwithboot.meeting.dto.response.MeetingResponse;
 import com.learn.restapiwithboot.reservation.domain.Reservation;
 import com.learn.restapiwithboot.reservation.dto.response.ReservationResponse;
@@ -47,8 +47,8 @@ public class ReservationService {
     private ReservationResponse converToResponse(Reservation reservation) {
         return ReservationResponse.builder()
                 .id(reservation.getId())
-                .accountResponseDto(this.convertToDto(reservation.getAccount(), AccountResponse.class))
-                .meetingResponseDto(this.convertToDto(reservation.getMeeting(), MeetingResponse.class))
+                .accountResponse(this.convertToDto(reservation.getAccount(), AccountResponse.class))
+                .meetingResponse(this.convertToDto(reservation.getMeeting(), MeetingResponse.class))
                 .build();
     }
 

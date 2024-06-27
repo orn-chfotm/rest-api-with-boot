@@ -1,6 +1,6 @@
 package com.learn.restapiwithboot.meeting.service;
 
-import com.learn.restapiwithboot.core.mappers.MeetingMapper;
+import com.learn.restapiwithboot.meeting.mapper.MeetingMapper;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
 import com.learn.restapiwithboot.meeting.dto.request.MeetingRequest;
 import com.learn.restapiwithboot.meeting.dto.response.MeetingResponse;
