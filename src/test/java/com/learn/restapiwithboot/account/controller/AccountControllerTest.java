@@ -28,7 +28,7 @@ class AccountControllerTest extends BaseTest {
 
     private Account createAccount() {
         return Account.builder()
-                .email("user@email.com")
+                .email("userTest@email.com")
                 .password("1234")
                 .build();
     }

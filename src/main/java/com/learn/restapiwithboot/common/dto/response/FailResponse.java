@@ -9,7 +9,6 @@ import java.util.Map;
 @Getter
 public class FailResponse extends BasicResponse {
 
-
     private Map<String, String> errMessageMap;
 
     public FailResponse(Integer statusCode, String exceptionMessage) {

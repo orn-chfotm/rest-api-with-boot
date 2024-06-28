@@ -6,6 +6,7 @@ import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.account.mapper.AccountMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AccountService {
@@ -23,10 +24,11 @@ public class AccountService {
         this.accountMapper = AccountMapper.INSTANCE;
     }
 
+    @Transactional
     public AccountResponse createAccount(Account account) {
         account.setPassword(this.passwordEncoder.encode(account.getPassword()));
         Account saveAccount = accountRepository.save(account);
-        System.out.println(saveAccount);
+
         return accountMapper.accountToAccountResponse(saveAccount);
     }
 }

@@ -9,3 +9,10 @@ logging:
     org:
       hibernate:
         type: trace
+
+jwt:
+  header: Authorization
+  prefix: Bearer
+  access-exp-time: 3600000
+  refresh-exp-time: 864000000
+  secret: a2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbQ
