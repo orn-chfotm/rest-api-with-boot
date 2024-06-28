@@ -40,4 +40,9 @@ public class MeetingController {
     public ResponseEntity<?> updateMeeting(@PathVariable Long id, @RequestBody @Valid MeetingRequest meetingRequest) {
         return SuccessResponse.of(meetingService.updateMeeting(id, meetingRequest));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteMeeting(@PathVariable Long id) {
+        return SuccessResponse.of(meetingService.deleteMeeting(id));
+    }
 }

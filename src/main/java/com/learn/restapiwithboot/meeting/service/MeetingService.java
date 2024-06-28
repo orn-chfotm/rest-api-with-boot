@@ -33,11 +33,12 @@ public class MeetingService {
 
     public MeetingResponse getMeeting(Long id) {
         Meeting meeting = meetingRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 회의가 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 모임이 없습니다."));
 
         return meetingMapper.meetingToMeetingResponse(meeting);
     }
 
+    @Transactional
     public MeetingResponse createMeeting(MeetingRequest meetingRequest) {
         Meeting meeting = meetingMapper.meetingReqeustToMeeting(meetingRequest);
 
@@ -50,11 +51,22 @@ public class MeetingService {
     @Transactional
     public MeetingResponse updateMeeting(Long id, MeetingRequest meetingRequest) {
         Meeting meeting = meetingRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 회의가 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 모임이 없습니다."));
 
         meetingMapper.updateMeetingFromRequest(meetingRequest, meeting);
         meeting.isPayDues();
 
         return meetingMapper.meetingToMeetingResponse(meeting);
+    }
+
+    @Transactional
+    public MeetingResponse deleteMeeting(Long id) {
+        if (!meetingRepository.existsById(id)) {
+            throw new IllegalArgumentException("해당하는 모임이 없습니다.");
+        }
+
+        meetingRepository.deleteById(id);
+
+        return MeetingResponse.builder().id(id).build();
     }
 }
