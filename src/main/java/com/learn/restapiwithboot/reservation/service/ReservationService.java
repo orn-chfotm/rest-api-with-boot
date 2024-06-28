@@ -12,9 +12,13 @@ import com.learn.restapiwithboot.reservation.dto.response.ReservationResponse;
 import com.learn.restapiwithboot.reservation.repository.ReservationRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import static java.util.List.of;
 
 @Service
 public class ReservationService {
@@ -63,6 +67,7 @@ public class ReservationService {
         return modelMapper.map(entity, dtoClass);
     }
 
+    @Transactional
     public ReservationResponse createReservation(ReservationRequest reservationRequest) {
 
         Long accountId = accountRepository.findIdByEmail(reservationRequest.getEmail())
@@ -82,10 +87,14 @@ public class ReservationService {
         return reservationMapper.reservationToReservationResponse(reservation);
     }
 
-    public void deleteReservation(Long id) {
+    @Transactional
+    public ReservationResponse deleteReservation(Long id) {
         if(!reservationRepository.existsById(id)) {
             throw new ResourceNotFoundException("해당하는 회의가 없습니다.");
         }
+
         reservationRepository.deleteById(id);
+
+        return ReservationResponse.builder().id(id).build();
     }
 }

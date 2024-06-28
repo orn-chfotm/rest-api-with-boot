@@ -30,6 +30,6 @@ public class ReservationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteReservation(@RequestParam Long id) {
-        return SuccessResponse.of(null);
+        return SuccessResponse.of(reservationService.deleteReservation(id));
     }
 }
