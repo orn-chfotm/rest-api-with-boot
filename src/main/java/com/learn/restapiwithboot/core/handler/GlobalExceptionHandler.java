@@ -3,6 +3,7 @@ package com.learn.restapiwithboot.core.handler;
 import com.learn.restapiwithboot.common.dto.response.FailResponse;
 import com.learn.restapiwithboot.core.enums.Exceptions;
 import com.learn.restapiwithboot.core.exceptions.ResourceNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -23,8 +24,9 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({Exception.class})
     protected ResponseEntity<FailResponse> hadelException(Exception exception) {
-        Exceptions invalidJwtDecode = Exceptions.INVALID_JWT_DECODE;
-        return ResponseEntity.badRequest().body(new FailResponse(
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        Exceptions invalidJwtDecode = Exceptions.NOT_FOUND;
+        return ResponseEntity.status(status).body(new FailResponse(
                 invalidJwtDecode.getStatus(),
                 invalidJwtDecode.getMessage()
         ));
@@ -38,8 +40,9 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({RuntimeException.class})
     protected ResponseEntity<FailResponse> handelRuntimeException(RuntimeException exception) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
         Exceptions notFound = Exceptions.NOT_FOUND;
-        return ResponseEntity.badRequest().body(new FailResponse(
+        return ResponseEntity.status(status).body(new FailResponse(
                 notFound.getStatus(),
                 notFound.getMessage()
         ));
@@ -66,6 +69,12 @@ public class GlobalExceptionHandler {
         ));
     }
 
+    /**
+     * ResourceNotFoundException 예외 처리
+     *  <p>
+     *      JPA find 시 조회 기준에 맞는 결과 값이 없을 때 발생하는 예외 처리
+     *  </p>
+     */
     @ExceptionHandler({ResourceNotFoundException.class})
     protected ResponseEntity<FailResponse> hadleResourceNotFoundException(ResourceNotFoundException exception) {
         return ResponseEntity.badRequest().body(new FailResponse(
