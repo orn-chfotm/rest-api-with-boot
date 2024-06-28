@@ -1,6 +1,7 @@
 package com.learn.restapiwithboot.reservation.domain;
 
 import com.learn.restapiwithboot.account.domain.Account;
+import com.learn.restapiwithboot.common.domain.BaseTimeEntity;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @Getter @Setter @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Entity
-public class Reservation {
+public class Reservation extends BaseTimeEntity {
 
     @Id
     @GeneratedValue

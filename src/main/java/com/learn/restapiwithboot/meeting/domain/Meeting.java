@@ -1,5 +1,6 @@
 package com.learn.restapiwithboot.meeting.domain;
 
+import com.learn.restapiwithboot.common.domain.BaseTimeEntity;
 import com.learn.restapiwithboot.meeting.domain.embed.Place;
 import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter @EqualsAndHashCode(of = "id")
 @Entity
-public class Meeting {
+public class Meeting extends BaseTimeEntity {
 
     @Id @GeneratedValue
     private Long id;
