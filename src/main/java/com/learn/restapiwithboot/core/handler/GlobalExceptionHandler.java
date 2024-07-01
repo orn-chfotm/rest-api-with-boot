@@ -4,6 +4,7 @@ import com.learn.restapiwithboot.common.dto.response.FailResponse;
 import com.learn.restapiwithboot.core.enums.Exceptions;
 import com.learn.restapiwithboot.core.exceptions.TokenInvalidException;
 import com.learn.restapiwithboot.core.exceptions.ResourceNotFoundException;
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -46,6 +47,23 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(new FailResponse(
                 notFound.getStatus(),
                 notFound.getMessage()
+        ));
+    }
+
+    /**
+     * JwtException 예외 처리
+     * <p>
+     *      Root JwtException 예외 처리로 Exception을 처리하면 Jwt 관련 예외를 처리할 수 있다.
+     *      Run
+     * </p>
+     */
+    @ExceptionHandler({Exception.class})
+    protected ResponseEntity<FailResponse> hadelJwtException(JwtException exception) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        Exceptions invalidJwtDecode = Exceptions.INVALID_JWT_TOKEN;
+        return ResponseEntity.status(status).body(new FailResponse(
+                invalidJwtDecode.getStatus(),
+                invalidJwtDecode.getMessage()
         ));
     }
 
