@@ -1,4 +1,4 @@
-package com.learn.restapiwithboot.auth.service;
+package com.learn.restapiwithboot.auth.controller;
 
 import com.learn.restapiwithboot.auth.dto.request.AuthRequest;
 import com.learn.restapiwithboot.meeting.common.BaseTest;
@@ -6,11 +6,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class AuthServiceTest extends BaseTest {
+class AuthControllerTest extends BaseTest {
 
     @Test
     @DisplayName("Token 발급 테스트 - 성공")

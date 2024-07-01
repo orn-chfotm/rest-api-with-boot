@@ -2,11 +2,10 @@ package com.learn.restapiwithboot.core.exceptions;
 
 import com.learn.restapiwithboot.core.enums.Exceptions;
 
-public class ResourceNotFoundException extends RuntimeException {
+public class TokenExpiredException extends RuntimeException {
+    private final Exceptions EXCEPTION = Exceptions.INVALID_JWT_TOKEN;
 
-    private final Exceptions EXCEPTION = Exceptions.RESOURCE_NOT_FOUND;
-
-    public ResourceNotFoundException(String message) {
+    public TokenExpiredException(String message) {
         super(message);
     }
 

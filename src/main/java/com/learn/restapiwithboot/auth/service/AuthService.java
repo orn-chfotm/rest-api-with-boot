@@ -4,11 +4,9 @@ import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.auth.dto.response.AuthResponse;
 import com.learn.restapiwithboot.auth.dto.request.AuthRequest;
-import com.learn.restapiwithboot.common.util.JwtUtil;
+import com.learn.restapiwithboot.common.util.JwtTokenProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -17,11 +15,11 @@ public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final JwtUtil jwtUtil;
+    private final JwtTokenProvider jwtUtil;
 
     public AuthService(AccountRepository accountRepository,
                        PasswordEncoder passwordEncoder,
-                       JwtUtil jwtUtil) {
+                       JwtTokenProvider jwtUtil) {
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;

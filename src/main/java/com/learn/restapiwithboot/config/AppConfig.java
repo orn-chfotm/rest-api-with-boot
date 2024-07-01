@@ -42,13 +42,13 @@ public class AppConfig {
                 accountRepository.save(Account.builder()
                         .email("user@email.com")
                         .password(passwordEncoder.encode("1234"))
-                        .role(Set.of(AccountRole.USER))
+                        .roles(Set.of(AccountRole.USER))
                         .build());
 
                 accountRepository.save(Account.builder()
                         .email("admin@email.com")
                         .password(passwordEncoder.encode("1234"))
-                        .role(Set.of(AccountRole.ADMIN))
+                        .roles(Set.of(AccountRole.ADMIN))
                         .build());
             }
         };

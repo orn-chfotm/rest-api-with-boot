@@ -21,15 +21,15 @@ public class Account extends BaseTimeEntity {
 
     private String password;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private Set<AccountRole> role;
+    private Set<AccountRole> roles;
 
     @Builder
-    public Account(String email, String password, Set<AccountRole> role) {
+    public Account(String email, String password, Set<AccountRole> roles) {
         this.email = email;
         this.password = password;
-        this.role = role;
+        this.roles = roles;
     }
 
 }

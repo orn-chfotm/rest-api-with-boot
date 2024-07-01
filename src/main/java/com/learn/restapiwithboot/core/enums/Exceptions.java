@@ -7,7 +7,6 @@ public enum Exceptions {
     INVALID_INPUT_VALUE(400, "Invalid Input Value"),
     INVALID_TYPE_VALUE(400, "Invalid Type Value"),
     INVALID_INPUT_FORMAT(400, "Invalid Input Format"),
-    INVALID_TOKEN(401, "Invalid Token"),
     EXPIRED_TOKEN(401, "Expired Token"),
     INVALID_REFRESH_TOKEN(401, "Invalid Refresh Token"),
     INVALID_JWT_TOKEN(401, "Invalid JWT Token"),

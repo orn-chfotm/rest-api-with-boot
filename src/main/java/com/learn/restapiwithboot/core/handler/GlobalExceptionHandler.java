@@ -2,6 +2,7 @@ package com.learn.restapiwithboot.core.handler;
 
 import com.learn.restapiwithboot.common.dto.response.FailResponse;
 import com.learn.restapiwithboot.core.enums.Exceptions;
+import com.learn.restapiwithboot.core.exceptions.TokenInvalidException;
 import com.learn.restapiwithboot.core.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -77,6 +78,14 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({ResourceNotFoundException.class})
     protected ResponseEntity<FailResponse> hadleResourceNotFoundException(ResourceNotFoundException exception) {
+        return ResponseEntity.badRequest().body(new FailResponse(
+                exception.getStatus(),
+                exception.getDetailMessage()
+        ));
+    }
+
+    @ExceptionHandler({TokenInvalidException.class})
+    protected ResponseEntity<FailResponse> hadleInvalidTokenException(TokenInvalidException exception) {
         return ResponseEntity.badRequest().body(new FailResponse(
                 exception.getStatus(),
                 exception.getDetailMessage()

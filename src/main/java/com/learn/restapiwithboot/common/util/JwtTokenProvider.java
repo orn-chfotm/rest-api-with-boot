@@ -1,14 +1,15 @@
 package com.learn.restapiwithboot.common.util;
 
 import com.learn.restapiwithboot.account.domain.Account;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.learn.restapiwithboot.account.domain.enums.AccountRole;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -16,9 +17,10 @@ import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Map;
+import java.util.Set;
 
 @Component
-public class JwtUtil {
+public class JwtTokenProvider {
 
     private final int accessTokenExpiration;
 
@@ -26,18 +28,23 @@ public class JwtUtil {
 
     private final Key secretKey;
 
-    public JwtUtil(@Value("${jwt.secret}") String secretKey,
+    private final UserDetailsService userDetailsService;
+
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey,
                             @Value("${jwt.access-exp-time}") int accessTokenExpiration,
-                            @Value("${jwt.refresh-exp-time}") int refreshTokenExpiration) {
+                            @Value("${jwt.refresh-exp-time}") int refreshTokenExpiration,
+                            UserDetailsService userDetailsService) {
         this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
         this.accessTokenExpiration = accessTokenExpiration;
         this.refreshTokenExpiration = refreshTokenExpiration;
+        this.userDetailsService = userDetailsService;
     }
 
     public String generateAccessToken(Account account) {
         Claims claims = setClaims("accessToken", accessTokenExpiration);
+        Set<AccountRole> roles = account.getRoles();
         claims.put("email", account.getEmail());
-        claims.put("role", account.getRole());
+        claims.put("role", roles);
 
         return Jwts.builder()
                 .setHeader(Map.of("type", "JWT", "alg", "HS256"))
@@ -48,8 +55,11 @@ public class JwtUtil {
 
     public String generateRefreshToken(Account account) {
         Claims claims = setClaims("refreshToken", refreshTokenExpiration);
+
+
         claims.put("email", account.getEmail());
-        claims.put("role", account.getRole());
+        Set<AccountRole> roles = account.getRoles();
+        claims.put("role", roles);
 
         return Jwts.builder()
                 .setHeader(Map.of("type", "JWT", "alg", "HS256"))
@@ -60,11 +70,16 @@ public class JwtUtil {
 
     /* Token Validation */
     public boolean validateToken(String token) {
-        return !Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody().isEmpty();
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            return true;
+        } catch (JwtException e) {
+            return false;
+        }
     }
 
     /* Get Token Claims */
@@ -74,6 +89,18 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public Authentication getAuthentication(String token) {
+        Claims claims = this.getClaims(token);
+
+        if (claims.get("email") == null || claims.get("role") == null) {
+            throw new IllegalArgumentException("Invalid Token");
+        }
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(claims.get("email").toString());
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+
     }
 
     private Claims setClaims(String subject, int expiration) {
@@ -87,6 +114,4 @@ public class JwtUtil {
                 .setExpiration(Date.from(expirationTime.atZone(ZoneId.systemDefault()).toInstant()))
         ;
     }
-
-
 }
