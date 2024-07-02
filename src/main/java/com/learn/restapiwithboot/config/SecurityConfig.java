@@ -74,7 +74,7 @@ public class SecurityConfig{
         http
             .authorizeRequests()
             .antMatchers("/api/auth/**").permitAll() // /api/auth 경로 허용
-            .anyRequest().permitAll(); // 다른 모든 요청은 인증 필요
+            .anyRequest().authenticated(); // 다른 모든 요청은 인증 필요
 
         http.exceptionHandling()
             .accessDeniedHandler(jwtAccessDeniedHandler)

@@ -48,12 +48,15 @@ class JwtTokenProviderTest extends BaseTest {
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 이메일입니다."));
 
         String accessToken = jwtProvider.generateAccessToken(account);
+        System.out.println(accessToken);
         String refreshToken = jwtProvider.generateRefreshToken(account);
 
         System.out.println(StandardCharsets.UTF_8.toString());
 
         assertThat(accessToken).isNotEmpty();
         assertThat(refreshToken).isNotEmpty();
+
+        System.out.println(jwtProvider.validateToken(accessToken));
     }
 
 }

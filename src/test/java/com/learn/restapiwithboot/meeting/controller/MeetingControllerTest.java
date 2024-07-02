@@ -19,6 +19,7 @@ import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class MeetingControllerTest extends BaseTest {
@@ -33,7 +34,12 @@ class MeetingControllerTest extends BaseTest {
         Meeting meeting = createMeeting();
 
         // When && Then
-        mockMvc.perform(get("/api/meeting"))
+        String token = this.getToken();
+        String format = "Bearer " + token;
+
+        mockMvc.perform(get("/api/meeting")
+                        .header("Authorization", format)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
     }

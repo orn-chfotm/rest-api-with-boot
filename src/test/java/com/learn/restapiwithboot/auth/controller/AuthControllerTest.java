@@ -23,13 +23,12 @@ class AuthControllerTest extends BaseTest {
                 .build();
 
         // when && then
-        mockMvc.perform(post("/api/auth")
+        mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(reqeust))
                 )
                 .andDo(print())
                 .andExpect(status().isOk());
-
     }
 
     @Test
@@ -42,7 +41,7 @@ class AuthControllerTest extends BaseTest {
                 .build();
 
         // when && then
-        mockMvc.perform(post("/api/auth")
+        mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(reqeust))
                 )

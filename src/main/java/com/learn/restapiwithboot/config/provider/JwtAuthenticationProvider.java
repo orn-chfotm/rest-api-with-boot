@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,15 +25,16 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        Claims claims = jwtTokenProvider.getClaims((String) authentication.getCredentials());
+        String jwtToken = ((JwtAuthenticationToken) authentication).getJwtToken();
+        Claims claims = jwtTokenProvider.getClaims(jwtToken);
 
-        return new JwtAuthenticationToken(claims.get("email"), "",  authorities(claims));
+        return new JwtAuthenticationToken(jwtToken, claims.get("email").toString(),  authorities(claims));
     }
 
     private static Collection<? extends GrantedAuthority> authorities(Claims claims) {
-        Set<AccountRole> roles = (Set<AccountRole>) claims.get("roles");
-        return roles.stream()
-                .map(r -> new SimpleGrantedAuthority("ROLE_" + r.name()))
+        List<String> role = (List<String>) claims.get("role");
+        return role.stream()
+                .map(r -> new SimpleGrantedAuthority("ROLE_" + r))
                 .collect(Collectors.toSet());
     }
 
