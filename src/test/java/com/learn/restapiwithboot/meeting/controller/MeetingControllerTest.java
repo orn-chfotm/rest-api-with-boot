@@ -13,7 +13,9 @@ import com.learn.restapiwithboot.meeting.repsitory.MeetingRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.TestingAuthenticationToken;
 
 import java.util.List;
 
@@ -35,11 +37,13 @@ class MeetingControllerTest extends BaseTest {
 
         // When && Then
         String token = this.getToken();
-        String format = "Bearer " + token;
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", "Bearer " + token);
 
         mockMvc.perform(get("/api/meeting")
-                        .header("Authorization", format)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .headers(httpHeaders))
                 .andDo(print())
                 .andExpect(status().isOk());
     }

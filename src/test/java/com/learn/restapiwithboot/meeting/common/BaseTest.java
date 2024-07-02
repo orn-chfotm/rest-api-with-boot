@@ -46,7 +46,7 @@ public class BaseTest {
                 .andExpect(status().isOk());
 
         TreeNode treeNode = objectMapper.readTree(resultActions.andReturn().getResponse().getContentAsString());
-        return treeNode.get("data").get("accessToken").toString();
+        return treeNode.get("data").get("accessToken").toString().replace("\"", "");
     }
 
 }
