@@ -9,7 +9,7 @@ import org.hibernate.annotations.Comment;
 import javax.persistence.*;
 
 @Getter @Setter @NoArgsConstructor
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
 public class Reservation extends BaseTimeEntity {
 

@@ -1,4 +1,4 @@
-package com.learn.restapiwithboot.common.util;
+package com.learn.restapiwithboot.config.provider;
 
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.domain.enums.AccountRole;
@@ -26,18 +26,18 @@ public class JwtTokenProvider {
 
     private final int refreshTokenExpiration;
 
-    private final Key secretKey;
+    private final Key secretAccessKey;
 
-    private final UserDetailsService userDetailsService;
+    private final Key secretRefreshKey;
 
-    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey,
+    public JwtTokenProvider(@Value("${jwt.secret-access}") String secretAccessKey,
+                            @Value("${jwt.secret-refresh}") String secretRefreshKey,
                             @Value("${jwt.access-exp-time}") int accessTokenExpiration,
-                            @Value("${jwt.refresh-exp-time}") int refreshTokenExpiration,
-                            UserDetailsService userDetailsService) {
-        this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+                            @Value("${jwt.refresh-exp-time}") int refreshTokenExpiration) {
+        this.secretAccessKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretAccessKey));
+        this.secretRefreshKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretRefreshKey));
         this.accessTokenExpiration = accessTokenExpiration;
         this.refreshTokenExpiration = refreshTokenExpiration;
-        this.userDetailsService = userDetailsService;
     }
 
     public String generateAccessToken(Account account) {
@@ -49,30 +49,30 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setHeader(Map.of("type", "JWT", "alg", "HS256"))
                 .setClaims(claims)
-                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .signWith(secretAccessKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public String generateRefreshToken(Account account) {
         Claims claims = setClaims("refreshToken", refreshTokenExpiration);
-
-
         claims.put("email", account.getEmail());
         Set<AccountRole> roles = account.getRoles();
         claims.put("role", roles);
 
-        return Jwts.builder()
+        String refreshToken = Jwts.builder()
                 .setHeader(Map.of("type", "JWT", "alg", "HS256"))
                 .setClaims(claims)
-                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .signWith(secretRefreshKey, SignatureAlgorithm.HS256)
                 .compact();
+
+        return refreshToken;
     }
 
     /* Token Validation */
     public boolean validateToken(String token) {
         try {
             Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
+                    .setSigningKey(secretAccessKey)
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
@@ -85,13 +85,13 @@ public class JwtTokenProvider {
     /* Get Token Claims */
     public Claims getClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(secretKey)
+                .setSigningKey(secretAccessKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
 
-    public Authentication getAuthentication(String token) {
+    /*public Authentication getAuthentication(String token) {
         Claims claims = this.getClaims(token);
 
         if (claims.get("email") == null || claims.get("role") == null) {
@@ -101,7 +101,7 @@ public class JwtTokenProvider {
         UserDetails userDetails = userDetailsService.loadUserByUsername(claims.get("email").toString());
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 
-    }
+    }*/
 
     private Claims setClaims(String subject, int expiration) {
         LocalDateTime now = LocalDateTime.now();

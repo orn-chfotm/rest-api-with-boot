@@ -12,7 +12,7 @@ import org.hibernate.annotations.Comment;
 import javax.persistence.*;
 
 @NoArgsConstructor
-@Getter @EqualsAndHashCode(of = "id")
+@Getter @EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
 public class Meeting extends BaseTimeEntity {
 

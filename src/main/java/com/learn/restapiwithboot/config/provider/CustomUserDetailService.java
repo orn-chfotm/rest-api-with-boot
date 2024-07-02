@@ -1,4 +1,4 @@
-package com.learn.restapiwithboot.config;
+package com.learn.restapiwithboot.config.provider;
 
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.domain.enums.AccountRole;

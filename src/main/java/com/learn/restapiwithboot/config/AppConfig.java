@@ -1,5 +1,6 @@
 package com.learn.restapiwithboot.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.domain.enums.AccountRole;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
@@ -18,13 +19,13 @@ import java.util.Set;
 public class AppConfig {
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
     }
 
     @Bean
-    public ModelMapper modelMapper() {
-        return new ModelMapper();
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 
     @Bean

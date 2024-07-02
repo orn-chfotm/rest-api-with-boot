@@ -37,6 +37,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.modelmapper:modelmapper:3.1.1'
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.7.0' // 스프링 Redis
+    implementation ('it.ozimov:embedded-redis:0.7.3')
+
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+
     annotationProcessor 'org.projectlombok:lombok'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
@@ -55,6 +60,13 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
     outputs.dir snippetsDir
+}
+
+configurations.all {
+    exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+    exclude group: 'org.slf4j', module: 'slf4j-simple'
+    exclude group: 'ch.qos.logback', module: 'logback-classic'
+    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
 }
 
 asciidoctor {

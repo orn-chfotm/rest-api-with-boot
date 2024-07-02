@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
      *      Run
      * </p>
      */
-    @ExceptionHandler({Exception.class})
+    @ExceptionHandler({JwtException.class})
     protected ResponseEntity<FailResponse> hadelJwtException(JwtException exception) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         Exceptions invalidJwtDecode = Exceptions.INVALID_JWT_TOKEN;

@@ -18,9 +18,14 @@ public class AuthController {
         this.authService = authservice;
     }
 
-    @PostMapping
-    public ResponseEntity<?> getAuth(@RequestBody @Valid AuthRequest authRequest) {
+    @PostMapping("/login")
+    public ResponseEntity<?> getLogin(@RequestBody @Valid AuthRequest authRequest) {
         return SuccessResponse.of(authService.getAuth(authRequest));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> getLogout(@RequestBody @Valid AuthRequest authRequest) {
+        return SuccessResponse.of(null);
     }
 
 }

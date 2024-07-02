@@ -2,6 +2,7 @@ package com.learn.restapiwithboot.common.util;
 
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
+import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
 import com.learn.restapiwithboot.meeting.common.BaseTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,13 +50,10 @@ class JwtTokenProviderTest extends BaseTest {
         String accessToken = jwtProvider.generateAccessToken(account);
         String refreshToken = jwtProvider.generateRefreshToken(account);
 
-        Authentication authentication = jwtProvider.getAuthentication(accessToken);
-        Authentication authentication1 = jwtProvider.getAuthentication(refreshToken);
-
         System.out.println(StandardCharsets.UTF_8.toString());
 
-        assertThat(authentication).isNotNull();
-        assertWith(authentication1).isNotNull();
+        assertThat(accessToken).isNotEmpty();
+        assertThat(refreshToken).isNotEmpty();
     }
 
 }
