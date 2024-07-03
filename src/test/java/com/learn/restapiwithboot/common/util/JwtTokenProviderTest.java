@@ -3,6 +3,7 @@ package com.learn.restapiwithboot.common.util;
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
+import com.learn.restapiwithboot.config.provider.properties.JwtProperties;
 import com.learn.restapiwithboot.meeting.common.BaseTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,9 @@ class JwtTokenProviderTest extends BaseTest {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private JwtProperties jwtProperties;
+
     @Test
     @DisplayName("토큰 생성 테스트")
     void generateToken() {
@@ -31,8 +35,8 @@ class JwtTokenProviderTest extends BaseTest {
         Account account = accountRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 이메일입니다."));
 
-        String accessToken = jwtProvider.generateAccessToken(account);
-        String refreshToken = jwtProvider.generateRefreshToken(account);
+        String accessToken = jwtProvider.generateToken(account, jwtProperties.getAccessSecretKey(), jwtProperties.getAccessExpTime());
+        String refreshToken = jwtProvider.generateToken(account, jwtProperties.getRefreshSecretKey(), jwtProperties.getAccessExpTime());
 
         assertThat(accessToken).isNotEmpty();
         assertThat(refreshToken).isNotEmpty();
@@ -47,16 +51,20 @@ class JwtTokenProviderTest extends BaseTest {
         Account account = accountRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 이메일입니다."));
 
-        String accessToken = jwtProvider.generateAccessToken(account);
-        System.out.println(accessToken);
-        String refreshToken = jwtProvider.generateRefreshToken(account);
-
-        System.out.println(StandardCharsets.UTF_8.toString());
+        String accessToken = jwtProvider.generateToken(
+                account,
+                this.jwtProperties.getAccessSecretKey(),
+                this.jwtProperties.getAccessExpTime()
+        );
+        String refreshToken = jwtProvider.generateToken(
+                account,
+                this.jwtProperties.getRefreshSecretKey(),
+                this.jwtProperties.getRefreshExpTime()
+        );
 
         assertThat(accessToken).isNotEmpty();
         assertThat(refreshToken).isNotEmpty();
 
-        System.out.println(jwtProvider.validateToken(accessToken));
     }
 
 }

@@ -1,6 +1,6 @@
 package com.learn.restapiwithboot.reservation.controller;
 
-import com.learn.restapiwithboot.common.dto.response.SuccessResponse;
+import com.learn.restapiwithboot.core.dto.response.SuccessResponse;
 import com.learn.restapiwithboot.reservation.dto.request.ReservationRequest;
 import com.learn.restapiwithboot.reservation.service.ReservationService;
 import org.springframework.http.ResponseEntity;

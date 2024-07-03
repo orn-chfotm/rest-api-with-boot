@@ -1,9 +1,8 @@
 package com.learn.restapiwithboot.config.filter;
 
-import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
 import com.learn.restapiwithboot.config.provider.JwtAuthenticationToken;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
+import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
+import com.learn.restapiwithboot.config.provider.properties.JwtProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -15,7 +14,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.Key;
 
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -24,14 +22,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final AuthenticationManager authenticationManager;
 
-    private static final String HEADER_AUTHORIZATION = "Authorization";
-
-    private static final String BEARER_PREFIX = "Bearer ";
+    private final JwtProperties jwtProperties;
 
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider,
-                                   AuthenticationManager authenticationManager) {
+                                   AuthenticationManager authenticationManager,
+                                   JwtProperties jwtProperties) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.authenticationManager = authenticationManager;
+        this.jwtProperties = jwtProperties;
     }
 
     @Override
@@ -39,7 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String jwtToken = getJwtFromReqeust(request);
 
         try {
-            if (jwtToken != null && jwtTokenProvider.validateToken(jwtToken)) {
+            if (jwtToken != null && jwtTokenProvider.validateToken(jwtToken, this.jwtProperties.getAccessSecretKey())) {
                 JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(jwtToken);
                 Authentication authentication = authenticationManager.authenticate(jwtAuthenticationToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -54,9 +52,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String getJwtFromReqeust(HttpServletRequest request) {
-        String authorization = request.getHeader(HEADER_AUTHORIZATION);
-        if (authorization != null && authorization.startsWith(BEARER_PREFIX)) {
-            return authorization.substring(BEARER_PREFIX.length());
+        String authorization = request.getHeader(jwtProperties.getHeader());
+        if (authorization != null && authorization.startsWith(jwtProperties.getPrefix())) {
+            return authorization.substring(jwtProperties.getPrefix().length());
         }
 
         log.warn("Request Header Authorization is not valid.");

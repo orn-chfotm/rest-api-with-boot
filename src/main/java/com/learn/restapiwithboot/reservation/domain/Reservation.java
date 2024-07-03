@@ -1,7 +1,7 @@
 package com.learn.restapiwithboot.reservation.domain;
 
 import com.learn.restapiwithboot.account.domain.Account;
-import com.learn.restapiwithboot.common.domain.BaseTimeEntity;
+import com.learn.restapiwithboot.core.domain.BaseTimeEntity;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
 import lombok.*;
 import org.hibernate.annotations.Comment;

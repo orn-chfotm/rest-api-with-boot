@@ -1,4 +1,4 @@
-package com.learn.restapiwithboot.common.domain;
+package com.learn.restapiwithboot.core.domain;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

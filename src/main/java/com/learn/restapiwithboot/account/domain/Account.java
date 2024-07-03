@@ -1,9 +1,8 @@
 package com.learn.restapiwithboot.account.domain;
 
 import com.learn.restapiwithboot.account.domain.enums.AccountRole;
-import com.learn.restapiwithboot.common.domain.BaseTimeEntity;
+import com.learn.restapiwithboot.core.domain.BaseTimeEntity;
 import lombok.*;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import java.util.Set;

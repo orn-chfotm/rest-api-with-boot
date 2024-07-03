@@ -1,9 +1,8 @@
 package com.learn.restapiwithboot.config.handle;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.learn.restapiwithboot.common.dto.response.FailResponse;
+import com.learn.restapiwithboot.core.dto.response.FailResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

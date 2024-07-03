@@ -1,6 +1,6 @@
 package com.learn.restapiwithboot.meeting.domain;
 
-import com.learn.restapiwithboot.common.domain.BaseTimeEntity;
+import com.learn.restapiwithboot.core.domain.BaseTimeEntity;
 import com.learn.restapiwithboot.meeting.domain.embed.Place;
 import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
 import lombok.Builder;

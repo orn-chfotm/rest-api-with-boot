@@ -1,6 +1,6 @@
 package com.learn.restapiwithboot.core.handler;
 
-import com.learn.restapiwithboot.common.dto.response.FailResponse;
+import com.learn.restapiwithboot.core.dto.response.FailResponse;
 import com.learn.restapiwithboot.core.enums.Exceptions;
 import com.learn.restapiwithboot.core.exceptions.TokenInvalidException;
 import com.learn.restapiwithboot.core.exceptions.ResourceNotFoundException;

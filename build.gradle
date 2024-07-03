@@ -49,6 +49,7 @@ dependencies {
     runtimeOnly	'io.jsonwebtoken:jjwt-jackson:0.11.5'
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

@@ -1,4 +1,4 @@
-package com.learn.restapiwithboot.common.dto;
+package com.learn.restapiwithboot.core.dto;
 
 import lombok.Getter;
 

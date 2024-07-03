@@ -1,9 +1,8 @@
-package com.learn.restapiwithboot.common.dto.response;
+package com.learn.restapiwithboot.core.dto.response;
 
-import com.learn.restapiwithboot.common.dto.BasicResponse;
+import com.learn.restapiwithboot.core.dto.BasicResponse;
 import lombok.Getter;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Getter

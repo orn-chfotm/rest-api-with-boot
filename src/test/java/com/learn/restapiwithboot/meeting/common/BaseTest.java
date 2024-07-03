@@ -30,23 +30,4 @@ public class BaseTest {
 
     @Autowired
     protected ObjectMapper objectMapper;
-
-    protected String getToken() throws Exception {
-        AuthRequest reqeust = AuthRequest.builder()
-                .email("user@email.com")
-                .password("1234")
-                .build();
-
-        // when && then
-        ResultActions resultActions = mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(reqeust))
-                )
-                .andDo(print())
-                .andExpect(status().isOk());
-
-        TreeNode treeNode = objectMapper.readTree(resultActions.andReturn().getResponse().getContentAsString());
-        return treeNode.get("data").get("accessToken").toString().replace("\"", "");
-    }
-
 }

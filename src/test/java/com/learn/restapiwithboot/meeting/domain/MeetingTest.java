@@ -1,13 +1,13 @@
 package com.learn.restapiwithboot.meeting.domain;
 
-import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
-import com.learn.restapiwithboot.meeting.domain.enums.PlaceType;
 import com.learn.restapiwithboot.meeting.domain.embed.Address;
 import com.learn.restapiwithboot.meeting.domain.embed.Place;
+import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
+import com.learn.restapiwithboot.meeting.domain.enums.PlaceType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MeetingTest {
 
@@ -44,5 +44,4 @@ class MeetingTest {
         assertEquals(address, meeting.getPlace().getAddress());
         assertEquals(place, meeting.getPlace());
     }
-
 }

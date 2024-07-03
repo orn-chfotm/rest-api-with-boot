@@ -2,6 +2,7 @@ package com.learn.restapiwithboot.config.provider;
 
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.domain.enums.AccountRole;
+import com.learn.restapiwithboot.config.provider.properties.JwtProperties;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -22,26 +23,20 @@ import java.util.Set;
 @Component
 public class JwtTokenProvider {
 
-    private final int accessTokenExpiration;
+    private final JwtProperties jwtproperties;
 
-    private final int refreshTokenExpiration;
-
-    private final Key secretAccessKey;
-
-    private final Key secretRefreshKey;
-
-    public JwtTokenProvider(@Value("${jwt.secret-access}") String secretAccessKey,
-                            @Value("${jwt.secret-refresh}") String secretRefreshKey,
-                            @Value("${jwt.access-exp-time}") int accessTokenExpiration,
-                            @Value("${jwt.refresh-exp-time}") int refreshTokenExpiration) {
-        this.secretAccessKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretAccessKey));
-        this.secretRefreshKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretRefreshKey));
-        this.accessTokenExpiration = accessTokenExpiration;
-        this.refreshTokenExpiration = refreshTokenExpiration;
+    public JwtTokenProvider(JwtProperties jwtProperties) {
+        this.jwtproperties = jwtProperties;
     }
 
-    public String generateAccessToken(Account account) {
-        Claims claims = setClaims("accessToken", accessTokenExpiration);
+    public String generateToken(Account account, Key tokenKey, int expTime) {
+        Claims claims = setClaims(expTime);
+        if(tokenKey.equals(this.jwtproperties.getAccessSecretKey())) {
+            claims.setSubject("accessToken");
+        }
+        if(tokenKey.equals(this.jwtproperties.getRefreshSecretKey())) {
+            claims.setSubject("refreshToken");
+        }
         Set<AccountRole> roles = account.getRoles();
         claims.put("email", account.getEmail());
         claims.put("role", roles);
@@ -49,30 +44,15 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setHeader(Map.of("type", "JWT", "alg", "HS256"))
                 .setClaims(claims)
-                .signWith(secretAccessKey, SignatureAlgorithm.HS256)
+                .signWith(tokenKey, SignatureAlgorithm.HS256)
                 .compact();
-    }
-
-    public String generateRefreshToken(Account account) {
-        Claims claims = setClaims("refreshToken", refreshTokenExpiration);
-        claims.put("email", account.getEmail());
-        Set<AccountRole> roles = account.getRoles();
-        claims.put("role", roles);
-
-        String refreshToken = Jwts.builder()
-                .setHeader(Map.of("type", "JWT", "alg", "HS256"))
-                .setClaims(claims)
-                .signWith(secretRefreshKey, SignatureAlgorithm.HS256)
-                .compact();
-
-        return refreshToken;
     }
 
     /* Token Validation */
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token, Key tokenKey) {
         try {
             Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(secretAccessKey)
+                    .setSigningKey(tokenKey)
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
@@ -83,9 +63,9 @@ public class JwtTokenProvider {
     }
 
     /* Get Token Claims */
-    public Claims getClaims(String token) {
+    public Claims getClaims(String token, Key tokenKey) {
         return Jwts.parserBuilder()
-                .setSigningKey(secretAccessKey)
+                .setSigningKey(tokenKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
@@ -103,13 +83,11 @@ public class JwtTokenProvider {
 
     }*/
 
-    private Claims setClaims(String subject, int expiration) {
+    private Claims setClaims(int expiration) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime expirationTime = now.plusMinutes(expiration);
 
-
         return Jwts.claims()
-                .setSubject(subject)
                 .setIssuedAt(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()))
                 .setExpiration(Date.from(expirationTime.atZone(ZoneId.systemDefault()).toInstant()))
         ;

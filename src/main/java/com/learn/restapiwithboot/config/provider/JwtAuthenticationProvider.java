@@ -1,6 +1,6 @@
 package com.learn.restapiwithboot.config.provider;
 
-import com.learn.restapiwithboot.account.domain.enums.AccountRole;
+import com.learn.restapiwithboot.config.provider.properties.JwtProperties;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -19,16 +18,20 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public JwtAuthenticationProvider(JwtTokenProvider jwtTokenProvider) {
+    private final JwtProperties properties;
+
+    public JwtAuthenticationProvider(JwtTokenProvider jwtTokenProvider,
+                                     JwtProperties properties) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.properties = properties;
     }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String jwtToken = ((JwtAuthenticationToken) authentication).getJwtToken();
-        Claims claims = jwtTokenProvider.getClaims(jwtToken);
+        Claims claims = jwtTokenProvider.getClaims(jwtToken, properties.getAccessSecretKey());
 
-        return new JwtAuthenticationToken(jwtToken, claims.get("email").toString(),  authorities(claims));
+        return new JwtAuthenticationToken(claims.get("email").toString(), jwtToken, authorities(claims));
     }
 
     private static Collection<? extends GrantedAuthority> authorities(Claims claims) {

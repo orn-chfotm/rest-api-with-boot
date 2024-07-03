@@ -1,5 +1,9 @@
 package com.learn.restapiwithboot.meeting.controller;
 
+import com.learn.restapiwithboot.account.domain.Account;
+import com.learn.restapiwithboot.account.repository.AccountRepository;
+import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
+import com.learn.restapiwithboot.config.provider.properties.JwtProperties;
 import com.learn.restapiwithboot.meeting.common.BaseTest;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
 import com.learn.restapiwithboot.meeting.domain.embed.Address;
@@ -18,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -29,14 +34,22 @@ class MeetingControllerTest extends BaseTest {
     @Autowired
     private MeetingRepository meetingRepository;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    private JwtProperties jwtProperties;
+
     @Test
     @DisplayName("전체 회의 목록을 조회한다. - 성공 시")
     void testGetAllMeeting() throws Exception {
         // Given
         Meeting meeting = createMeeting();
 
-        // When && Then
-        String token = this.getToken();
+        String token = getToken();
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Authorization", "Bearer " + token);
@@ -46,6 +59,22 @@ class MeetingControllerTest extends BaseTest {
                         .headers(httpHeaders))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    private String getToken() {
+        Long idByEmail = accountRepository.findIdByEmail("user@email.com").orElseThrow(
+                () -> new IllegalArgumentException("가입되지 않은 이메일입니다.")
+        );
+        Account account = accountRepository.findById(idByEmail)
+                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 이메일입니다."));
+
+        String accessToken = jwtTokenProvider.generateToken(
+                account,
+                this.jwtProperties.getAccessSecretKey(),
+                this.jwtProperties.getAccessExpTime()
+        );
+
+        return accessToken;
     }
 
     @Test
