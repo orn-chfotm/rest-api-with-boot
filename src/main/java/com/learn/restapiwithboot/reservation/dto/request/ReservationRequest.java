@@ -1,6 +1,5 @@
 package com.learn.restapiwithboot.reservation.dto.request;
 
-import com.learn.restapiwithboot.meeting.domain.Meeting;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +7,9 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class ReservationRequest {
     @NotNull(message = "email이 필요합니다.")
     private String email;

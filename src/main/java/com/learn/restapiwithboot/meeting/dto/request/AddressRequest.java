@@ -7,7 +7,9 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class AddressRequest {
     @NotNull(message = "도로명을 입력해주세요.")
     private String roadName;

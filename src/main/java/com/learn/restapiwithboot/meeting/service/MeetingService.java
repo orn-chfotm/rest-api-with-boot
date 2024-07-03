@@ -42,7 +42,6 @@ public class MeetingService {
     public MeetingResponse createMeeting(MeetingRequest meetingRequest) {
         Meeting meeting = meetingMapper.meetingReqeustToMeeting(meetingRequest);
 
-        meeting.isPayDues();
         Meeting saveMettring = meetingRepository.save(meeting);
 
         return meetingMapper.meetingToMeetingResponse(saveMettring);
@@ -54,7 +53,6 @@ public class MeetingService {
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 모임이 없습니다."));
 
         meetingMapper.updateMeetingFromRequest(meetingRequest, meeting);
-        meeting.isPayDues();
 
         return meetingMapper.meetingToMeetingResponse(meeting);
     }

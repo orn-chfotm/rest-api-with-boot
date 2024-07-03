@@ -2,6 +2,8 @@ package com.learn.restapiwithboot.core.handler;
 
 import com.learn.restapiwithboot.core.dto.response.FailResponse;
 import com.learn.restapiwithboot.core.enums.Exceptions;
+import com.learn.restapiwithboot.core.enums.NewExceptions;
+import com.learn.restapiwithboot.core.exceptions.BaseException;
 import com.learn.restapiwithboot.core.exceptions.TokenInvalidException;
 import com.learn.restapiwithboot.core.exceptions.ResourceNotFoundException;
 import io.jsonwebtoken.JwtException;
@@ -96,18 +98,21 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({ResourceNotFoundException.class})
     protected ResponseEntity<FailResponse> hadleResourceNotFoundException(ResourceNotFoundException exception) {
+        Exceptions resourceNotFound = Exceptions.RESOURCE_NOT_FOUND;
+
+        return getFailResponseResponseEntity(exception, resourceNotFound);
+    }
+
+    private ResponseEntity<FailResponse> getFailResponseResponseEntity(BaseException exception, Exceptions exceptions) {
         return ResponseEntity.badRequest().body(new FailResponse(
-                exception.getStatus(),
-                exception.getDetailMessage()
+                exception.getStatus() == null ? exceptions.getStatus() : exception.getStatus(),
+                exception.getMessage() == null ? exceptions.getMessage() : exception.getMessage()
         ));
     }
 
     @ExceptionHandler({TokenInvalidException.class})
-    protected ResponseEntity<FailResponse> hadleInvalidTokenException(TokenInvalidException exception) {
-        return ResponseEntity.badRequest().body(new FailResponse(
-                exception.getStatus(),
-                exception.getDetailMessage()
-        ));
+    protected ResponseEntity<FailResponse> handleInvalidTokenException(TokenInvalidException exception) {
+        return this.getFailResponseResponseEntity(exception, Exceptions.INVALID_JWT_TOKEN);
     }
 
 }

@@ -1,14 +1,13 @@
 package com.learn.restapiwithboot.config;
 
-import com.learn.restapiwithboot.config.handle.JwtAccessDeniedHandler;
-import com.learn.restapiwithboot.config.handle.JwtEntryPoint;
+import com.learn.restapiwithboot.config.handler.JwtAccessDeniedHandler;
+import com.learn.restapiwithboot.config.handler.JwtEntryPoint;
 import com.learn.restapiwithboot.config.provider.JwtAuthenticationProvider;
 import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
 import com.learn.restapiwithboot.config.filter.JwtAuthenticationFilter;
 import com.learn.restapiwithboot.config.filter.JwtExceptionFilter;
 import com.learn.restapiwithboot.config.provider.properties.JwtProperties;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

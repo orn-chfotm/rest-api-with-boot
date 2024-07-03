@@ -12,11 +12,13 @@ import org.hibernate.annotations.Comment;
 import javax.persistence.*;
 
 @NoArgsConstructor
-@Getter @EqualsAndHashCode(of = "id", callSuper = false)
+@Getter
+@EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
 public class Meeting extends BaseTimeEntity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long id;
 
     @Comment("제목")
@@ -33,11 +35,7 @@ public class Meeting extends BaseTimeEntity {
     
     @Comment("모임 회비")
     @Column
-    private Integer dues = 0;
-
-    @Comment("모임 회비 여부")
-    @Column
-    private Boolean isDues = false;
+    private int dues;
 
     @Comment("모임 타입")
     @Enumerated(EnumType.STRING)
@@ -48,19 +46,13 @@ public class Meeting extends BaseTimeEntity {
     private Place place;
 
     @Builder
-    public Meeting(Long id, String title, String content, String description, Integer dues, Boolean isDues, MeetingType meetingType, Place place) {
-        this.id = id;
+    public Meeting(String title, String content, String description, Integer dues, MeetingType meetingType, Place place) {
         this.title = title;
         this.content = content;
         this.description = description;
         this.dues = dues;
-        this.isDues = isDues;
         this.meetingType = meetingType;
         this.place = place;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setTitle(String title) {
@@ -86,15 +78,4 @@ public class Meeting extends BaseTimeEntity {
     public void setPlace(Place place) {
         this.place = place;
     }
-
-    public void isPayDues() {
-        if (this.dues == null) {
-            this.isDues = false;
-            this.dues = 0;
-        } else {
-            this.isDues = true;
-        }
-    }
-
-
 }

@@ -176,7 +176,6 @@ class ReservationControllerTest extends BaseTest {
                 .dues(10000)
                 .build();
 
-        meeting.isPayDues();
         return meetingRepository.save(meeting);
     }
 

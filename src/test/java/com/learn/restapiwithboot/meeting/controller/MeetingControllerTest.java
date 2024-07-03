@@ -220,7 +220,6 @@ class MeetingControllerTest extends BaseTest {
                 .meetingType(MeetingType.ONLINE)
                 .place(place)
                 .build();
-        meeting.isPayDues();
         return meetingRepository.save(meeting);
     }
 }

@@ -2,26 +2,17 @@ package com.learn.restapiwithboot.core.exceptions;
 
 import com.learn.restapiwithboot.core.enums.Exceptions;
 
-public class TokenExpiredException extends RuntimeException {
-    private final Exceptions EXCEPTION = Exceptions.INVALID_JWT_TOKEN;
+public class TokenExpiredException extends BaseException {
+
+    public TokenExpiredException(Integer status) {
+        super(status);
+    }
 
     public TokenExpiredException(String message) {
         super(message);
     }
 
-    public Exceptions getException() {
-        return EXCEPTION;
-    }
-
-    public Integer getStatus() {
-        return EXCEPTION.getStatus();
-    }
-
-    public String getMessage() {
-        return EXCEPTION.getMessage();
-    }
-
-    public String getDetailMessage() {
-        return super.getMessage();
+    public TokenExpiredException(String message, Integer status) {
+        super(message, status);
     }
 }

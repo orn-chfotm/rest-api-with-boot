@@ -1,4 +1,4 @@
-package com.learn.restapiwithboot.config.handle;
+package com.learn.restapiwithboot.config.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learn.restapiwithboot.core.dto.response.FailResponse;

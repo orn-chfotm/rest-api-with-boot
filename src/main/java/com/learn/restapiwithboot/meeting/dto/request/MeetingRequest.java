@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-@Getter @NoArgsConstructor
+@Getter
+@NoArgsConstructor
 public class MeetingRequest {
 
     @NotNull(message = "제목을 입력해주세요.")
