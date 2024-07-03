@@ -14,13 +14,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+
 @Slf4j
 @Component
 public class JwtEntryPoint implements AuthenticationEntryPoint {
 
     private final ObjectMapper objectMapper;
-
-    private final int STATUS_CODE = HttpServletResponse.SC_UNAUTHORIZED;
 
     public JwtEntryPoint(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -34,11 +34,11 @@ public class JwtEntryPoint implements AuthenticationEntryPoint {
     }
 
     private FailResponse setException(AuthenticationException authException) {
-        return new FailResponse(STATUS_CODE, authException.getMessage());
+        return new FailResponse(SC_UNAUTHORIZED, authException.getMessage());
     }
 
     private void setResponse(HttpServletResponse response) {
-        response.setStatus(STATUS_CODE);
+        response.setStatus(SC_UNAUTHORIZED);
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     }
