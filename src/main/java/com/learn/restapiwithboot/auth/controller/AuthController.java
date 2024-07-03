@@ -2,7 +2,7 @@ package com.learn.restapiwithboot.auth.controller;
 
 import com.learn.restapiwithboot.auth.dto.request.AuthRequest;
 import com.learn.restapiwithboot.auth.service.AuthService;
-import com.learn.restapiwithboot.common.dto.response.SuccessResponse;
+import com.learn.restapiwithboot.core.dto.response.SuccessResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,9 +23,9 @@ public class AuthController {
         return SuccessResponse.of(authService.getAuth(authRequest));
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<?> getLogout(@RequestBody @Valid AuthRequest authRequest) {
-        return SuccessResponse.of(null);
+    @PostMapping("/refresh")
+    public ResponseEntity<?> getLogout(@RequestParam("refreshToken") String refreshToken) {
+        return SuccessResponse.of(authService.getRefresh(refreshToken));
     }
 
 }
