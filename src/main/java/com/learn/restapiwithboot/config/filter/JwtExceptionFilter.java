@@ -1,6 +1,5 @@
 package com.learn.restapiwithboot.config.filter;
 
-import com.learn.restapiwithboot.core.exceptions.TokenExpiredException;
 import com.learn.restapiwithboot.core.exceptions.TokenInvalidException;
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.MediaType;

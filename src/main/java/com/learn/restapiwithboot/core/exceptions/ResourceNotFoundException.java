@@ -1,8 +1,12 @@
 package com.learn.restapiwithboot.core.exceptions;
 
-import com.learn.restapiwithboot.core.enums.Exceptions;
+import com.learn.restapiwithboot.core.enums.ErrorMessage;
 
 public class ResourceNotFoundException extends BaseException {
+
+    public ResourceNotFoundException(ErrorMessage errorType) {
+        super(errorType);
+    }
 
     public ResourceNotFoundException(Integer status) {
         super(status);
@@ -12,7 +16,7 @@ public class ResourceNotFoundException extends BaseException {
         super(message);
     }
 
-    public ResourceNotFoundException(String message, Integer status) {
-        super(message, status);
+    public ResourceNotFoundException(Integer status, String message) {
+        super(status, message);
     }
 }

@@ -1,8 +1,7 @@
 package com.learn.restapiwithboot.core.handler;
 
 import com.learn.restapiwithboot.core.dto.response.FailResponse;
-import com.learn.restapiwithboot.core.enums.Exceptions;
-import com.learn.restapiwithboot.core.enums.NewExceptions;
+import com.learn.restapiwithboot.core.enums.ErrorMessage;
 import com.learn.restapiwithboot.core.exceptions.BaseException;
 import com.learn.restapiwithboot.core.exceptions.TokenInvalidException;
 import com.learn.restapiwithboot.core.exceptions.ResourceNotFoundException;
@@ -29,7 +28,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({Exception.class})
     protected ResponseEntity<FailResponse> hadelException(Exception exception) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        Exceptions invalidJwtDecode = Exceptions.NOT_FOUND;
+        ErrorMessage invalidJwtDecode = ErrorMessage.NOT_FOUND;
         return ResponseEntity.status(status).body(new FailResponse(
                 invalidJwtDecode.getStatus(),
                 invalidJwtDecode.getMessage()
@@ -45,7 +44,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({RuntimeException.class})
     protected ResponseEntity<FailResponse> handelRuntimeException(RuntimeException exception) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        Exceptions notFound = Exceptions.NOT_FOUND;
+        ErrorMessage notFound = ErrorMessage.NOT_FOUND;
         return ResponseEntity.status(status).body(new FailResponse(
                 notFound.getStatus(),
                 notFound.getMessage()
@@ -62,7 +61,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({JwtException.class})
     protected ResponseEntity<FailResponse> hadelJwtException(JwtException exception) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        Exceptions invalidJwtDecode = Exceptions.INVALID_JWT_TOKEN;
+        ErrorMessage invalidJwtDecode = ErrorMessage.INVALID_JWT_TOKEN;
         return ResponseEntity.status(status).body(new FailResponse(
                 invalidJwtDecode.getStatus(),
                 invalidJwtDecode.getMessage()
@@ -77,7 +76,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({MethodArgumentNotValidException.class})
     protected ResponseEntity<FailResponse> hadleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
-        Exceptions invalidInputValue = Exceptions.INVALID_INPUT_VALUE;
+        ErrorMessage invalidInputValue = ErrorMessage.INVALID_INPUT_VALUE;
         Map<String, String> errMessageMap = new HashMap<>();
         for (FieldError fieldError : exception.getFieldErrors()) {
             errMessageMap.put(fieldError.getField(), fieldError.getDefaultMessage());
@@ -98,21 +97,24 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({ResourceNotFoundException.class})
     protected ResponseEntity<FailResponse> hadleResourceNotFoundException(ResourceNotFoundException exception) {
-        Exceptions resourceNotFound = Exceptions.RESOURCE_NOT_FOUND;
-
-        return getFailResponseResponseEntity(exception, resourceNotFound);
+        return getFailResponseResponseEntity(exception, ErrorMessage.RESOURCE_NOT_FOUND);
     }
 
-    private ResponseEntity<FailResponse> getFailResponseResponseEntity(BaseException exception, Exceptions exceptions) {
+    /**
+     * TokenInvalidException 예외 처리
+     * <p>
+     *     JWT 토큰이 유효하지 않을 때 발생하는 예외 처리
+     * </p>
+     */
+    @ExceptionHandler({TokenInvalidException.class})
+    protected ResponseEntity<FailResponse> handleInvalidTokenException(TokenInvalidException exception) {
+        return this.getFailResponseResponseEntity(exception, ErrorMessage.INVALID_JWT_TOKEN);
+    }
+
+    private ResponseEntity<FailResponse> getFailResponseResponseEntity(BaseException exception, ErrorMessage exceptions) {
         return ResponseEntity.badRequest().body(new FailResponse(
                 exception.getStatus() == null ? exceptions.getStatus() : exception.getStatus(),
                 exception.getMessage() == null ? exceptions.getMessage() : exception.getMessage()
         ));
     }
-
-    @ExceptionHandler({TokenInvalidException.class})
-    protected ResponseEntity<FailResponse> handleInvalidTokenException(TokenInvalidException exception) {
-        return this.getFailResponseResponseEntity(exception, Exceptions.INVALID_JWT_TOKEN);
-    }
-
 }

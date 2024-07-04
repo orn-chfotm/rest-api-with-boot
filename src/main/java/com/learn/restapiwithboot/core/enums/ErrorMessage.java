@@ -1,12 +1,8 @@
 package com.learn.restapiwithboot.core.enums;
 
-import lombok.Getter;
-
-public enum Exceptions {
+public enum ErrorMessage {
 
     INVALID_INPUT_VALUE(400, "Invalid Input Value"),
-    INVALID_TYPE_VALUE(400, "Invalid Type Value"),
-    INVALID_INPUT_FORMAT(400, "Invalid Input Format"),
     INVALID_JWT_TOKEN(401, "Invalid JWT Token"),
     INVALID_REFRESH_TOKEN(401, "Invalid Refresh Token"),
     INVALID_JWT_KEY(401, "Invalid JWT Key"),
@@ -17,11 +13,13 @@ public enum Exceptions {
     INTERNAL_SERVER_ERROR(500, "Server Error")
     ;
 
+    /* Default status */
     private final Integer status;
 
+    /* Default Message */
     private final String message;
 
-    Exceptions(Integer status, String message) {
+    ErrorMessage(Integer status, String message) {
         this.status = status;
         this.message = message;
     }

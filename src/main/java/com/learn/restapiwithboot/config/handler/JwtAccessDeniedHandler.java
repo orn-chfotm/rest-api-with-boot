@@ -3,6 +3,7 @@ package com.learn.restapiwithboot.config.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learn.restapiwithboot.core.dto.response.FailResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -14,13 +15,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+
 @Slf4j
 @Component
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 
     private final ObjectMapper objectMapper;
-
-    private final int STATUS_CODE = HttpServletResponse.SC_FORBIDDEN;
 
     public JwtAccessDeniedHandler(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -34,11 +35,11 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     }
 
     private FailResponse setException(AccessDeniedException authException) {
-        return new FailResponse(STATUS_CODE, authException.getMessage());
+        return new FailResponse(SC_UNAUTHORIZED, authException.getMessage());
     }
 
     private void setResponse(HttpServletResponse response) {
-        response.setStatus(STATUS_CODE);
+        response.setStatus(SC_UNAUTHORIZED);
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     }

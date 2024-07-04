@@ -6,6 +6,7 @@ import com.learn.restapiwithboot.config.provider.properties.JwtProperties;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ import java.time.ZoneId;
 import java.util.Map;
 import java.util.Set;
 
+@Slf4j
 @Component
 public class JwtTokenProvider {
 
@@ -29,23 +31,30 @@ public class JwtTokenProvider {
         this.jwtproperties = jwtProperties;
     }
 
-    public String generateToken(Account account, Key tokenKey, int expTime) {
+    public String generateAsseccToken(Account account) {
+        return Jwts.builder()
+                .setHeader(Map.of("type", "JWT", "alg", "HS256"))
+                .setClaims(getClaims(account, this.jwtproperties.getAccessExpTime()))
+                .signWith(this.jwtproperties.getAccessSecretKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+
+    public String generateRefreshToken(Account account) {
+        return Jwts.builder()
+                .setHeader(Map.of("type", "JWT", "alg", "HS256"))
+                .setClaims(getClaims(account, this.jwtproperties.getRefreshExpTime()))
+                .signWith(this.jwtproperties.getRefreshSecretKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    private Claims getClaims(Account account, int expTime) {
         Claims claims = setClaims(expTime);
-        if(tokenKey.equals(this.jwtproperties.getAccessSecretKey())) {
-            claims.setSubject("accessToken");
-        }
-        if(tokenKey.equals(this.jwtproperties.getRefreshSecretKey())) {
-            claims.setSubject("refreshToken");
-        }
+
         Set<AccountRole> roles = account.getRoles();
         claims.put("email", account.getEmail());
         claims.put("role", roles);
-
-        return Jwts.builder()
-                .setHeader(Map.of("type", "JWT", "alg", "HS256"))
-                .setClaims(claims)
-                .signWith(tokenKey, SignatureAlgorithm.HS256)
-                .compact();
+        return claims;
     }
 
     /* Token Validation */
@@ -57,7 +66,14 @@ public class JwtTokenProvider {
                     .parseClaimsJws(token)
                     .getBody();
             return true;
+        } catch (ExpiredJwtException e) {
+            log.warn("ExpiredJwtException :: {}", e.getMessage());
+            return false;
+        } catch (InvalidClaimException e) {
+            log.warn("InvalidClaimException :: {}", e.getMessage());
+            return false;
         } catch (JwtException e) {
+            log.warn("Token Exception :: {}", e.getMessage());
             return false;
         }
     }

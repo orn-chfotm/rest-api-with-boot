@@ -14,8 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -40,16 +38,8 @@ public class AuthService {
 
         return AuthResponse.builder()
                 .email(account.getEmail())
-                .accessToken(this.jwtTokenProvider.generateToken(
-                        account,
-                        this.jwtProperties.getAccessSecretKey(),
-                        this.jwtProperties.getAccessExpTime())
-                )
-                .refreshToken(this.jwtTokenProvider.generateToken(
-                        account,
-                        this.jwtProperties.getRefreshSecretKey(),
-                        this.jwtProperties.getRefreshExpTime())
-                )
+                .accessToken(this.jwtTokenProvider.generateAsseccToken(account))
+                .refreshToken(this.jwtTokenProvider.generateRefreshToken(account))
                 .build();
     }
 
@@ -67,16 +57,8 @@ public class AuthService {
 
         return AuthResponse.builder()
                 .email(account.getEmail())
-                .accessToken(this.jwtTokenProvider.generateToken(
-                        account,
-                        this.jwtProperties.getAccessSecretKey(),
-                        this.jwtProperties.getAccessExpTime())
-                )
-                .refreshToken(this.jwtTokenProvider.generateToken(
-                        account,
-                        this.jwtProperties.getRefreshSecretKey(),
-                        this.jwtProperties.getRefreshExpTime())
-                )
+                .accessToken(this.jwtTokenProvider.generateAsseccToken(account))
+                .refreshToken(this.jwtTokenProvider.generateRefreshToken(account))
                 .build();
     }
 }

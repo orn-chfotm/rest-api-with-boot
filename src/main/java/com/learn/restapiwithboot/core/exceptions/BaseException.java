@@ -1,5 +1,6 @@
 package com.learn.restapiwithboot.core.exceptions;
 
+import com.learn.restapiwithboot.core.enums.ErrorMessage;
 import lombok.Getter;
 
 @Getter
@@ -7,6 +8,13 @@ public class BaseException extends RuntimeException {
 
     private Integer status;
 
+    /* Default Exception */
+    public BaseException(ErrorMessage errorType) {
+        super(errorType.getMessage());
+        this.status = errorType.getStatus();
+    }
+
+    /* Custom Exception */
     public BaseException(Integer status) {
         this.status = status;
     }
@@ -15,7 +23,7 @@ public class BaseException extends RuntimeException {
         super(message);
     }
 
-    public BaseException(String message, Integer status) {
+    public BaseException(Integer status, String message) {
         super(message);
         this.status = status;
     }

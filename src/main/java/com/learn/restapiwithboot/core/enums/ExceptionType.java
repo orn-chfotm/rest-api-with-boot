@@ -5,9 +5,9 @@ import com.learn.restapiwithboot.core.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public enum NewExceptions {
-    RESOURCE_NOT_FOUND(new ResourceNotFoundException("Resource Not Found", 404)),
-    NEWRESOURCE_NOT_FOUND(new ResourceNotFoundException("Resource Not Found", 404)),
+public enum ExceptionType {
+    RESOURCE_NOT_FOUND(new ResourceNotFoundException(ErrorMessage.RESOURCE_NOT_FOUND)),
+    TokenInvalidException(new ResourceNotFoundException(ErrorMessage.INVALID_JWT_TOKEN)),
     ;
 
     private final BaseException exception;
