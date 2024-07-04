@@ -7,29 +7,34 @@ import com.learn.restapiwithboot.config.provider.properties.JwtProperties;
 import com.learn.restapiwithboot.meeting.common.BaseTest;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
 import com.learn.restapiwithboot.meeting.domain.embed.Address;
+import com.learn.restapiwithboot.meeting.domain.embed.Place;
 import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
 import com.learn.restapiwithboot.meeting.domain.enums.PlaceType;
-import com.learn.restapiwithboot.meeting.domain.embed.Place;
 import com.learn.restapiwithboot.meeting.dto.request.AddressRequest;
 import com.learn.restapiwithboot.meeting.dto.request.MeetingRequest;
 import com.learn.restapiwithboot.meeting.dto.request.PlaceRequest;
 import com.learn.restapiwithboot.meeting.repsitory.MeetingRepository;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class MeetingControllerTest extends BaseTest {
+
+    @Autowired
+    private WebApplicationContext webApplicationContext;
 
     @Autowired
     private MeetingRepository meetingRepository;
@@ -43,6 +48,16 @@ class MeetingControllerTest extends BaseTest {
     @Autowired
     private JwtProperties jwtProperties;
 
+    private HttpHeaders httpHeaders;
+
+    @BeforeAll
+    void beforeAll() {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        String token = getToken();
+        this.httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", "Bearer " + token);
+    }
+
     @Test
     @DisplayName("전체 회의 목록을 조회한다. - 성공 시")
     void testGetAllMeeting() throws Exception {
@@ -50,9 +65,6 @@ class MeetingControllerTest extends BaseTest {
         Meeting meeting = createMeeting();
 
         String token = getToken();
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Authorization", "Bearer " + token);
 
         mockMvc.perform(get("/api/meeting")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -68,11 +80,7 @@ class MeetingControllerTest extends BaseTest {
         Account account = accountRepository.findById(idByEmail)
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 이메일입니다."));
 
-        String accessToken = jwtTokenProvider.generateToken(
-                account,
-                this.jwtProperties.getAccessSecretKey(),
-                this.jwtProperties.getAccessExpTime()
-        );
+        String accessToken = jwtTokenProvider.generateAsseccToken(account);
 
         return accessToken;
     }
@@ -106,9 +114,14 @@ class MeetingControllerTest extends BaseTest {
     void testCreateMeeting() throws Exception {
         // Given
         MeetingRequest meeting = createSusseccReqeustMeeting();
+
+        System.out.println(this.objectMapper.writeValueAsString(meeting));
+
         // When && Then
         mockMvc.perform(post("/api/meeting")
+                .headers(httpHeaders)
                 .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
                 .content(this.objectMapper.writeValueAsString(meeting))
         )
             .andDo(print())

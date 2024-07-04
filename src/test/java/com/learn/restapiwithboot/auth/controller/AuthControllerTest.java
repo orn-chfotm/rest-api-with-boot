@@ -75,11 +75,7 @@ class AuthControllerTest extends BaseTest {
         // given
         Account account = accountRepository.findByEmail("user@email.com").get();
 
-        String refreshToken = this.jwtTokenProvider.generateToken(
-                account,
-                this.jwtProperties.getRefreshSecretKey(),
-                this.jwtProperties.getRefreshExpTime()
-        );
+        String refreshToken = this.jwtTokenProvider.generateRefreshToken(account);
 
         // when && then
         ResultActions resultActions = mockMvc.perform(post("/api/auth/refresh")
@@ -99,11 +95,7 @@ class AuthControllerTest extends BaseTest {
         // given
         Account account = accountRepository.findByEmail("user@email.com").get();
 
-        String refreshToken = this.jwtTokenProvider.generateToken(
-                account,
-                this.jwtProperties.getRefreshSecretKey(),
-                this.jwtProperties.getRefreshExpTime()
-        );
+        String refreshToken = this.jwtTokenProvider.generateRefreshToken(account);
 
         // when && then
         ResultActions resultActions = mockMvc.perform(post("/api/auth/refresh")
