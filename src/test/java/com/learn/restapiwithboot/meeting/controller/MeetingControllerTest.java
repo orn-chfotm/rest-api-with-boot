@@ -45,16 +45,15 @@ class MeetingControllerTest extends BaseTest {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
-    private JwtProperties jwtProperties;
-
     private HttpHeaders httpHeaders;
 
     @BeforeAll
+    @DisplayName("모든 테스트 실행 전에 한 번 실행된다. - header 설정")
     void beforeAll() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         String token = getToken();
         this.httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         httpHeaders.add("Authorization", "Bearer " + token);
     }
 
@@ -93,7 +92,9 @@ class MeetingControllerTest extends BaseTest {
         Long id = meeting.getId();
 
         // When && Then
-        mockMvc.perform(get("/api/meeting/{id}", id))
+        mockMvc.perform(get("/api/meeting/{id}", id)
+                        .headers(httpHeaders)
+                        .characterEncoding("utf-8"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -104,7 +105,9 @@ class MeetingControllerTest extends BaseTest {
         // Given
         Long id = 3L;
         // When && Then
-        mockMvc.perform(get("/api/meeting/{id}", id))
+        mockMvc.perform(get("/api/meeting/{id}", id)
+                        .headers(httpHeaders)
+                        .characterEncoding("utf-8"))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
@@ -120,8 +123,7 @@ class MeetingControllerTest extends BaseTest {
         // When && Then
         mockMvc.perform(post("/api/meeting")
                 .headers(httpHeaders)
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
+                .characterEncoding("utf-8")
                 .content(this.objectMapper.writeValueAsString(meeting))
         )
             .andDo(print())
@@ -137,7 +139,8 @@ class MeetingControllerTest extends BaseTest {
 
         // When && Then
         mockMvc.perform(post("/api/meeting")
-                        .contentType(MediaType.APPLICATION_JSON)
+                        .headers(httpHeaders)
+                        .characterEncoding("utf-8")
                         .content(this.objectMapper.writeValueAsString(meeting))
                 )
                 .andDo(print())
@@ -168,11 +171,14 @@ class MeetingControllerTest extends BaseTest {
                 .meetingType("OFFLINE")
                 .place(place)
                 .dues(0)
+                .meetingDate(LocalDateTime.now().plusDays(1))
+                .maxMember(12)
                 .build();
 
         // When && Then
         mockMvc.perform(put("/api/meeting/{id}", meeting.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
+                        .headers(httpHeaders)
+                        .characterEncoding("utf-8")
                         .content(this.objectMapper.writeValueAsString(meetingRequest))
                 )
                 .andDo(print())
@@ -197,7 +203,9 @@ class MeetingControllerTest extends BaseTest {
                 .description("회의 설명")
                 .meetingType("ONLINE")
                 .place(place)
-                .dues(0)
+                .dues(100)
+                .maxMember(10)
+                .meetingDate(LocalDateTime.now().plusDays(1))
                 .build();
     }
 

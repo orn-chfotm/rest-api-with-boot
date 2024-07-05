@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
@@ -37,6 +39,17 @@ public class Meeting extends BaseTimeEntity {
     @Column
     private int dues;
 
+    @Comment("최대 인원")
+    @Column
+    private int maxMember;
+
+    @Comment("예약된 인원")
+    @Column
+    private int reservedMember;
+
+    @Comment("모임 날짜")
+    private LocalDateTime meetingDate;
+
     @Comment("모임 타입")
     @Enumerated(EnumType.STRING)
     private MeetingType meetingType;
@@ -46,36 +59,15 @@ public class Meeting extends BaseTimeEntity {
     private Place place;
 
     @Builder
-    public Meeting(String title, String content, String description, Integer dues, MeetingType meetingType, Place place) {
+    public Meeting(String title, String content, String description, int dues, int maxMember, int reservedMember, LocalDateTime meetingDate, MeetingType meetingType, Place place) {
         this.title = title;
         this.content = content;
         this.description = description;
         this.dues = dues;
+        this.maxMember = maxMember;
+        this.reservedMember = reservedMember;
+        this.meetingDate = meetingDate;
         this.meetingType = meetingType;
-        this.place = place;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setDues(Integer dues) {
-        this.dues = dues;
-    }
-
-    public void setMeetingType(MeetingType meetingType) {
-        this.meetingType = meetingType;
-    }
-
-    public void setPlace(Place place) {
         this.place = place;
     }
 }

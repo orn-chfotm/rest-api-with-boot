@@ -7,7 +7,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
 @NoArgsConstructor
 public class MeetingResponse {
 
@@ -27,8 +31,22 @@ public class MeetingResponse {
 
     private Boolean isDues;
 
+    private Integer maxMember;
+
+    private Integer reservedMember;
+
+    private LocalDateTime meetingDate;
+
+
     @Builder
-    public MeetingResponse(Long id ) {
+    public MeetingResponse(Long id, String title, String content, String description, MeetingType meetingType, Place place, Integer dues, Boolean isDues) {
         this.id = id;
+        this.title = title;
+        this.content = content;
+        this.description = description;
+        this.meetingType = meetingType;
+        this.place = place;
+        this.dues = dues;
+        this.isDues = isDues;
     }
 }
