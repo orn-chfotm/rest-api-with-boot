@@ -7,6 +7,7 @@ public enum ErrorMessage {
     INVALID_REFRESH_TOKEN(401, "Invalid Refresh Token"),
     INVALID_JWT_KEY(401, "Invalid JWT Key"),
     EXPIRED_TOKEN(401, "Expired Token"),
+    BAD_CREDENTIALS(401, "BadCredentials::Authentication Failed"),
     NOT_FOUND(404, "Not Found"),
     RESOURCE_NOT_FOUND(404, "Resource Not Found"),
     METHOD_NOT_ALLOWED(405, "Method Not Allowed"),

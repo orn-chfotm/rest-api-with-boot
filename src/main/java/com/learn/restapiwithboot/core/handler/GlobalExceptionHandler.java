@@ -2,6 +2,7 @@ package com.learn.restapiwithboot.core.handler;
 
 import com.learn.restapiwithboot.core.dto.response.FailResponse;
 import com.learn.restapiwithboot.core.enums.ErrorMessage;
+import com.learn.restapiwithboot.core.exceptions.BadCredentialsException;
 import com.learn.restapiwithboot.core.exceptions.BaseException;
 import com.learn.restapiwithboot.core.exceptions.TokenInvalidException;
 import com.learn.restapiwithboot.core.exceptions.ResourceNotFoundException;
@@ -109,6 +110,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({TokenInvalidException.class})
     protected ResponseEntity<FailResponse> handleInvalidTokenException(TokenInvalidException exception) {
         return this.getFailResponseResponseEntity(exception, ErrorMessage.INVALID_JWT_TOKEN);
+    }
+
+    @ExceptionHandler({BadCredentialsException.class})
+    protected ResponseEntity<FailResponse> handleBadCredentialsException(BadCredentialsException exception) {
+        return this.getFailResponseResponseEntity(exception, ErrorMessage.BAD_CREDENTIALS);
     }
 
     private ResponseEntity<FailResponse> getFailResponseResponseEntity(BaseException exception, ErrorMessage exceptions) {

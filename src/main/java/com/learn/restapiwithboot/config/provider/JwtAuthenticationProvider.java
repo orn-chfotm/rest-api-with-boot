@@ -2,6 +2,7 @@ package com.learn.restapiwithboot.config.provider;
 
 import com.learn.restapiwithboot.config.provider.properties.JwtProperties;
 import io.jsonwebtoken.Claims;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -13,18 +14,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Component
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     private final JwtTokenProvider jwtTokenProvider;
 
     private final JwtProperties properties;
-
-    public JwtAuthenticationProvider(JwtTokenProvider jwtTokenProvider,
-                                     JwtProperties properties) {
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.properties = properties;
-    }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {

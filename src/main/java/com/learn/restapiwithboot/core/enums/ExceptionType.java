@@ -1,16 +1,18 @@
 package com.learn.restapiwithboot.core.enums;
 
+import com.learn.restapiwithboot.core.exceptions.BadCredentialsException;
 import com.learn.restapiwithboot.core.exceptions.BaseException;
 import com.learn.restapiwithboot.core.exceptions.ResourceNotFoundException;
+import com.learn.restapiwithboot.core.exceptions.TokenInvalidException;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum ExceptionType {
     RESOURCE_NOT_FOUND(new ResourceNotFoundException(ErrorMessage.RESOURCE_NOT_FOUND)),
-    TokenInvalidException(new ResourceNotFoundException(ErrorMessage.INVALID_JWT_TOKEN)),
+    TOKENINVALID_EXCEPTION(new TokenInvalidException(ErrorMessage.INVALID_JWT_TOKEN)),
+    BADCREDENTIALSEXCETPION(new BadCredentialsException(ErrorMessage.BAD_CREDENTIALS)),
     ;
 
     private final BaseException exception;
-
 
 }

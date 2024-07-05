@@ -35,6 +35,24 @@ class AuthControllerTest extends BaseTest {
 
     @Test
     @DisplayName("Token 발급 테스트 - 성공")
+    void getLogin() throws Exception {
+        // given
+        AuthRequest reqeust = AuthRequest.builder()
+                .email("user@email.com")
+                .password("1234")
+                .build();
+
+        // when && then
+        mockMvc.perform(post("/api/login")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(reqeust))
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Token 발급 테스트 - 성공")
     void getAuth() throws Exception {
         // given
         AuthRequest reqeust = AuthRequest.builder()
