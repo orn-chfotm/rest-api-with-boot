@@ -7,7 +7,6 @@ import com.learn.restapiwithboot.config.handler.CustomAuthenticationFailureHandl
 import com.learn.restapiwithboot.config.handler.CustomAuthenticationSuccessHandler;
 import com.learn.restapiwithboot.config.handler.JwtAccessDeniedHandler;
 import com.learn.restapiwithboot.config.handler.JwtEntryPoint;
-import com.learn.restapiwithboot.config.provider.CustomAuthenticationProvider;
 import com.learn.restapiwithboot.config.provider.JwtAuthenticationProvider;
 import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
 import com.learn.restapiwithboot.config.provider.properties.JwtProperties;
