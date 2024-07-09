@@ -56,6 +56,7 @@ class MeetingControllerTest extends BaseTest {
         String token = getToken();
 
         mockMvc.perform(get("/api/meeting")
+                        .characterEncoding("utf-8")
                         .contentType(MediaType.APPLICATION_JSON)
                         .headers(getHeader(token))
                 )

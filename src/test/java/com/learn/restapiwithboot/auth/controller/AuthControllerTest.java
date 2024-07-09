@@ -63,6 +63,7 @@ class AuthControllerTest extends BaseTest {
         // when && then
         mockMvc.perform(post("/api/login")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .characterEncoding("UTF-8")
                         .content(objectMapper.writeValueAsString(reqeust))
                 )
                 .andDo(print())
