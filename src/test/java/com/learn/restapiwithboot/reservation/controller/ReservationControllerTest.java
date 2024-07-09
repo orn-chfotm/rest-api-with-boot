@@ -3,7 +3,9 @@ package com.learn.restapiwithboot.reservation.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learn.restapiwithboot.account.domain.Account;
+import com.learn.restapiwithboot.account.dto.request.AccountRequest;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
+import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
 import com.learn.restapiwithboot.meeting.common.BaseTest;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
 import com.learn.restapiwithboot.meeting.domain.embed.Address;
@@ -14,12 +16,14 @@ import com.learn.restapiwithboot.meeting.repsitory.MeetingRepository;
 import com.learn.restapiwithboot.reservation.domain.Reservation;
 import com.learn.restapiwithboot.reservation.dto.request.ReservationRequest;
 import com.learn.restapiwithboot.reservation.repository.ReservationRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Optional;
 
@@ -29,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ReservationControllerTest extends BaseTest {
 
     @Autowired
@@ -40,11 +45,31 @@ class ReservationControllerTest extends BaseTest {
     @Autowired
     ReservationRepository reservationRepository;
 
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    private HttpHeaders httpHeaders;
+
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
     @BeforeEach
     void setUp() {
         reservationRepository.deleteAll();
         accountRepository.deleteAll();
         reservationRepository.deleteAll();
+    }
+
+    private void getHeader(Account account) {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        String token = getToken(account);
+        this.httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        httpHeaders.add("Authorization", "Bearer " + token);
+    }
+
+    private String getToken(Account account) {
+        return jwtTokenProvider.generateAsseccToken(account);
     }
 
     @Test
@@ -54,6 +79,8 @@ class ReservationControllerTest extends BaseTest {
         Account account = createAccount();
         Meeting meeting = createMeeting();
 
+        getHeader(account);
+
         reservationRepository.save(Reservation.builder()
                 .accountId(account.getId())
                 .meetingId(meeting.getId())
@@ -61,7 +88,12 @@ class ReservationControllerTest extends BaseTest {
         );
 
         mockMvc.perform(get("/api/reservation")
-                        .param("email", account.getEmail()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .headers(httpHeaders)
+                        .param("page", "1")
+                        .param("size", "10")
+                        .param("sort", "name,DESC")
+                )
                 .andDo(print())
                 .andExpect(status().isOk());
     }

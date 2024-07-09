@@ -1,6 +1,8 @@
 package com.learn.restapiwithboot.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.learn.restapiwithboot.config.authentication.CustomUserDetailService;
+import com.learn.restapiwithboot.config.filter.CustomAuthenticationFilter;
 import com.learn.restapiwithboot.config.filter.JwtAuthenticationFilter;
 import com.learn.restapiwithboot.config.filter.JwtExceptionFilter;
 import com.learn.restapiwithboot.config.handler.CustomAuthenticationFailureHandler;
@@ -11,10 +13,14 @@ import com.learn.restapiwithboot.config.provider.JwtAuthenticationProvider;
 import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
 import com.learn.restapiwithboot.config.properties.JwtProperties;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,10 +33,13 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-@EnableWebSecurity
+import java.util.Collections;
+
 @RequiredArgsConstructor
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig{
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -47,9 +56,11 @@ public class SecurityConfig{
 
     private final ObjectMapper objectMapper;
 
+    private final CustomUserDetailService customUserDetailService;
+
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-        return new JwtAuthenticationFilter(this.jwtTokenProvider, authenticationManager(), this.jwtProperties);
+        return new JwtAuthenticationFilter(this.jwtTokenProvider, authenticationManager(null), this.jwtProperties);
     }
 
     @Bean
@@ -58,8 +69,11 @@ public class SecurityConfig{
     }
 
     @Bean
-    public AuthenticationManager authenticationManager() throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .authenticationProvider(daoAuthenticationProvider(customUserDetailService))
+                .authenticationProvider(jwtAuthenticationProvider)
+                .build();
     }
 
     @Bean
@@ -69,7 +83,8 @@ public class SecurityConfig{
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers("/h2-console/**");
+        return (web) -> web.ignoring().mvcMatchers("/docs/index.html")
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
     @Bean
@@ -88,6 +103,20 @@ public class SecurityConfig{
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
+    }
+
+    @Bean
+    public FilterRegistrationBean<CustomAuthenticationFilter> customAuthenticationFilter() throws Exception {
+        CustomAuthenticationFilter filter = new CustomAuthenticationFilter(objectMapper);
+        filter.setAuthenticationSuccessHandler(authenticationSuccessHandler());
+        filter.setAuthenticationFailureHandler(authenticationFailureHandler());
+        filter.setAuthenticationManager(authenticationManager(null));
+        filter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/api/login", "POST"));
+
+        FilterRegistrationBean<CustomAuthenticationFilter> registrationBean = new FilterRegistrationBean<>(filter);
+        registrationBean.setOrder(Integer.MIN_VALUE); // 최우선 순위로 설정
+        registrationBean.addUrlPatterns("/api/login");
+        return registrationBean;
     }
 
     @Bean

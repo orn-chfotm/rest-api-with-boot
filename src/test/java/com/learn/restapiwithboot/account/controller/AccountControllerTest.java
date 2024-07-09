@@ -1,23 +1,22 @@
 package com.learn.restapiwithboot.account.controller;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.TreeNode;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.learn.restapiwithboot.account.domain.Account;
-import com.learn.restapiwithboot.auth.dto.request.AuthRequest;
+import com.learn.restapiwithboot.account.domain.enums.AccountRole;
+import com.learn.restapiwithboot.account.dto.request.AccountRequest;
 import com.learn.restapiwithboot.meeting.common.BaseTest;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.web.servlet.ResultActions;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Set;
+
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -28,10 +27,11 @@ class AccountControllerTest extends BaseTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private Account createAccount() {
-        return Account.builder()
+    private AccountRequest createAccount() {
+        return AccountRequest.builder()
                 .email("userTest@email.com")
                 .password("1234")
+                .roles(Set.of(AccountRole.USER))
                 .build();
     }
 
@@ -39,23 +39,37 @@ class AccountControllerTest extends BaseTest {
     @DisplayName("회원가입 테스트")
     void putAccount() throws Exception {
         // Given
-        Account account = createAccount();
+        AccountRequest request = createAccount();
 
         // When & Then
         mockMvc.perform(post("/api/account")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(account))
+                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("data.email", is(account.getEmail())))
-                .andExpect(result -> {
-                    String contentAsString = result.getResponse().getContentAsString();
-                    JsonNode jsonNode = objectMapper.readTree(contentAsString).path("data");
-                    assertTrue(
-                            passwordEncoder.matches(account.getPassword(), jsonNode.get("password").asText())
-                    );
-                })
+                .andExpect(jsonPath("data.email", is(request.getEmail())))
+                .andExpect(jsonPath("data.roles", hasSize(1)))
+                .andExpect(jsonPath("data.roles", contains("USER")))
+                .andDo(document("create-account",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content-Type")
+                        ),
+                        requestFields(
+                                fieldWithPath("email").description("이메일"),
+                                fieldWithPath("password").description("비밀번호"),
+                                fieldWithPath("roles").description("권한")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content-Type")
+                        ),
+                        relaxedResponseFields(
+                                fieldWithPath("statusCode").description("상태코드"),
+                                fieldWithPath("message").description("상태 메시지"),
+                                fieldWithPath("data.email").description("이메일"),
+                                fieldWithPath("data.roles").description("권한")
+                        )
+                ))
         ;
     }
 

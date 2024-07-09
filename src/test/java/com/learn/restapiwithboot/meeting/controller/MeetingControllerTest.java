@@ -29,11 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class MeetingControllerTest extends BaseTest {
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
 
     @Autowired
     private MeetingRepository meetingRepository;
@@ -44,16 +40,11 @@ class MeetingControllerTest extends BaseTest {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    private HttpHeaders httpHeaders;
-
-    @BeforeAll
-    @DisplayName("모든 테스트 실행 전에 한 번 실행된다. - header 설정")
-    void beforeAll() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        String token = getToken();
-        this.httpHeaders = new HttpHeaders();
+    private HttpHeaders getHeader(String token) {
+        HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         httpHeaders.add("Authorization", "Bearer " + token);
+        return httpHeaders;
     }
 
     @Test
@@ -66,7 +57,8 @@ class MeetingControllerTest extends BaseTest {
 
         mockMvc.perform(get("/api/meeting")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .headers(httpHeaders))
+                        .headers(getHeader(token))
+                )
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -78,9 +70,7 @@ class MeetingControllerTest extends BaseTest {
         Account account = accountRepository.findById(idByEmail)
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 이메일입니다."));
 
-        String accessToken = jwtTokenProvider.generateAsseccToken(account);
-
-        return accessToken;
+        return jwtTokenProvider.generateAsseccToken(account);
     }
 
     @Test
@@ -92,7 +82,6 @@ class MeetingControllerTest extends BaseTest {
 
         // When && Then
         mockMvc.perform(get("/api/meeting/{id}", id)
-                        .headers(httpHeaders)
                         .characterEncoding("utf-8"))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -105,7 +94,6 @@ class MeetingControllerTest extends BaseTest {
         Long id = 3L;
         // When && Then
         mockMvc.perform(get("/api/meeting/{id}", id)
-                        .headers(httpHeaders)
                         .characterEncoding("utf-8"))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
@@ -121,7 +109,6 @@ class MeetingControllerTest extends BaseTest {
 
         // When && Then
         mockMvc.perform(post("/api/meeting")
-                .headers(httpHeaders)
                 .characterEncoding("utf-8")
                 .content(this.objectMapper.writeValueAsString(meeting))
         )
@@ -138,7 +125,6 @@ class MeetingControllerTest extends BaseTest {
 
         // When && Then
         mockMvc.perform(post("/api/meeting")
-                        .headers(httpHeaders)
                         .characterEncoding("utf-8")
                         .content(this.objectMapper.writeValueAsString(meeting))
                 )
@@ -176,7 +162,6 @@ class MeetingControllerTest extends BaseTest {
 
         // When && Then
         mockMvc.perform(put("/api/meeting/{id}", meeting.getId())
-                        .headers(httpHeaders)
                         .characterEncoding("utf-8")
                         .content(this.objectMapper.writeValueAsString(meetingRequest))
                 )

@@ -10,10 +10,14 @@ import com.learn.restapiwithboot.meeting.common.BaseTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -60,11 +64,27 @@ class AuthControllerTest extends BaseTest {
         mockMvc.perform(post("/api/login")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(reqeust))
-                        .param("email", "user@email.com")
-                        .param("password", "1234")
                 )
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(document("access-token",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content-Type")
+                        ),
+                        requestFields(
+                                fieldWithPath("email").description("로그인 이메일"),
+                                fieldWithPath("password").description("로그인 비밀번호")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content-Type")
+                        ),
+                        responseFields(
+                                fieldWithPath("email").description("Access eamil"),
+                                fieldWithPath("accessToken").description("Access Token"),
+                                fieldWithPath("refreshToken").description("Refresh Token")
+                        )
+                    )
+                );
     }
 
     @Test

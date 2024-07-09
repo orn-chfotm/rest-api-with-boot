@@ -8,13 +8,12 @@ import lombok.Setter;
 
 import java.util.Set;
 
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 public class AccountResponse {
 
     private String email;
 
-    private String password;
-
-    private Set<AccountRole> role;
+    private Set<AccountRole> roles;
 }
