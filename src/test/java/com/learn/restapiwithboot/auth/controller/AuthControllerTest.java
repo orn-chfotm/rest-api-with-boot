@@ -5,19 +5,15 @@ import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.auth.dto.request.AuthRequest;
 import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
-import com.learn.restapiwithboot.config.provider.properties.JwtProperties;
+import com.learn.restapiwithboot.config.properties.JwtProperties;
 import com.learn.restapiwithboot.meeting.common.BaseTest;
-import org.assertj.core.api.Fail;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

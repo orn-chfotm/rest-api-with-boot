@@ -3,17 +3,13 @@ package com.learn.restapiwithboot.common.util;
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
-import com.learn.restapiwithboot.config.provider.properties.JwtProperties;
+import com.learn.restapiwithboot.config.properties.JwtProperties;
 import com.learn.restapiwithboot.meeting.common.BaseTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-
-import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertWith;
 
 class JwtTokenProviderTest extends BaseTest {
 

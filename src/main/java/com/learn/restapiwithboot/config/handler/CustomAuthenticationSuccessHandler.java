@@ -2,13 +2,11 @@ package com.learn.restapiwithboot.config.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learn.restapiwithboot.account.domain.Account;
-import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.auth.dto.response.AuthResponse;
-import com.learn.restapiwithboot.config.provider.CustomUser;
+import com.learn.restapiwithboot.config.authentication.CustomUser;
 import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;

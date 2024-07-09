@@ -1,6 +1,7 @@
 package com.learn.restapiwithboot.config.provider;
 
-import com.learn.restapiwithboot.config.provider.properties.JwtProperties;
+import com.learn.restapiwithboot.config.authentication.JwtAuthenticationToken;
+import com.learn.restapiwithboot.config.properties.JwtProperties;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;

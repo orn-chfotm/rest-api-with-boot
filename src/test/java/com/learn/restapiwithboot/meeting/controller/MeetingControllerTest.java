@@ -3,7 +3,6 @@ package com.learn.restapiwithboot.meeting.controller;
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
-import com.learn.restapiwithboot.config.provider.properties.JwtProperties;
 import com.learn.restapiwithboot.meeting.common.BaseTest;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
 import com.learn.restapiwithboot.meeting.domain.embed.Address;

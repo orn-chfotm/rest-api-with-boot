@@ -1,4 +1,4 @@
-package com.learn.restapiwithboot.config.provider.properties;
+package com.learn.restapiwithboot.config.properties;
 
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

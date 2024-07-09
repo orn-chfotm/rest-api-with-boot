@@ -5,7 +5,7 @@ import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.auth.dto.response.AuthResponse;
 import com.learn.restapiwithboot.auth.dto.request.AuthRequest;
 import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
-import com.learn.restapiwithboot.config.provider.properties.JwtProperties;
+import com.learn.restapiwithboot.config.properties.JwtProperties;
 import com.learn.restapiwithboot.core.exceptions.ResourceNotFoundException;
 import com.learn.restapiwithboot.core.exceptions.TokenInvalidException;
 import io.jsonwebtoken.Claims;
