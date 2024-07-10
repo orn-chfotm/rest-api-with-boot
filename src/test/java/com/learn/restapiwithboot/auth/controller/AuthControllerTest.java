@@ -15,11 +15,16 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class AuthControllerTest extends BaseTest {
@@ -120,10 +125,25 @@ class AuthControllerTest extends BaseTest {
                         .param("refreshToken", refreshToken)
                 )
                 .andDo(print())
-                .andExpect(status().isOk());
-        JsonNode jsonNode = objectMapper.readTree(resultActions.andReturn().getResponse().getContentAsString());
-        System.out.println(jsonNode.toString());
-        assertThat(jsonNode.get("data").get("accessToken").toString()).isNotEmpty();
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("data.email", is(account.getEmail())))
+                .andExpect(jsonPath("data.accessToken", is(notNullValue())))
+                .andExpect(jsonPath("data.refreshToken", is(notNullValue())))
+                .andDo(document("token-refresh",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content-Type")
+                        ),
+                        requestParameters(
+                                parameterWithName("refreshToken").description("Refresh Token")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").description("Status Code"),
+                                fieldWithPath("message").description("Message"),
+                                fieldWithPath("data.email").description("Access eamil"),
+                                fieldWithPath("data.accessToken").description("Access Token"),
+                                fieldWithPath("data.refreshToken").description("Refresh Token")
+                        )
+                ));
     }
 
     @Test

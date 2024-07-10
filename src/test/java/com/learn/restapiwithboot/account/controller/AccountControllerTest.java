@@ -50,7 +50,7 @@ class AccountControllerTest extends BaseTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("data.email", is(request.getEmail())))
                 .andExpect(jsonPath("data.roles", hasSize(1)))
-                .andExpect(jsonPath("data.roles", contains("USER")))
+                .andExpect(jsonPath("data.roles", contains(request.getRoles())))
                 .andDo(document("create-account",
                         requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content-Type")
