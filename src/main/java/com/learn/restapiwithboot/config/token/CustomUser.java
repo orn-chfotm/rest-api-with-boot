@@ -1,4 +1,4 @@
-package com.learn.restapiwithboot.config.authentication;
+package com.learn.restapiwithboot.config.token;
 
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.domain.enums.AccountRole;

@@ -1,4 +1,4 @@
-package com.learn.restapiwithboot.config.authentication;
+package com.learn.restapiwithboot.config.token;
 
 import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;

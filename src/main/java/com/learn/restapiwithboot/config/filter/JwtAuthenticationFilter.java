@@ -1,6 +1,6 @@
 package com.learn.restapiwithboot.config.filter;
 
-import com.learn.restapiwithboot.config.authentication.JwtAuthenticationToken;
+import com.learn.restapiwithboot.config.token.JwtAuthenticationToken;
 import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
 import com.learn.restapiwithboot.config.properties.JwtProperties;
 import lombok.extern.slf4j.Slf4j;
