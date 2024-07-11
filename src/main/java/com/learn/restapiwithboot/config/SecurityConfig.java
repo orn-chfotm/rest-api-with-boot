@@ -50,7 +50,7 @@ public class SecurityConfig{
 
     @Bean
     public JwtReqeustFilter jwtReqeustFilter() throws Exception {
-        return new JwtReqeustFilter(jwtTokenProvider, jwtProperties, authenticationManager());
+        return new JwtReqeustFilter(jwtTokenProvider, jwtProperties, authenticationManager(null));
     }
 
     @Bean
@@ -59,8 +59,13 @@ public class SecurityConfig{
     }
 
     @Bean
-    public AuthenticationManager authenticationManager() throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder
+                .authenticationProvider(daoAuthenticationProvider())
+                .authenticationProvider(jwtAuthenticationProvider());
+        return authenticationManagerBuilder.build();
     }
 
     @Bean
@@ -70,7 +75,6 @@ public class SecurityConfig{
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
     }
-
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
