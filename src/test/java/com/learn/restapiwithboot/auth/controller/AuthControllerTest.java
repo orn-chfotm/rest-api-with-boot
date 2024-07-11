@@ -70,6 +70,8 @@ class AuthControllerTest extends BaseTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .characterEncoding("UTF-8")
                         .content(objectMapper.writeValueAsString(reqeust))
+                        .param("email", reqeust.getEmail())
+                        .param("password", reqeust.getPassword())
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -106,6 +108,8 @@ class AuthControllerTest extends BaseTest {
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(reqeust))
+                        .param("email", reqeust.getEmail())
+                        .param("password", reqeust.getPassword())
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest());

@@ -45,6 +45,8 @@ class AccountControllerTest extends BaseTest {
         mockMvc.perform(post("/api/account")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(request))
+                        .param("email", request.getEmail())
+                        .param("password", request.getPassword())
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
