@@ -3,6 +3,7 @@ package com.learn.restapiwithboot.reservation.controller;
 import com.learn.restapiwithboot.core.dto.response.SuccessResponse;
 import com.learn.restapiwithboot.reservation.dto.request.ReservationRequest;
 import com.learn.restapiwithboot.reservation.service.ReservationService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,11 @@ public class ReservationController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllReservation(@RequestParam(name = "email") String email) {
+    public ResponseEntity<?> getAllReservation(Pageable pageable, @RequestParam(name = "email") String email) {
+        System.out.println("--------------------------------");
+        System.out.println(pageable.getPageNumber());
+        System.out.println("--------------------------------");
+
         return SuccessResponse.of(reservationService.getReservation(email));
     }
 

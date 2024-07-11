@@ -1,6 +1,5 @@
 package com.learn.restapiwithboot.config.token;
 
-import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 

@@ -6,7 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,20 +18,21 @@ import java.nio.charset.StandardCharsets;
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 @Slf4j
+@Component
 @RequiredArgsConstructor
-public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
+public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private final ObjectMapper objectMapper;
 
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        log.warn("Login Fail : {}", exception.getMessage());
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+        log.error("Unauthoriz Token Error : {}", authException.getMessage());
         setResponse(response);
-        response.getWriter().write(objectMapper.writeValueAsString(setException(exception)));
+        response.getWriter().write(objectMapper.writeValueAsString(setException(authException)));
     }
 
-    private FailResponse setException(AuthenticationException exception) {
-        return new FailResponse(SC_UNAUTHORIZED, exception.getMessage());
+    private FailResponse setException(AuthenticationException authException) {
+        return new FailResponse(SC_UNAUTHORIZED, authException.getMessage());
     }
 
     private void setResponse(HttpServletResponse response) {
@@ -38,4 +40,5 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     }
+
 }

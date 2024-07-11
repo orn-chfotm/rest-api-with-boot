@@ -25,6 +25,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -33,7 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ReservationControllerTest extends BaseTest {
 
     @Autowired
@@ -48,24 +50,13 @@ class ReservationControllerTest extends BaseTest {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    private HttpHeaders httpHeaders;
 
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
-    @BeforeEach
-    void setUp() {
-        reservationRepository.deleteAll();
-        accountRepository.deleteAll();
-        reservationRepository.deleteAll();
-    }
-
-    private void getHeader(Account account) {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    private HttpHeaders getHeader(Account account) {
         String token = getToken(account);
-        this.httpHeaders = new HttpHeaders();
+        HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         httpHeaders.add("Authorization", "Bearer " + token);
+        return httpHeaders;
     }
 
     private String getToken(Account account) {
@@ -76,10 +67,12 @@ class ReservationControllerTest extends BaseTest {
     @DisplayName("계정 Email 기준으로 예약을 조회한다.")
     void getReservations() throws Exception {
         // Given
-        Account account = createAccount();
         Meeting meeting = createMeeting();
 
-        getHeader(account);
+        Account account = accountRepository.findByEmail("user@email.com")
+                .orElseThrow(() -> new IllegalArgumentException("계정을 찾을 수 없습니다."));
+
+        HttpHeaders header = getHeader(account);
 
         reservationRepository.save(Reservation.builder()
                 .accountId(account.getId())
@@ -88,8 +81,10 @@ class ReservationControllerTest extends BaseTest {
         );
 
         mockMvc.perform(get("/api/reservation")
+                        .characterEncoding(StandardCharsets.UTF_8.toString())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .headers(httpHeaders)
+                        .headers(header)
+                        .param("email", account.getEmail())
                         .param("page", "1")
                         .param("size", "10")
                         .param("sort", "name,DESC")

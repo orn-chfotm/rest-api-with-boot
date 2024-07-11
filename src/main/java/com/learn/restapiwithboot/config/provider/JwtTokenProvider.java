@@ -1,27 +1,46 @@
 package com.learn.restapiwithboot.config.provider;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.domain.enums.AccountRole;
 import com.learn.restapiwithboot.config.properties.JwtProperties;
+import com.learn.restapiwithboot.config.token.JwtAuthenticationToken;
 import io.jsonwebtoken.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.security.Key;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtTokenProvider {
 
     private final JwtProperties jwtproperties;
 
-    public JwtTokenProvider(JwtProperties jwtProperties) {
-        this.jwtproperties = jwtProperties;
+    private final ObjectMapper objectMapper;
+
+    public String extractToken(HttpServletRequest request) {
+        String bearer = request.getHeader(this.jwtproperties.getHeader());
+        if (bearer != null && bearer.startsWith(this.jwtproperties.getPrefix())) {
+            return bearer.substring(this.jwtproperties.getPrefix().length());
+        }
+        return null;
     }
 
     public String generateAsseccToken(Account account) {
@@ -31,7 +50,6 @@ public class JwtTokenProvider {
                 .signWith(this.jwtproperties.getAccessSecretKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
-
 
     public String generateRefreshToken(Account account) {
         return Jwts.builder()
@@ -44,9 +62,8 @@ public class JwtTokenProvider {
     private Claims getClaims(Account account, int expTime) {
         Claims claims = setClaims(expTime);
 
-        Set<AccountRole> roles = account.getRoles();
         claims.put("email", account.getEmail());
-        claims.put("role", roles);
+        claims.put("role", account.getRoles());
         return claims;
     }
 
@@ -80,17 +97,26 @@ public class JwtTokenProvider {
                 .getBody();
     }
 
-    /*public Authentication getAuthentication(String token) {
-        Claims claims = this.getClaims(token);
+    public JwtAuthenticationToken getAuthentication(String token) {
+        Claims claims = getClaims(token, this.jwtproperties.getAccessSecretKey());
+        return new JwtAuthenticationToken(claims.getSubject(), token, this.getAuthorities(claims));
+    }
 
-        if (claims.get("email") == null || claims.get("role") == null) {
-            throw new IllegalArgumentException("Invalid Token");
+    private Collection<? extends GrantedAuthority> getAuthorities(Claims claims) {
+        Object rolesObject = claims.get("role");
+        if (rolesObject instanceof String) {
+            rolesObject = List.of(rolesObject);
         }
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(claims.get("email").toString());
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-
-    }*/
+        try {
+            List<String> roles = objectMapper.convertValue(rolesObject, new TypeReference<List<String>>() {});
+            return roles.stream()
+                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                    .collect(Collectors.toSet());
+        } catch (IllegalArgumentException e) {
+            return Collections.emptySet();
+        }
+    }
 
     private Claims setClaims(int expiration) {
         LocalDateTime now = LocalDateTime.now();
@@ -101,4 +127,5 @@ public class JwtTokenProvider {
                 .setExpiration(Date.from(expirationTime.atZone(ZoneId.systemDefault()).toInstant()))
         ;
     }
+
 }
