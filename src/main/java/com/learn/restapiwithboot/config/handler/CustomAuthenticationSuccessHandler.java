@@ -31,17 +31,19 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        CustomUser user = (CustomUser) authentication.getPrincipal();
-        Account account = user.getAccount();
-        log.info("Login Success : {}", account.getEmail());
+        log.info("Login Success Process Start");
+        Account account = ((CustomUser) authentication.getPrincipal()).getAccount();
 
         setResponse(response);
         response.getWriter().write(objectMapper.writeValueAsString(getSucceeResponse(account)));
 
         clearAuthenticationAttributes(request); // security 설정 상 Session을 사용하지 않기 때문에 필요 없음
+        log.info("Login Success Process End");
     }
 
     private AuthResponse getSucceeResponse (Account account) {
+        log.info("Login Success Useremail {}", account.getEmail());
+        log.info("generate Token");
         return AuthResponse.builder()
                 .email(account.getEmail())
                 .accessToken(this.jwtTokenProvider.generateAsseccToken(account))

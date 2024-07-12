@@ -87,7 +87,7 @@ class ReservationControllerTest extends BaseTest {
                         .param("email", account.getEmail())
                         .param("page", "1")
                         .param("size", "10")
-                        .param("sort", "name,DESC")
+                        .param("sort", "reservasion.createDate,DESC")
                 )
                 .andDo(print())
                 .andExpect(status().isOk());

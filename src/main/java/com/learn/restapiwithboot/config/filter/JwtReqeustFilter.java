@@ -34,10 +34,11 @@ public class JwtReqeustFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = jwtTokenProvider.extractToken(request);
 
+        log.info("JwtReqeustFilter doFilterInternal");
+        log.info("JwtReqeustFilter token: {}", token);
         if (token != null && jwtTokenProvider.validateToken(token, jwtProperties.getAccessSecretKey())) {
             JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(token);
             jwtAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
             try {
                 JwtAuthenticationToken authenticate = (JwtAuthenticationToken) authenticationManager.authenticate(jwtAuthenticationToken);
                 SecurityContextHolder.getContext().setAuthentication(authenticate);
@@ -46,6 +47,7 @@ public class JwtReqeustFilter extends OncePerRequestFilter {
                 SecurityContextHolder.clearContext();
             }
         }
+        log.info("JwtReqeustFilter doFilterInternal end");
         filterChain.doFilter(request, response);
     }
 }

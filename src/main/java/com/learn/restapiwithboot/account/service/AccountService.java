@@ -31,4 +31,10 @@ public class AccountService {
 
         return accountMapper.accountToAccountResponse(saveAccount);
     }
+
+    @Transactional
+    public boolean deleteAccount(Long id) {
+        accountRepository.deleteById(id);
+        return true;
+    }
 }

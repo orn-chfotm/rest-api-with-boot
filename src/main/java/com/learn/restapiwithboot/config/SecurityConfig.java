@@ -14,6 +14,7 @@ import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -88,6 +89,7 @@ public class SecurityConfig{
             .authorizeRequests()
             .antMatchers("/api/login").permitAll() // /api/login 경로 허용
             .antMatchers("/api/auth/**").permitAll() // /api/auth 경로 허용
+            .antMatchers(HttpMethod.POST, "/api/account/refresh").permitAll() // /api/auth 경로 허용
             .anyRequest().authenticated(); // 다른 모든 요청은 인증 필요
 
         http.exceptionHandling()
