@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +24,7 @@ import static javax.servlet.http.HttpServletResponse.SC_OK;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -37,7 +38,6 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         setResponse(response);
         response.getWriter().write(objectMapper.writeValueAsString(getSucceeResponse(account)));
 
-        clearAuthenticationAttributes(request); // security 설정 상 Session을 사용하지 않기 때문에 필요 없음
         log.info("Login Success Process End");
     }
 

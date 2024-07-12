@@ -3,6 +3,7 @@ package com.learn.restapiwithboot.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.config.authentication.CustomUserDetailService;
+import com.learn.restapiwithboot.config.filter.CustomUsernamePasswordAuthenticationFilter;
 import com.learn.restapiwithboot.config.filter.JwtReqeustFilter;
 import com.learn.restapiwithboot.config.handler.CustomAuthenticationFailureHandler;
 import com.learn.restapiwithboot.config.handler.CustomAuthenticationSuccessHandler;
@@ -26,6 +27,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @RequiredArgsConstructor
 @Configuration
@@ -36,13 +38,13 @@ public class SecurityConfig{
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    private final AuthenticationConfiguration authenticationConfiguration;
-
     private final ObjectMapper objectMapper;
 
-    private final AccountRepository accountRepository;
-
     private final CustomUserDetailService customUserDetailService;
+
+    private final CustomAuthenticationSuccessHandler authenticationSuccessHandler;
+
+    private final CustomAuthenticationFailureHandler authenticationFailureHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -57,6 +59,17 @@ public class SecurityConfig{
     @Bean
     public JwtAuthenticationProvider jwtAuthenticationProvider() {
         return new JwtAuthenticationProvider(jwtTokenProvider);
+    }
+
+    @Bean
+    public CustomUsernamePasswordAuthenticationFilter customUsernamePasswordAuthenticationFilter() throws Exception {
+        CustomUsernamePasswordAuthenticationFilter filter = new CustomUsernamePasswordAuthenticationFilter(objectMapper);
+        filter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/api/login", "POST"));
+        filter.setAuthenticationManager(authenticationManager(null));
+        filter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+        filter.setAuthenticationFailureHandler(authenticationFailureHandler);
+
+        return filter;
     }
 
     @Bean
@@ -96,14 +109,8 @@ public class SecurityConfig{
                 .accessDeniedHandler(new JwtAccessDeniedHandler(objectMapper))
                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint(objectMapper));
 
-        http.addFilterBefore(jwtReqeustFilter(), UsernamePasswordAuthenticationFilter.class);
-
-        http.formLogin()
-                .loginProcessingUrl("/api/login")
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .successHandler(new CustomAuthenticationSuccessHandler(jwtTokenProvider, objectMapper))
-                .failureHandler(new CustomAuthenticationFailureHandler(objectMapper));
+        http.addFilterBefore(jwtReqeustFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAt(customUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

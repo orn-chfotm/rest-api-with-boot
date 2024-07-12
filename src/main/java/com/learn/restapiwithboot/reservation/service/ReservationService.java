@@ -3,22 +3,20 @@ package com.learn.restapiwithboot.reservation.service;
 import com.learn.restapiwithboot.account.dto.response.AccountResponse;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.core.exceptions.ResourceNotFoundException;
-import com.learn.restapiwithboot.meeting.repsitory.MeetingRepository;
-import com.learn.restapiwithboot.reservation.dto.request.ReservationRequest;
-import com.learn.restapiwithboot.reservation.mapper.ReservationMapper;
 import com.learn.restapiwithboot.meeting.dto.response.MeetingResponse;
+import com.learn.restapiwithboot.meeting.repsitory.MeetingRepository;
 import com.learn.restapiwithboot.reservation.domain.Reservation;
+import com.learn.restapiwithboot.reservation.dto.request.ReservationRequest;
 import com.learn.restapiwithboot.reservation.dto.response.ReservationResponse;
+import com.learn.restapiwithboot.reservation.mapper.ReservationMapper;
 import com.learn.restapiwithboot.reservation.repository.ReservationRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
-
-import static java.util.List.of;
 
 @Service
 public class ReservationService {
@@ -44,13 +42,13 @@ public class ReservationService {
         this.modelMapper = modelMapper;
     }
 
-    public List<ReservationResponse> getReservation(String email) {
+    public List<ReservationResponse> getReservation(String email, Pageable pageable) {
         Long accountId = accountRepository.findIdByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 없습니다."));
 
-        List<Reservation> allByUserId = reservationRepository.findAllByAccountId(accountId);
+        List<Reservation> allByAccountIdId = reservationRepository.findAllByAccountId(accountId);
 
-        return allByUserId.stream()
+        return allByAccountIdId.stream()
                 .map(reservationMapper::reservationToReservationResponse)
                 .collect(Collectors.toList());
     }

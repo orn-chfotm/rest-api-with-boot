@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/reservation")
@@ -20,12 +21,9 @@ public class ReservationController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllReservation(Pageable pageable, @RequestParam(name = "email") String email) {
-        System.out.println("--------------------------------");
-        System.out.println(pageable.getPageNumber());
-        System.out.println("--------------------------------");
-
-        return SuccessResponse.of(reservationService.getReservation(email));
+    public ResponseEntity<?> getAllReservation(Pageable pageable,
+                                               Principal principal) {
+        return SuccessResponse.of(reservationService.getReservation(principal.getName(), pageable));
     }
 
     @PostMapping
