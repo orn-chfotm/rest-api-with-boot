@@ -28,9 +28,13 @@ public class CustomUsernamePasswordAuthenticationFilter extends UsernamePassword
         if (MediaType.APPLICATION_JSON_VALUE.equals(request.getContentType()) && HttpMethod.POST.toString().equals(request.getMethod())) {
             try {
                 if (request.getInputStream().available() == 0) {
-                    throw new ResourceNotFoundException("Request body is empty");
+                    throw new AuthenticationException("Request body is empty") {};
                 }
                 AuthRequest authRequest = objectMapper.readValue(request.getInputStream(), AuthRequest.class);
+                if (authRequest.getEmail() == null || authRequest.getPassword() == null) {
+                    throw new AuthenticationException("Email or password is null") {};
+                }
+
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         authRequest.getEmail(),
                         authRequest.getPassword()
