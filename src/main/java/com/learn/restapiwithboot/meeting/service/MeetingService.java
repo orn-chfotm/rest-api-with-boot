@@ -1,5 +1,6 @@
 package com.learn.restapiwithboot.meeting.service;
 
+import com.learn.restapiwithboot.core.query.QueryDslUtil;
 import com.learn.restapiwithboot.meeting.domain.QMeeting;
 import com.learn.restapiwithboot.meeting.mapper.MeetingMapper;
 import com.learn.restapiwithboot.meeting.domain.Meeting;

@@ -8,15 +8,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class QueryDslUtil {
+
     public OrderSpecifier<?>[] orderSpecifiers(Pageable pageable, Class<?> classType, String variable) {
         return pageable.getSort().stream().map(
                 order -> {
                     String property = order.getProperty();
-                    OrderSpecifier<?> orderSpecifier = new OrderSpecifier(
+                    return (OrderSpecifier<?>) new OrderSpecifier(
                             order.isAscending() ? Order.ASC : Order.DESC,
                             new PathBuilder<>(classType, variable).get(property)
                     );
-                    return orderSpecifier;
                 }
         ).toArray(OrderSpecifier[]::new);
     }
