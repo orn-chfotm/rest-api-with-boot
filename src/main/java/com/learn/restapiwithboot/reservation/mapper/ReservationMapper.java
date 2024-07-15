@@ -9,7 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(uses = {AccountMapper.class, MeetingMapper.class})
+@Mapper(componentModel = "spring", uses = {AccountMapper.class, MeetingMapper.class})
 public interface ReservationMapper {
     ReservationMapper INSTANCE = Mappers.getMapper(ReservationMapper.class);
 

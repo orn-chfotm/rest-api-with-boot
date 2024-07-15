@@ -4,10 +4,12 @@ import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.dto.response.AccountResponse;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.account.mapper.AccountMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@RequiredArgsConstructor
 @Service
 public class AccountService {
 
@@ -16,13 +18,6 @@ public class AccountService {
     private final PasswordEncoder passwordEncoder;
 
     private final AccountMapper accountMapper;
-
-    public AccountService(AccountRepository accountRepository,
-                          PasswordEncoder passwordEncoder) {
-        this.accountRepository = accountRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.accountMapper = AccountMapper.INSTANCE;
-    }
 
     @Transactional
     public AccountResponse createAccount(Account account) {

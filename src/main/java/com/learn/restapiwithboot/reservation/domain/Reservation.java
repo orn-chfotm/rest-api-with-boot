@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Getter @Setter @NoArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
+@ToString
 public class Reservation extends BaseTimeEntity {
 
     @Id

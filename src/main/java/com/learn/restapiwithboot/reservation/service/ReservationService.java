@@ -1,16 +1,24 @@
 package com.learn.restapiwithboot.reservation.service;
 
+import com.learn.restapiwithboot.account.domain.QAccount;
 import com.learn.restapiwithboot.account.dto.response.AccountResponse;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.core.exceptions.ResourceNotFoundException;
+import com.learn.restapiwithboot.core.query.QueryDslUtil;
+import com.learn.restapiwithboot.meeting.domain.QMeeting;
 import com.learn.restapiwithboot.meeting.dto.response.MeetingResponse;
 import com.learn.restapiwithboot.meeting.repsitory.MeetingRepository;
+import com.learn.restapiwithboot.reservation.domain.QReservation;
 import com.learn.restapiwithboot.reservation.domain.Reservation;
 import com.learn.restapiwithboot.reservation.dto.request.ReservationRequest;
 import com.learn.restapiwithboot.reservation.dto.response.ReservationResponse;
 import com.learn.restapiwithboot.reservation.mapper.ReservationMapper;
 import com.learn.restapiwithboot.reservation.repository.ReservationRepository;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class ReservationService {
 
@@ -31,26 +40,32 @@ public class ReservationService {
 
     private final ModelMapper modelMapper;
 
-    public ReservationService(ReservationRepository reservationRepository,
-                                AccountRepository accountRepository,
-                                MeetingRepository meetingRepository,
-                                ModelMapper modelMapper) {
-        this.reservationRepository = reservationRepository;
-        this.accountRepository = accountRepository;
-        this.meetingRepository = meetingRepository;
-        this.reservationMapper = ReservationMapper.INSTANCE;
-        this.modelMapper = modelMapper;
-    }
+    private final JPAQueryFactory jpaQueryFactory;
 
-    public List<ReservationResponse> getReservation(String email, Pageable pageable) {
+    private final QueryDslUtil queryDslUtil;
+
+    public Page<ReservationResponse> getReservation(String email, Pageable pageable) {
         Long accountId = accountRepository.findIdByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 없습니다."));
 
-        List<Reservation> allByAccountIdId = reservationRepository.findAllByAccountId(accountId);
+        List<Reservation> reservationList = jpaQueryFactory.selectFrom(QReservation.reservation)
+                .where(QReservation.reservation.accountId.eq(accountId))
+                .leftJoin(QReservation.reservation.meeting, QMeeting.meeting)
+                .leftJoin(QReservation.reservation.account, QAccount.account)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(queryDslUtil.orderSpecifiers(pageable, Reservation.class, "reservation"))
+                .fetch();
 
-        return allByAccountIdId.stream()
+        int size = jpaQueryFactory.selectFrom(QReservation.reservation)
+                .where(QReservation.reservation.accountId.eq(accountId))
+                .fetch().size();
+
+        List<ReservationResponse> collect = reservationList.stream()
                 .map(reservationMapper::reservationToReservationResponse)
                 .collect(Collectors.toList());
+
+        return new PageImpl<>(collect, pageable, size);
     }
 
     private ReservationResponse converToResponse(Reservation reservation) {

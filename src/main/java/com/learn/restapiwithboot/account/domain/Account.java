@@ -10,6 +10,7 @@ import java.util.Set;
 @Getter @Setter @NoArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
+@ToString
 public class Account extends BaseTimeEntity {
 
     @Id @GeneratedValue

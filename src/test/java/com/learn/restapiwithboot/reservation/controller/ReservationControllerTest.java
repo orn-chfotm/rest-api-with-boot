@@ -50,7 +50,6 @@ class ReservationControllerTest extends BaseTest {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-
     private HttpHeaders getHeader(Account account) {
         String token = getToken(account);
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -84,10 +83,9 @@ class ReservationControllerTest extends BaseTest {
                         .characterEncoding(StandardCharsets.UTF_8.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .headers(header)
-                        .param("email", account.getEmail())
-                        .param("page", "1")
+                        .param("page", "0")
                         .param("size", "10")
-                        .param("sort", "reservasion.createDate,DESC")
+                        .param("sort", "createDate,DESC")
                 )
                 .andDo(print())
                 .andExpect(status().isOk());

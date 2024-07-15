@@ -5,7 +5,7 @@ import com.learn.restapiwithboot.meeting.dto.request.PlaceRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(uses = {AddressMapper.class})
+@Mapper(componentModel = "spring", uses = {AddressMapper.class})
 public interface PlaceMapper {
     PlaceMapper INSTANCE = Mappers.getMapper(PlaceMapper.class);
 

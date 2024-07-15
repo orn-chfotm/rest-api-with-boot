@@ -78,8 +78,8 @@ class AuthControllerTest extends BaseTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content-Type")
                         ),
                         requestFields(
-                                fieldWithPath("email").description("로그인 이메일"),
-                                fieldWithPath("password").description("로그인 비밀번호")
+                                fieldWithPath("email").description("Login email"),
+                                fieldWithPath("password").description("Login password")
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content-Type")

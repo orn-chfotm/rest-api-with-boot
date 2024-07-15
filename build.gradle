@@ -1,8 +1,15 @@
+buildscript {
+    ext {
+        queryDslVersion = '5.0.0'
+    }
+}
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.18'
     id 'io.spring.dependency-management' version '1.1.5'
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
 }
 
 group = 'com.learn'
@@ -41,6 +48,9 @@ dependencies {
     implementation ('it.ozimov:embedded-redis:0.7.3')
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.5'
     implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+    implementation "com.querydsl:querydsl-core:${queryDslVersion}"
 
     annotationProcessor 'org.projectlombok:lombok'
     compileOnly 'org.projectlombok:lombok'
@@ -56,6 +66,36 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'org.assertj:assertj-core:3.24.2'
+}
+
+def querydslDir = layout.buildDirectory.dir("generated/querydsl")
+
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir.get().asFile
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java', querydslDir.get().asFile]
+        }
+    }
+}
+
+tasks.named('compileJava') {
+    options.annotationProcessorPath = configurations.annotationProcessor
+}
+
+tasks.named('compileQuerydsl') {
+    options.annotationProcessorPath = configurations.querydsl
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    querydsl.extendsFrom compileClasspath
 }
 
 tasks.named('test') {

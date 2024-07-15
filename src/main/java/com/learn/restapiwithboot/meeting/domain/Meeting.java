@@ -3,10 +3,7 @@ package com.learn.restapiwithboot.meeting.domain;
 import com.learn.restapiwithboot.core.domain.BaseTimeEntity;
 import com.learn.restapiwithboot.meeting.domain.embed.Place;
 import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
@@ -17,6 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
+@ToString
 public class Meeting extends BaseTimeEntity {
 
     @Id
