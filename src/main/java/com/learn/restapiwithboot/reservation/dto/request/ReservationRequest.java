@@ -11,15 +11,12 @@ import javax.validation.constraints.NotNull;
 @Setter
 @NoArgsConstructor
 public class ReservationRequest {
-    @NotNull(message = "email이 필요합니다.")
-    private String email;
 
     @NotNull(message = "모임 ID가 필요합니다.")
     private Long meetingId;
 
     @Builder
-    public ReservationRequest(String email, Long meetingId) {
-        this.email = email;
+    public ReservationRequest(Long meetingId) {
         this.meetingId = meetingId;
     }
 }

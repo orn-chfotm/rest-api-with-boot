@@ -20,16 +20,16 @@ public class Place {
 
     @Comment("장소 타입")
     @Enumerated(EnumType.STRING)
-    private PlaceType palceType;
+    private PlaceType placeType;
 
     @Comment("모임 장소 주소")
     @Embedded
     private Address address;
 
     @Builder
-    public Place(String name, PlaceType palceType, Address address) {
+    public Place(String name, PlaceType placeType, Address address) {
         this.name = name;
-        this.palceType = palceType;
+        this.placeType = placeType;
         this.address = address;
     }
 }

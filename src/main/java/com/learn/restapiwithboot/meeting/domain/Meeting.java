@@ -1,5 +1,6 @@
 package com.learn.restapiwithboot.meeting.domain;
 
+import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.core.domain.BaseTimeEntity;
 import com.learn.restapiwithboot.meeting.domain.embed.Place;
 import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
@@ -56,8 +57,20 @@ public class Meeting extends BaseTimeEntity {
     @Embedded
     private Place place;
 
+    @Comment("모임 등록자 Account Id")
+    @Column(name = "reg_id", nullable = false)
+    private Long regId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reg_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private Account account;
+
+    public void setRegId(Long regId) {
+        this.regId = regId;
+    }
+
     @Builder
-    public Meeting(String title, String content, String description, int dues, int maxMember, int reservedMember, LocalDateTime meetingDate, MeetingType meetingType, Place place) {
+    public Meeting(String title, String content, String description, int dues, int maxMember, int reservedMember, LocalDateTime meetingDate, MeetingType meetingType, Place place, Long regId) {
         this.title = title;
         this.content = content;
         this.description = description;
@@ -67,5 +80,6 @@ public class Meeting extends BaseTimeEntity {
         this.meetingDate = meetingDate;
         this.meetingType = meetingType;
         this.place = place;
+        this.regId = regId;
     }
 }

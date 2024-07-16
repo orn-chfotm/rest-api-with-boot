@@ -10,10 +10,14 @@ import org.mapstruct.factory.Mappers;
 public interface MeetingMapper {
     MeetingMapper INSTANCE = Mappers.getMapper(MeetingMapper.class);
 
+    @Mapping(target = "reservedMember", ignore = true)
+    @Mapping(target = "regId", ignore = true)
     Meeting meetingReqeustToMeeting(MeetingRequest meetingRequest);
 
+    @Mapping(source = "account.email", target = "regEmail")
     MeetingResponse meetingToMeetingResponse(Meeting meeting);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "regId", ignore = true)
     void updateMeetingFromRequest(MeetingRequest meetingRequest, @MappingTarget Meeting meeting);
 }

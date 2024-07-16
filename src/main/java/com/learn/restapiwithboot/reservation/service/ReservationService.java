@@ -1,12 +1,10 @@
 package com.learn.restapiwithboot.reservation.service;
 
 import com.learn.restapiwithboot.account.domain.QAccount;
-import com.learn.restapiwithboot.account.dto.response.AccountResponse;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.core.exceptions.ResourceNotFoundException;
 import com.learn.restapiwithboot.core.query.QueryDslUtil;
 import com.learn.restapiwithboot.meeting.domain.QMeeting;
-import com.learn.restapiwithboot.meeting.dto.response.MeetingResponse;
 import com.learn.restapiwithboot.meeting.repsitory.MeetingRepository;
 import com.learn.restapiwithboot.reservation.domain.QReservation;
 import com.learn.restapiwithboot.reservation.domain.Reservation;
@@ -23,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,14 +43,12 @@ public class ReservationService {
 
     private final QueryDslUtil queryDslUtil;
 
-    public Page<ReservationResponse> getReservation(String email, Pageable pageable) {
-        Long accountId = accountRepository.findIdByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 없습니다."));
+    public Page<ReservationResponse> getReservation(Long accountId, Pageable pageable) {
 
         List<Reservation> reservationList = jpaQueryFactory.selectFrom(QReservation.reservation)
                 .where(QReservation.reservation.accountId.eq(accountId))
-                .leftJoin(QReservation.reservation.meeting, QMeeting.meeting)
-                .leftJoin(QReservation.reservation.account, QAccount.account)
+                .leftJoin(QMeeting.meeting).on(QReservation.reservation.meetingId.eq(QMeeting.meeting.id))
+                .leftJoin(QAccount.account).on(QReservation.reservation.accountId.eq(QAccount.account.id))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(queryDslUtil.orderSpecifiers(pageable, Reservation.class, "reservation"))
@@ -68,6 +65,7 @@ public class ReservationService {
         return new PageImpl<>(collect, pageable, size);
     }
 
+    /* MapStruct 사용 전 코드
     private ReservationResponse converToResponse(Reservation reservation) {
         return ReservationResponse.builder()
                 .id(reservation.getId())
@@ -78,13 +76,10 @@ public class ReservationService {
 
     private <D> D convertToDto(Object entity, Class<D> dtoClass) {
         return modelMapper.map(entity, dtoClass);
-    }
+    }*/
 
     @Transactional
-    public ReservationResponse createReservation(ReservationRequest reservationRequest) {
-
-        Long accountId = accountRepository.findIdByEmail(reservationRequest.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("해당하는 사용자가 없습니다."));
+    public ReservationResponse createReservation(Long accountId, ReservationRequest reservationRequest) {
 
         if (!accountRepository.existsById(accountId)) {
             throw new ResourceNotFoundException("해당하는 사용자가 없습니다.");
@@ -101,13 +96,19 @@ public class ReservationService {
     }
 
     @Transactional
-    public ReservationResponse deleteReservation(Long id) {
-        if(!reservationRepository.existsById(id)) {
-            throw new ResourceNotFoundException("해당하는 회의가 없습니다.");
+    public ReservationResponse deleteReservation(Long accountId, Long ReservationId) {
+
+        boolean isExistence = jpaQueryFactory.selectFrom(QReservation.reservation)
+                .where(QReservation.reservation.id.eq(ReservationId)
+                        .and(QReservation.reservation.accountId.eq(accountId)))
+                .fetch().size() == 1;
+
+        if (!isExistence) {
+            throw new ResourceNotFoundException("해당하는 예약이 없습니다.");
         }
 
-        reservationRepository.deleteById(id);
+        reservationRepository.deleteById(ReservationId);
 
-        return ReservationResponse.builder().id(id).build();
+        return ReservationResponse.builder().id(ReservationId).build();
     }
 }

@@ -14,14 +14,14 @@ public class PlaceRequest {
     private String name;
 
     @NotNull(message = "장소 타입을 입력해주세요.")
-    private String palceType;
+    private String placeType;
 
     AddressRequest address;
 
     @Builder
-    public PlaceRequest(String name, String palceType, AddressRequest address) {
+    public PlaceRequest(String name, String placeType, AddressRequest address) {
         this.name = name;
-        this.palceType = palceType;
+        this.placeType = placeType;
         this.address = address;
     }
 }

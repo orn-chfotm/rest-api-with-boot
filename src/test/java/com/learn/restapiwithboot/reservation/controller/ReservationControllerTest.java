@@ -99,7 +99,6 @@ class ReservationControllerTest extends BaseTest {
         Meeting meeting = createMeeting();
 
         ReservationRequest reservation = ReservationRequest.builder()
-                .email(account.getEmail())
                 .meetingId(meeting.getId())
                 .build();
 
@@ -139,7 +138,6 @@ class ReservationControllerTest extends BaseTest {
         Meeting meeting = this.createMeeting();
 
         ReservationRequest request = ReservationRequest.builder()
-                .email(account.getEmail())
                 .meetingId(meeting.getId())
                 .build();
 
@@ -195,7 +193,7 @@ class ReservationControllerTest extends BaseTest {
                 .meetingType(MeetingType.ONLINE)
                 .place(Place.builder()
                         .name("장소 이름")
-                        .palceType(PlaceType.CAFE)
+                        .placeType(PlaceType.CAFE)
                         .address(Address.builder().build())
                         .build())
                 .dues(10000)

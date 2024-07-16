@@ -1,5 +1,6 @@
 package com.learn.restapiwithboot.meeting.dto.response;
 
+import com.learn.restapiwithboot.account.dto.response.AccountResponse;
 import com.learn.restapiwithboot.meeting.domain.embed.Place;
 import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
 import lombok.Builder;
@@ -35,8 +36,10 @@ public class MeetingResponse {
 
     private LocalDateTime meetingDate;
 
+    private String regEmail;
+
     @Builder
-    public MeetingResponse(Long id, String title, String content, String description, MeetingType meetingType, Place place, Integer dues, Integer maxMember, Integer reservedMember, LocalDateTime meetingDate) {
+    public MeetingResponse(Long id, String title, String content, String description, MeetingType meetingType, Place place, Integer dues, Integer maxMember, Integer reservedMember, LocalDateTime meetingDate, String regEmail) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -47,5 +50,6 @@ public class MeetingResponse {
         this.maxMember = maxMember;
         this.reservedMember = reservedMember;
         this.meetingDate = meetingDate;
+        this.regEmail = regEmail;
     }
 }

@@ -26,7 +26,7 @@ class MeetingTest {
                 .build();
         Place place = Place.builder()
                 .name("name")
-                .palceType(PlaceType.CAFE)
+                .placeType(PlaceType.CAFE)
                 .address(address)
                 .build();
         Meeting meeting = Meeting.builder()
