@@ -83,12 +83,22 @@ sourceSets {
     }
 }
 
+
+tasks.named('compileQuerydsl') {
+    options.annotationProcessorPath = configurations.querydsl
+}
+
 tasks.named('compileJava') {
     options.annotationProcessorPath = configurations.annotationProcessor
 }
 
-tasks.named('compileQuerydsl') {
-    options.annotationProcessorPath = configurations.querydsl
+tasks.withType(JavaCompile).configureEach {
+    dependsOn 'clean'
+    options.incremental = true
+}
+
+clean {
+    delete querydslDir
 }
 
 configurations {

@@ -85,7 +85,7 @@ public class JwtTokenProvider {
      */
     public JwtAuthenticationToken getAuthentication(String token) {
         Claims claims = getClaims(token, this.jwtproperties.getAccessSecretKey());
-        return new JwtAuthenticationToken(claims.get("email").toString(), token, this.getAuthorities(claims));
+        return new JwtAuthenticationToken(claims.get("accountId").toString(), token, this.getAuthorities(claims));
     }
 
     /* Get Token Claims */
@@ -103,6 +103,7 @@ public class JwtTokenProvider {
     private Claims generateClaims(Account account, int expTime) {
         Claims claims = setClaims(expTime);
 
+        claims.put("accountId", account.getId());
         claims.put("email", account.getEmail());
         claims.put("role", account.getRoles());
         return claims;
