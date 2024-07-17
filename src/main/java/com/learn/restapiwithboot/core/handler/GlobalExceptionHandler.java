@@ -2,10 +2,7 @@ package com.learn.restapiwithboot.core.handler;
 
 import com.learn.restapiwithboot.core.dto.response.FailResponse;
 import com.learn.restapiwithboot.core.enums.ErrorMessage;
-import com.learn.restapiwithboot.core.exceptions.BadCredentialsException;
-import com.learn.restapiwithboot.core.exceptions.BaseException;
-import com.learn.restapiwithboot.core.exceptions.ResourceNotFoundException;
-import com.learn.restapiwithboot.core.exceptions.TokenInvalidException;
+import com.learn.restapiwithboot.core.exceptions.*;
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -115,6 +112,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({BadCredentialsException.class})
     protected ResponseEntity<FailResponse> handleBadCredentialsException(BadCredentialsException exception) {
         return this.getFailResponseResponseEntity(exception, ErrorMessage.BAD_CREDENTIALS);
+    }
+
+    @ExceptionHandler({AccountExistenceException.class})
+    protected ResponseEntity<FailResponse> handleAccountExistenceException(AccountExistenceException exception) {
+        return this.getFailResponseResponseEntity(exception, ErrorMessage.ACCOUNT_EXIST);
     }
 
     private ResponseEntity<FailResponse> getFailResponseResponseEntity(BaseException exception, ErrorMessage exceptions) {
