@@ -5,6 +5,7 @@ import com.learn.restapiwithboot.account.dto.response.AccountResponse;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.account.mapper.AccountMapper;
 import com.learn.restapiwithboot.core.exceptions.AccountExistenceException;
+import com.learn.restapiwithboot.core.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,7 @@ public class AccountService {
     @Transactional
     public AccountResponse reJoinAccount(Account account) {
         Account getAccount = accountRepository.findByEmail(account.getEmail())
-                .orElseThrow(() -> new AccountExistenceException("존재하지 않는 계정입니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 계정입니다."));
 
         if (getAccount.isWithdraw()) {
             getAccount.setPassword(this.passwordEncoder.encode(account.getPassword()));
@@ -60,7 +61,7 @@ public class AccountService {
     @Transactional
     public boolean deleteAccount(Long accountId) {
         Account getAccount = accountRepository.findById(accountId)
-                .orElseThrow(() -> new AccountExistenceException("존재하지 않는 계정입니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 계정입니다."));
 
         if (!getAccount.isWithdraw()) {
             getAccount.withDraw();
