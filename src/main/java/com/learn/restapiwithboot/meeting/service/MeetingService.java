@@ -61,13 +61,10 @@ public class MeetingService {
     }
 
     @Transactional
-    public MeetingResponse deleteMeeting(Long id) {
-        if (!meetingRepository.existsById(id)) {
+    public void deleteMeeting(Long accountId) {
+        if (!meetingRepository.existsById(accountId)) {
             throw new IllegalArgumentException("해당하는 모임이 없습니다.");
         }
-
-        meetingRepository.deleteById(id);
-
-        return MeetingResponse.builder().id(id).build();
+        meetingRepository.deleteById(accountId);
     }
 }

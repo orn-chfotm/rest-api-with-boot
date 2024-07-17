@@ -27,9 +27,16 @@ public class AccountService {
         return accountMapper.accountToAccountResponse(saveAccount);
     }
 
+    /**
+     * Principal 객체의 name 값이기에 무조건 값이 존재하지만
+     * 존재하지 않는 계정을 삭제하려고 할 경우를 대비하여 existsById 메소드로 존재 여부를 확인
+     */
     @Transactional
-    public boolean deleteAccount(Long id) {
-        accountRepository.deleteById(id);
-        return true;
+    public boolean deleteAccount(Long accountId) {
+        boolean isexists = accountRepository.existsById(accountId);
+        if (isexists) {
+            accountRepository.deleteById(accountId);
+        }
+        return isexists;
     }
 }

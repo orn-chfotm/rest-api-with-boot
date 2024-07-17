@@ -6,6 +6,7 @@ import com.learn.restapiwithboot.core.dto.response.SuccessResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Map;
 
 @RestController
@@ -23,10 +24,9 @@ public class AccountController {
         return SuccessResponse.of(accountService.createAccount(account));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteAccount(@PathVariable Long id) {
-        accountService.deleteAccount(id);
-        return SuccessResponse.of(null);
+    @DeleteMapping
+    public ResponseEntity<?> deleteAccount(Principal principal) {
+        return SuccessResponse.of(accountService.deleteAccount(Long.parseLong(principal.getName())));
     }
 
 }

@@ -39,13 +39,14 @@ public class MeetingController {
         return SuccessResponse.of(meetingService.createMeeting(Long.parseLong(principal.getName()), meetingRequest));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateMeeting(@PathVariable Long id, @RequestBody @Valid MeetingRequest meetingRequest) {
-        return SuccessResponse.of(meetingService.updateMeeting(id, meetingRequest));
+    @PutMapping()
+    public ResponseEntity<?> updateMeeting(Principal principal, @RequestBody @Valid MeetingRequest meetingRequest) {
+        return SuccessResponse.of(meetingService.updateMeeting(Long.parseLong(principal.getName()), meetingRequest));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteMeeting(@PathVariable Long id) {
-        return SuccessResponse.of(meetingService.deleteMeeting(id));
+    @DeleteMapping()
+    public ResponseEntity<?> deleteMeeting(Principal principal) {
+        meetingService.deleteMeeting(Long.parseLong(principal.getName()));
+        return SuccessResponse.of(null);
     }
 }
