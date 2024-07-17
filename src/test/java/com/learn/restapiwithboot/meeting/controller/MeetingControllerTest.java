@@ -101,11 +101,9 @@ class MeetingControllerTest extends BaseTest {
      * Get token
      */
     private String getToken() {
-        Long idByEmail = accountRepository.findIdByEmail("user@email.com").orElseThrow(
+        Account account = accountRepository.findByEmail("user@email.com").orElseThrow(
                 () -> new IllegalArgumentException("가입되지 않은 이메일입니다.")
         );
-        Account account = accountRepository.findById(idByEmail)
-                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 이메일입니다."));
 
         return jwtTokenProvider.generateAsseccToken(account);
     }

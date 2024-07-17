@@ -5,7 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Comment;
 
+import javax.persistence.Column;
 import java.util.Set;
 
 @Getter
@@ -18,10 +20,16 @@ public class AccountRequest {
 
     private Set<AccountRole> roles;
 
+    private String gender;
+
+    private String phoneNumber;
+
     @Builder
-    public AccountRequest(String email, String password, Set<AccountRole> roles) {
+    public AccountRequest(String email, String password, Set<AccountRole> roles, String gender, String phoneNumber) {
         this.email = email;
         this.password = password;
         this.roles = roles;
+        this.gender = gender;
+        this.phoneNumber = phoneNumber;
     }
 }

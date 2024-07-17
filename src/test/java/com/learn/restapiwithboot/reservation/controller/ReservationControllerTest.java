@@ -170,10 +170,10 @@ class ReservationControllerTest extends BaseTest {
         Account account = createAccount();
         accountRepository.save(account);
         // When
-        Long accountId = accountRepository.findIdByEmail(account.getEmail())
+        Account getAccount = accountRepository.findByEmail(account.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("해당 이메일을 가진 계정이 없습니다."));
         // Then
-        assertThat(accountId).isNotNull();
+        assertThat(getAccount.getId()).isNotNull();
     }
 
     private Account createAccount() {

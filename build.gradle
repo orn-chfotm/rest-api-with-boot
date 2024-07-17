@@ -26,6 +26,7 @@ configurations {
         extendsFrom annotationProcessor
     }
     asciidoctorExt
+    querydsl.extendsFrom compileClasspath
 }
 
 ext {
@@ -82,7 +83,6 @@ sourceSets {
         }
     }
 }
-
 
 tasks.named('compileQuerydsl') {
     options.annotationProcessorPath = configurations.querydsl

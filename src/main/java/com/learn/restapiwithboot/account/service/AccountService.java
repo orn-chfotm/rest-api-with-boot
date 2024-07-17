@@ -4,10 +4,13 @@ import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.dto.response.AccountResponse;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.account.mapper.AccountMapper;
+import com.learn.restapiwithboot.core.exceptions.AccountExistenceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -21,22 +24,50 @@ public class AccountService {
 
     @Transactional
     public AccountResponse createAccount(Account account) {
+        Optional<Account> getAccount = accountRepository.findByEmail(account.getEmail());
+
+        if (getAccount.isPresent()) {
+            if (getAccount.get().isWithdraw()) {
+               throw new AccountExistenceException("탈퇴한 계정입니다.");
+            } else {
+                throw new AccountExistenceException("이미 존재하는 계정입니다.");
+            }
+        }
+
         account.setPassword(this.passwordEncoder.encode(account.getPassword()));
         Account saveAccount = accountRepository.save(account);
 
         return accountMapper.accountToAccountResponse(saveAccount);
     }
 
-    /**
-     * Principal 객체의 name 값이기에 무조건 값이 존재하지만
-     * 존재하지 않는 계정을 삭제하려고 할 경우를 대비하여 existsById 메소드로 존재 여부를 확인
-     */
+    @Transactional
+    public AccountResponse reJoinAccount(Account account) {
+        Account getAccount = accountRepository.findByEmail(account.getEmail())
+                .orElseThrow(() -> new AccountExistenceException("존재하지 않는 계정입니다."));
+
+        if (getAccount.isWithdraw()) {
+            getAccount.setPassword(this.passwordEncoder.encode(account.getPassword()));
+            getAccount.setGender(account.getGender());
+            getAccount.setPhoneNumber(account.getPhoneNumber().replaceAll("-", ""));
+            getAccount.withDraw();
+
+            return accountMapper.accountToAccountResponse(getAccount);
+        } else {
+            throw new AccountExistenceException("탈퇴하지 않은 계정입니다.");
+        }
+    }
+
     @Transactional
     public boolean deleteAccount(Long accountId) {
-        boolean isexists = accountRepository.existsById(accountId);
-        if (isexists) {
-            accountRepository.deleteById(accountId);
+        Account getAccount = accountRepository.findById(accountId)
+                .orElseThrow(() -> new AccountExistenceException("존재하지 않는 계정입니다."));
+
+        if (!getAccount.isWithdraw()) {
+            getAccount.withDraw();
+        } else {
+            throw new AccountExistenceException("탈퇴한 계정입니다.");
         }
-        return isexists;
+
+        return true;
     }
 }

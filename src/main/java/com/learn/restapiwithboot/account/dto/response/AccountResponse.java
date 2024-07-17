@@ -16,4 +16,8 @@ public class AccountResponse {
     private String email;
 
     private Set<AccountRole> roles;
+
+    private String gender;
+
+    private String phoneNumber;
 }

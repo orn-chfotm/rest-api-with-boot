@@ -24,6 +24,11 @@ public class AccountController {
         return SuccessResponse.of(accountService.createAccount(account));
     }
 
+    @PostMapping("/rejoin")
+    public ResponseEntity<?> rejoinAccount(@RequestBody Account account) {
+        return SuccessResponse.of(accountService.reJoinAccount(account));
+    }
+
     @DeleteMapping
     public ResponseEntity<?> deleteAccount(Principal principal) {
         return SuccessResponse.of(accountService.deleteAccount(Long.parseLong(principal.getName())));
