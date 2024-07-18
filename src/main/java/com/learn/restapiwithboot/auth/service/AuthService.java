@@ -44,12 +44,12 @@ public class AuthService {
     }
 
     public AuthResponse getRefresh(String refreshToken) {
-        if (!this.jwtTokenProvider.validateToken(refreshToken, this.jwtProperties.getRefreshSecretKey())) {
+        if (!this.jwtTokenProvider.validateToken(refreshToken, this.jwtProperties.getRefresh().getSecretKey())) {
             log.warn("Refresh Token이 유효하지 않습니다.");
             throw new TokenInvalidException("Refresh Token이 유효하지 않습니다.");
         }
 
-        Claims claims = this.jwtTokenProvider.getClaims(refreshToken, this.jwtProperties.getRefreshSecretKey());
+        Claims claims = this.jwtTokenProvider.getClaims(refreshToken, this.jwtProperties.getRefresh().getSecretKey());
         String email = claims.get("email").toString();
 
         Account account = accountRepository.findByEmail(email)

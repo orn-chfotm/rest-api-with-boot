@@ -14,36 +14,28 @@ import java.security.Key;
 
 @Component
 @ConfigurationProperties(prefix = "jwt")
-@Setter @Getter
+@Setter
+@Getter
 public class JwtProperties {
 
-    @PostConstruct
-    public void init() {
-        this.accessSecretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(this.AccessSecret));
-        this.refreshSecretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(this.RefreshSecret));
-    }
-
-    private Key accessSecretKey;
-
-    private Key refreshSecretKey;
-
-    @NotEmpty
     private String header;
 
-    @NotEmpty
     private String prefix;
 
-    @NotEmpty
-    private int accessExpTime;
+    private JwtPropertiesBuilder access;
 
-    @NotEmpty
-    private int refreshExpTime;
+    private JwtPropertiesBuilder refresh;
 
-    @NotEmpty
-    @Getter(AccessLevel.NONE)
-    private String AccessSecret;
+    @Getter
+    @Setter
+    public static class JwtPropertiesBuilder {
 
-    @NotEmpty
-    @Getter(AccessLevel.NONE)
-    private String RefreshSecret;
+        private int expTime;
+
+        private Key secretKey;
+
+        public void setSecret(String secret) {
+            this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+        }
+    }
 }

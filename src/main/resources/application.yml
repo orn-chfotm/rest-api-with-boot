@@ -21,7 +21,9 @@ logging:
 jwt:
   header: Authorization
   prefix: Bearer
-  access-exp-time: 3600000
-  refresh-exp-time: 864000000
-  access-secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-  refresh-secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  access:
+    exp-time: 3600000
+    secret: 9d4fJz7E6r1L4jW6p3q8N2k5Y4t2O1b9V6s7X3z9H2c4Q8f1G7
+  refresh:
+    exp-time: 864000000
+    secret: b5m6J2k7H8n3R4e1D9t2S1v5U6p9L3q4P5x7C2a6V8o2B9w3T4

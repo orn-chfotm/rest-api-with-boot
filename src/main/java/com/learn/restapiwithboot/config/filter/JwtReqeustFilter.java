@@ -36,7 +36,7 @@ public class JwtReqeustFilter extends OncePerRequestFilter {
 
         log.info("JwtReqeustFilter doFilterInternal");
         log.info("JwtReqeustFilter token: {}", token);
-        if (token != null && jwtTokenProvider.validateToken(token, jwtProperties.getAccessSecretKey())) {
+        if (token != null && jwtTokenProvider.validateToken(token, jwtProperties.getAccess().getSecretKey())) {
             JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(token);
             jwtAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             try {

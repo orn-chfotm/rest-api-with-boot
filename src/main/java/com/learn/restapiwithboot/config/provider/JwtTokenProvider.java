@@ -12,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.sql.Date;
@@ -32,6 +33,8 @@ public class JwtTokenProvider {
 
     private final ObjectMapper objectMapper;
 
+    private static final Map<String, Object> CLAIMS_HEADER = Map.of("type", "JWT", "alg", "HS256");
+
     /**
      * Reqeust Header Authentication JwtToken extract
      */
@@ -43,30 +46,28 @@ public class JwtTokenProvider {
         return null;
     }
 
-    public String generateAsseccToken(Account account) {
+    public String generateToken(Account account, int expTime, Key secretKey) {
         return Jwts.builder()
-                .setHeader(Map.of("type", "JWT", "alg", "HS256"))
-                .setClaims(generateClaims(account, this.jwtproperties.getAccessExpTime()))
-                .signWith(this.jwtproperties.getAccessSecretKey(), SignatureAlgorithm.HS256)
+                .setHeader(CLAIMS_HEADER)
+                .setClaims(generateClaims(account, expTime))
+                .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public String generateAsseccToken(Account account) {
+        return generateToken(account, this.jwtproperties.getAccess().getExpTime(), this.jwtproperties.getAccess().getSecretKey());
     }
 
     public String generateRefreshToken(Account account) {
-        return Jwts.builder()
-                .setHeader(Map.of("type", "JWT", "alg", "HS256"))
-                .setClaims(generateClaims(account, this.jwtproperties.getRefreshExpTime()))
-                .signWith(this.jwtproperties.getRefreshSecretKey(), SignatureAlgorithm.HS256)
-                .compact();
+        return generateToken(account, this.jwtproperties.getRefresh().getExpTime(), this.jwtproperties.getRefresh().getSecretKey());
     }
-
 
     /**
      * Token Validation
      */
     public boolean validateToken(String token, Key tokenKey) {
         try {
-            Claims claims = getClaims(token, tokenKey);
-            return true;
+            return getClaims(token, tokenKey) != null;
         } catch (ExpiredJwtException e) {
             log.warn("ExpiredJwtException :: {}", e.getMessage());
             return false;
@@ -77,15 +78,6 @@ public class JwtTokenProvider {
             log.warn("Token Exception :: {}", e.getMessage());
             return false;
         }
-    }
-
-    /**
-     * Use JwtAuthenticationProvider.class
-     * new JwtAtuhenticationToken
-     */
-    public JwtAuthenticationToken getAuthentication(String token) {
-        Claims claims = getClaims(token, this.jwtproperties.getAccessSecretKey());
-        return new JwtAuthenticationToken(claims.get("accountId").toString(), token, this.getAuthorities(claims));
     }
 
     /* Get Token Claims */
@@ -101,12 +93,35 @@ public class JwtTokenProvider {
      * Generate Claims
      */
     private Claims generateClaims(Account account, int expTime) {
-        Claims claims = setClaims(expTime);
+        Claims claims = setExpTime(expTime);
 
         claims.put("accountId", account.getId());
         claims.put("email", account.getEmail());
         claims.put("role", account.getRoles());
+
         return claims;
+    }
+
+    /**
+     * Set Claims Common Setting
+     */
+    private Claims setExpTime(int expiration) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime expirationTime = now.plusMinutes(expiration);
+
+        return Jwts.claims()
+                .setIssuedAt(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()))
+                .setExpiration(Date.from(expirationTime.atZone(ZoneId.systemDefault()).toInstant()))
+                ;
+    }
+
+    /**
+     * Use JwtAuthenticationProvider.class
+     * new JwtAtuhenticationToken
+     */
+    public JwtAuthenticationToken getAuthentication(String token) {
+        Claims claims = getClaims(token, this.jwtproperties.getAccess().getSecretKey());
+        return new JwtAuthenticationToken(claims.get("accountId").toString(), token, this.getAuthorities(claims));
     }
 
     /**
@@ -126,19 +141,6 @@ public class JwtTokenProvider {
         } catch (IllegalArgumentException e) {
             return Collections.emptySet();
         }
-    }
-
-    /**
-     * Set Claims Common Setting
-     */
-    private Claims setClaims(int expiration) {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime expirationTime = now.plusMinutes(expiration);
-
-        return Jwts.claims()
-                .setIssuedAt(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()))
-                .setExpiration(Date.from(expirationTime.atZone(ZoneId.systemDefault()).toInstant()))
-        ;
     }
 
 }
