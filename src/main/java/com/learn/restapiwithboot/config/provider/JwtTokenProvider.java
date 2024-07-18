@@ -54,11 +54,11 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String accessToken(Account account) {
+    public String generateAccessToken(Account account) {
         return generateToken(account, this.jwtproperties.getAccessToken());
     }
 
-    public String refreshToken(Account account) {
+    public String generateRefreshToken(Account account) {
         return generateToken(account, this.jwtproperties.getRefreshToken());
     }
 

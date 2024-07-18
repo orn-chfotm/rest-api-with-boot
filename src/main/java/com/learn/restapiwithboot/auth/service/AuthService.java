@@ -38,8 +38,8 @@ public class AuthService {
 
         return AuthResponse.builder()
                 .email(account.getEmail())
-                .accessToken(this.jwtTokenProvider.accessToken(account))
-                .refreshToken(this.jwtTokenProvider.refreshToken(account))
+                .accessToken(this.jwtTokenProvider.generateAccessToken(account))
+                .refreshToken(this.jwtTokenProvider.generateRefreshToken(account))
                 .build();
     }
 
@@ -57,8 +57,8 @@ public class AuthService {
 
         return AuthResponse.builder()
                 .email(account.getEmail())
-                .accessToken(this.jwtTokenProvider.accessToken(account))
-                .refreshToken(this.jwtTokenProvider.refreshToken(account))
+                .accessToken(this.jwtTokenProvider.generateAccessToken(account))
+                .refreshToken(this.jwtTokenProvider.generateRefreshToken(account))
                 .build();
     }
 }
