@@ -8,9 +8,10 @@ spring:
     driverClassName: org.h2.Driver
     username: sa
     password: password
-    h2:
-      console:
-        enabled: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
 
 logging:
   level:
@@ -21,9 +22,9 @@ logging:
 jwt:
   header: Authorization
   prefix: Bearer
-  access:
+  access-token:
     exp-time: 3600000
     secret: 9d4fJz7E6r1L4jW6p3q8N2k5Y4t2O1b9V6s7X3z9H2c4Q8f1G7
-  refresh:
+  refresh-token:
     exp-time: 864000000
     secret: b5m6J2k7H8n3R4e1D9t2S1v5U6p9L3q4P5x7C2a6V8o2B9w3T4

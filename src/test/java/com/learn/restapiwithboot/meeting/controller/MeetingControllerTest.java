@@ -13,24 +13,20 @@ import com.learn.restapiwithboot.meeting.dto.request.AddressRequest;
 import com.learn.restapiwithboot.meeting.dto.request.MeetingRequest;
 import com.learn.restapiwithboot.meeting.dto.request.PlaceRequest;
 import com.learn.restapiwithboot.meeting.repsitory.MeetingRepository;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDateTime;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class MeetingControllerTest extends BaseTest {
@@ -57,12 +53,10 @@ class MeetingControllerTest extends BaseTest {
         // Given
         Meeting meeting = createMeeting();
 
-        String token = getToken();
-
         mockMvc.perform(get("/api/meeting")
                         .characterEncoding("utf-8")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .headers(getHeader(token))
+                        .headers(getHeader(getToken()))
                         .param("page", "0")
                         .param("size", "10")
                         .param("sort", "createDate,DESC")
@@ -71,28 +65,49 @@ class MeetingControllerTest extends BaseTest {
                 .andExpect(status().isOk())
                 .andDo(document("get-meetingList",
                         requestHeaders(
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content-Type"),
-                                headerWithName("charset").description("Encoding"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content-Type, charset=utf-8"),
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("JWT Access-Token")
                         ),
                         responseFields(
                             fieldWithPath("statusCode").description("상태 코드"),
                             fieldWithPath("message").description("Response Message"),
-                            fieldWithPath("data[].id").description("Reservation Pk"),
-                            fieldWithPath("data[].title").description("Reservation meeting title"),
-                            fieldWithPath("data[].content").description("Reservation meeting content"),
-                            fieldWithPath("data[].description").description("Reservation meeting description"),
-                            fieldWithPath("data[].meetingType").description("Reservation meeting type"),
-                            fieldWithPath("data[].place.name").description("Reservation meet place"),
-                            fieldWithPath("data[].place.placeType").description("Reservation meet place type"),
-                            fieldWithPath("data[].place.address.roadName").description("Reservation meet place load name"),
-                            fieldWithPath("data[].place.address.city").description("Reservation meet place cityName"),
-                            fieldWithPath("data[].place.address.state").description("Reservation meet Place state"),
-                            fieldWithPath("data[].place.address.postalCode").description("Reservation meet place postalCode"),
-                            fieldWithPath("data[].dues").description("Reservation meet pay due price"),
-                            fieldWithPath("data[].maxMember").description("Reservation meet join max member"),
-                            fieldWithPath("data[].reservedMember").description("Reservation meet now join member"),
-                            fieldWithPath("data[].meetingDate").description("Reservation meet Date")
+                            fieldWithPath("data.content[].id").description("Reservation Pk"),
+                            fieldWithPath("data.content[].title").description("Reservation meeting title"),
+                            fieldWithPath("data.content[].content").description("Reservation meeting content"),
+                            fieldWithPath("data.content[].description").description("Reservation meeting description"),
+                            fieldWithPath("data.content[].meetingType").description("Reservation meeting type"),
+                            fieldWithPath("data.content[].place.name").description("Reservation meet place"),
+                            fieldWithPath("data.content[].place.placeType").description("Reservation meet place type"),
+                            fieldWithPath("data.content[].place.address").type(OBJECT).description("Reservation place address").optional(),
+                            fieldWithPath("data.content[].place.address.roadName").type(STRING).description("Reservation meet place road name").optional(),
+                            fieldWithPath("data.content[].place.address.city").type(STRING).description("Reservation meet place city name").optional(),
+                            fieldWithPath("data.content[].place.address.state").type(STRING).description("Reservation meet place state").optional(),
+                            fieldWithPath("data.content[].place.address.postalCode").type(STRING).description("Reservation meet place postal code").optional(),
+                            fieldWithPath("data.content[].dues").description("Reservation meet pay due price"),
+                            fieldWithPath("data.content[].maxMember").description("Reservation meet join max member"),
+                            fieldWithPath("data.content[].reservedMember").description("Reservation meet now join member"),
+                            fieldWithPath("data.content[].meetingDate").description("Reservation meet Date"),
+                            fieldWithPath("data.content[].regEmail").description("Reservation meet creater"),
+
+                            fieldWithPath("data.pageable.sort.empty").description("Indicates if the sort is empty"),
+                            fieldWithPath("data.pageable.sort.sorted").description("Indicates if the results are sorted"),
+                            fieldWithPath("data.pageable.sort.unsorted").description("Indicates if the results are unsorted"),
+                            fieldWithPath("data.pageable.offset").description("The offset of the current page"),
+                            fieldWithPath("data.pageable.pageNumber").description("The number of the current page"),
+                            fieldWithPath("data.pageable.pageSize").description("The size of the page"),
+                            fieldWithPath("data.pageable.unpaged").description("Indicates if the pagination is disabled"),
+                            fieldWithPath("data.pageable.paged").description("Indicates if the pagination is enabled"),
+                            fieldWithPath("data.last").description("Indicates if this is the last page"),
+                            fieldWithPath("data.totalElements").description("The total number of elements"),
+                            fieldWithPath("data.totalPages").description("The total number of pages"),
+                            fieldWithPath("data.size").description("The size of the current page"),
+                            fieldWithPath("data.number").description("The number of the current page"),
+                            fieldWithPath("data.sort.empty").description("Indicates if the sort is empty"),
+                            fieldWithPath("data.sort.sorted").description("Indicates if the results are sorted"),
+                            fieldWithPath("data.sort.unsorted").description("Indicates if the results are unsorted"),
+                            fieldWithPath("data.first").description("Indicates if this is the first page"),
+                            fieldWithPath("data.numberOfElements").description("The number of elements in the current page"),
+                            fieldWithPath("data.empty").description("Indicates if the page is empty")
                         )
                     ));
     }
@@ -105,7 +120,7 @@ class MeetingControllerTest extends BaseTest {
                 () -> new IllegalArgumentException("가입되지 않은 이메일입니다.")
         );
 
-        return jwtTokenProvider.generateAsseccToken(account);
+        return jwtTokenProvider.accessToken(account);
     }
 
     @Test
@@ -124,28 +139,29 @@ class MeetingControllerTest extends BaseTest {
                 .andExpect(status().isOk())
                 .andDo(document("get-meeting",
                         requestHeaders(
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content Type"),
-                                headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization JWT token"),
-                                headerWithName("charset").description("Char Encoding")
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content Type, charset=utf-8"),
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization JWT token")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").description("response Status Code - Http Status Code"),
                                 fieldWithPath("message").description("response detail Message"),
-                                fieldWithPath("data[].id").description("Reservation Pk"),
-                                fieldWithPath("data[].title").description("Reservation meet title"),
-                                fieldWithPath("data[].content").description("Reservation meet content"),
-                                fieldWithPath("data[].description").description("Reservation meet description"),
-                                fieldWithPath("data[].meetingType").description("Reservation meet  Type"),
-                                fieldWithPath("data[].place.name").description("Reservation place name"),
-                                fieldWithPath("data[].place.placeType").description("Reservation place Type"),
-                                fieldWithPath("data[].place.address.roadName").description("Reservation meet Address road name"),
-                                fieldWithPath("data[].place.address.city").description("Reservation meet city"),
-                                fieldWithPath("data[].place.address.state").description("Reservation meet city state"),
-                                fieldWithPath("data[].place.address.postalCode").description("Reservation meet place postalCode"),
-                                fieldWithPath("data[].dues").description("Reservation pay due"),
-                                fieldWithPath("data[].maxMember").description("Reservation join max member"),
-                                fieldWithPath("data[].reservedMember").description("Reservation join now member"),
-                                fieldWithPath("data[].meetingDate").description("Reservation meet date")
+                                fieldWithPath("data.id").description("Reservation Pk"),
+                                fieldWithPath("data.title").description("Reservation meet title"),
+                                fieldWithPath("data.content").description("Reservation meet content"),
+                                fieldWithPath("data.description").description("Reservation meet description"),
+                                fieldWithPath("data.meetingType").description("Reservation meet  Type"),
+                                fieldWithPath("data.place.name").description("Reservation place name"),
+                                fieldWithPath("data.place.placeType").description("Reservation place Type"),
+                                fieldWithPath("data.place.address").type(OBJECT).description("Reservation place address").optional(),
+                                fieldWithPath("data.place.address.roadName").type(STRING).description("Reservation meet place road name").optional(),
+                                fieldWithPath("data.place.address.city").type(STRING).description("Reservation meet place city name").optional(),
+                                fieldWithPath("data.place.address.state").type(STRING).description("Reservation meet place state").optional(),
+                                fieldWithPath("data.place.address.postalCode").type(STRING).description("Reservation meet place postal code").optional(),
+                                fieldWithPath("data.dues").description("Reservation pay due"),
+                                fieldWithPath("data.maxMember").description("Reservation join max member"),
+                                fieldWithPath("data.reservedMember").description("Reservation join now member"),
+                                fieldWithPath("data.meetingDate").description("Reservation meet date"),
+                                fieldWithPath("data.regEmail").description("Reservation meet creater")
                         )
                 ))
         ;
@@ -158,7 +174,9 @@ class MeetingControllerTest extends BaseTest {
         Long id = 3L;
         // When && Then
         mockMvc.perform(get("/api/meeting/{id}", id)
-                        .characterEncoding("utf-8"))
+                        .characterEncoding("utf-8")
+                        .headers(getHeader(getToken()))
+                )
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
@@ -168,8 +186,6 @@ class MeetingControllerTest extends BaseTest {
     void testCreateMeeting() throws Exception {
         // Given
         MeetingRequest meeting = createSuccessRequestMeeting();
-
-        System.out.println(this.objectMapper.writeValueAsString(meeting));
 
         // When && Then
         mockMvc.perform(post("/api/meeting")
@@ -235,6 +251,7 @@ class MeetingControllerTest extends BaseTest {
         mockMvc.perform(post("/api/meeting")
                         .characterEncoding("utf-8")
                         .content(this.objectMapper.writeValueAsString(meeting))
+                        .headers(getHeader(getToken()))
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest())
@@ -309,10 +326,11 @@ class MeetingControllerTest extends BaseTest {
                                 fieldWithPath("data.meetingType").description("updated response - Reservation meet  Type"),
                                 fieldWithPath("data.place.name").description("updated response - Reservation place name"),
                                 fieldWithPath("data.place.placeType").description("updated response - Reservation place Type"),
-                                fieldWithPath("data.place.address.roadName").description("updated response - Reservation meet Address road name"),
-                                fieldWithPath("data.place.address.city").description("updated response - Reservation meet city"),
-                                fieldWithPath("data.place.address.state").description("updated response - Reservation meet city state"),
-                                fieldWithPath("data.place.address.postalCode").description("updated response - Reservation meet place postalCode"),
+                                fieldWithPath("data.place.address").type(OBJECT).description("Reservation place address").optional(),
+                                fieldWithPath("data.place.address.roadName").type(STRING).description("Reservation meet place road name").optional(),
+                                fieldWithPath("data.place.address.city").type(STRING).description("Reservation meet place city name").optional(),
+                                fieldWithPath("data.place.address.state").type(STRING).description("Reservation meet place state").optional(),
+                                fieldWithPath("data.place.address.postalCode").type(STRING).description("Reservation meet place postal code").optional(),
                                 fieldWithPath("data.dues").description("updated response - Reservation pay due"),
                                 fieldWithPath("data.maxMember").description("updated response - Reservation join max member"),
                                 fieldWithPath("data.reservedMember").description("updated response - Reservation join now member"),
@@ -386,6 +404,7 @@ class MeetingControllerTest extends BaseTest {
                 .description("회의 설명")
                 .meetingType(MeetingType.ONLINE)
                 .place(place)
+                .regId(1L)
                 .build();
         return meetingRepository.save(meeting);
     }

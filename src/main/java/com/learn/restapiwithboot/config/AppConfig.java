@@ -49,12 +49,16 @@ public class AppConfig {
                         .email("user@email.com")
                         .password(passwordEncoder.encode("1234"))
                         .roles(Set.of(AccountRole.USER))
+                        .gender("man")
+                        .phoneNumber("010-1234-5678")
                         .build());
 
                 accountRepository.save(Account.builder()
                         .email("admin@email.com")
                         .password(passwordEncoder.encode("1234"))
                         .roles(Set.of(AccountRole.ADMIN))
+                        .gender("man")
+                        .phoneNumber("010-1234-5678")
                         .build());
             }
         };

@@ -38,18 +38,18 @@ public class AuthService {
 
         return AuthResponse.builder()
                 .email(account.getEmail())
-                .accessToken(this.jwtTokenProvider.generateAsseccToken(account))
-                .refreshToken(this.jwtTokenProvider.generateRefreshToken(account))
+                .accessToken(this.jwtTokenProvider.accessToken(account))
+                .refreshToken(this.jwtTokenProvider.refreshToken(account))
                 .build();
     }
 
     public AuthResponse getRefresh(String refreshToken) {
-        if (!this.jwtTokenProvider.validateToken(refreshToken, this.jwtProperties.getRefresh().getSecretKey())) {
+        if (!this.jwtTokenProvider.validateToken(refreshToken, this.jwtProperties.getRefreshToken().getSecretKey())) {
             log.warn("Refresh Token이 유효하지 않습니다.");
             throw new TokenInvalidException("Refresh Token이 유효하지 않습니다.");
         }
 
-        Claims claims = this.jwtTokenProvider.getClaims(refreshToken, this.jwtProperties.getRefresh().getSecretKey());
+        Claims claims = this.jwtTokenProvider.getClaims(refreshToken, this.jwtProperties.getRefreshToken().getSecretKey());
         String email = claims.get("email").toString();
 
         Account account = accountRepository.findByEmail(email)
@@ -57,8 +57,8 @@ public class AuthService {
 
         return AuthResponse.builder()
                 .email(account.getEmail())
-                .accessToken(this.jwtTokenProvider.generateAsseccToken(account))
-                .refreshToken(this.jwtTokenProvider.generateRefreshToken(account))
+                .accessToken(this.jwtTokenProvider.accessToken(account))
+                .refreshToken(this.jwtTokenProvider.refreshToken(account))
                 .build();
     }
 }

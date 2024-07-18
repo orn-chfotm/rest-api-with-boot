@@ -22,13 +22,13 @@ public class JwtProperties {
 
     private String prefix;
 
-    private JwtPropertiesBuilder access;
+    private TonkenProperties accessToken;
 
-    private JwtPropertiesBuilder refresh;
+    private TonkenProperties refreshToken;
 
     @Getter
     @Setter
-    public static class JwtPropertiesBuilder {
+    public static class TonkenProperties {
 
         private int expTime;
 

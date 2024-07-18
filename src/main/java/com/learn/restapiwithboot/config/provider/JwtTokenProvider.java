@@ -46,20 +46,20 @@ public class JwtTokenProvider {
         return null;
     }
 
-    public String generateToken(Account account, int expTime, Key secretKey) {
+    public String generateToken(Account account, JwtProperties.TonkenProperties tokenProperties) {
         return Jwts.builder()
                 .setHeader(CLAIMS_HEADER)
-                .setClaims(generateClaims(account, expTime))
-                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .setClaims(generateClaims(account, tokenProperties.getExpTime()))
+                .signWith(tokenProperties.getSecretKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String generateAsseccToken(Account account) {
-        return generateToken(account, this.jwtproperties.getAccess().getExpTime(), this.jwtproperties.getAccess().getSecretKey());
+    public String accessToken(Account account) {
+        return generateToken(account, this.jwtproperties.getAccessToken());
     }
 
-    public String generateRefreshToken(Account account) {
-        return generateToken(account, this.jwtproperties.getRefresh().getExpTime(), this.jwtproperties.getRefresh().getSecretKey());
+    public String refreshToken(Account account) {
+        return generateToken(account, this.jwtproperties.getRefreshToken());
     }
 
     /**
@@ -120,7 +120,7 @@ public class JwtTokenProvider {
      * new JwtAtuhenticationToken
      */
     public JwtAuthenticationToken getAuthentication(String token) {
-        Claims claims = getClaims(token, this.jwtproperties.getAccess().getSecretKey());
+        Claims claims = getClaims(token, this.jwtproperties.getAccessToken().getSecretKey());
         return new JwtAuthenticationToken(claims.get("accountId").toString(), token, this.getAuthorities(claims));
     }
 

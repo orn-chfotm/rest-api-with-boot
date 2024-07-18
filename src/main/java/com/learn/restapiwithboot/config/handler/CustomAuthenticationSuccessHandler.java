@@ -46,8 +46,8 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         log.info("generate Token");
         return AuthResponse.builder()
                 .email(account.getEmail())
-                .accessToken(this.jwtTokenProvider.generateAsseccToken(account))
-                .refreshToken(this.jwtTokenProvider.generateRefreshToken(account))
+                .accessToken(this.jwtTokenProvider.accessToken(account))
+                .refreshToken(this.jwtTokenProvider.refreshToken(account))
                 .build();
     }
 
