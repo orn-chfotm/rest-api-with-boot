@@ -4,6 +4,9 @@ import com.learn.restapiwithboot.core.dto.response.FailResponse;
 import com.learn.restapiwithboot.core.enums.ErrorMessage;
 import com.learn.restapiwithboot.core.exceptions.*;
 import io.jsonwebtoken.JwtException;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -11,8 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -75,16 +77,37 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({MethodArgumentNotValidException.class})
     protected ResponseEntity<FailResponse> hadleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         ErrorMessage invalidInputValue = ErrorMessage.INVALID_INPUT_VALUE;
-        Map<String, String> errMessageMap = new HashMap<>();
+        List<ValidationErrorResponse> notValidList = new ArrayList<>();
         for (FieldError fieldError : exception.getFieldErrors()) {
-            errMessageMap.put(fieldError.getField(), fieldError.getDefaultMessage());
+            notValidList.add(ValidationErrorResponse.builder()
+                            .field(fieldError.getField())
+                            .message(fieldError.getDefaultMessage())
+                    .build()
+            );
         }
 
         return ResponseEntity.badRequest().body(new FailResponse(
                 invalidInputValue.getStatus(),
                 invalidInputValue.getMessage(),
-                errMessageMap
+                notValidList
         ));
+    }
+
+    /**
+     * '@Valuid' 예외 처리시 에러 메시지를 담을 Response 객체
+     * Inner Class
+     */
+    @Getter
+    @Setter
+    public static class ValidationErrorResponse {
+        private String field;
+        private String message;
+
+        @Builder
+        public ValidationErrorResponse(String field, String message) {
+            this.field = field;
+            this.message = message;
+        }
     }
 
     /**
@@ -109,20 +132,32 @@ public class GlobalExceptionHandler {
         return this.getFailResponseResponseEntity(exception, ErrorMessage.INVALID_JWT_TOKEN);
     }
 
+    /**
+     * BadCredentialsException 예외 처리
+     * <p>
+     *     인증, 인가 과정 시 발생하는 예외 처리
+     * </p>
+     */
     @ExceptionHandler({BadCredentialsException.class})
     protected ResponseEntity<FailResponse> handleBadCredentialsException(BadCredentialsException exception) {
         return this.getFailResponseResponseEntity(exception, ErrorMessage.BAD_CREDENTIALS);
     }
 
+    /**
+     * AccountExistenceException 예외 처리
+     * <p>
+     *     계정 생성 시 이미 존재하는 계정, 탈퇴한 계정일 때 발생하는 예외 처리
+     * </p>
+     */
     @ExceptionHandler({AccountExistenceException.class})
     protected ResponseEntity<FailResponse> handleAccountExistenceException(AccountExistenceException exception) {
         return this.getFailResponseResponseEntity(exception, ErrorMessage.ACCOUNT_EXIST);
     }
 
-    private ResponseEntity<FailResponse> getFailResponseResponseEntity(BaseException exception, ErrorMessage exceptions) {
+    private ResponseEntity<FailResponse> getFailResponseResponseEntity(BaseException exception, ErrorMessage errorMessage) {
         return ResponseEntity.badRequest().body(new FailResponse(
-                exception.getStatus() == null ? exceptions.getStatus() : exception.getStatus(),
-                exception.getMessage() == null ? exceptions.getMessage() : exception.getMessage()
+                exception.getStatus() == null ? errorMessage.getStatus() : exception.getStatus(),
+                exception.getMessage() == null ? errorMessage.getMessage() : exception.getMessage()
         ));
     }
 }
