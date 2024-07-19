@@ -51,8 +51,8 @@ public class MeetingService {
     }
 
     @Transactional
-    public MeetingResponse updateMeeting(Long id, MeetingRequest meetingRequest) {
-        Meeting meeting = meetingRepository.findById(id)
+    public MeetingResponse updateMeeting(Long id, Long meetingId, MeetingRequest meetingRequest) {
+        Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 모임이 없습니다."));
 
         meetingMapper.updateMeetingFromRequest(meetingRequest, meeting);
