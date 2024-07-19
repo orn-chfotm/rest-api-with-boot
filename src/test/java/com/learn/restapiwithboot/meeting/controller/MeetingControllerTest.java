@@ -120,7 +120,7 @@ class MeetingControllerTest extends BaseTest {
                 () -> new IllegalArgumentException("가입되지 않은 이메일입니다.")
         );
 
-        return jwtTokenProvider.accessToken(account);
+        return jwtTokenProvider.generateAccessToken(account);
     }
 
     @Test

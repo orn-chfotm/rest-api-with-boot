@@ -31,8 +31,8 @@ class JwtTokenProviderTest extends BaseTest {
         Account account = accountRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 이메일입니다."));
 
-        String accessToken = jwtProvider.accessToken(account);
-        String refreshToken = jwtProvider.refreshToken(account);
+        String accessToken = jwtProvider.generateAccessToken(account);
+        String refreshToken = jwtProvider.generateRefreshToken(account);
 
         assertThat(accessToken).isNotEmpty();
         assertThat(refreshToken).isNotEmpty();
@@ -47,8 +47,8 @@ class JwtTokenProviderTest extends BaseTest {
         Account account = accountRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 이메일입니다."));
 
-        String accessToken = jwtProvider.accessToken(account);
-        String refreshToken = jwtProvider.refreshToken(account);
+        String accessToken = jwtProvider.generateAccessToken(account);
+        String refreshToken = jwtProvider.generateRefreshToken(account);
 
         assertThat(accessToken).isNotEmpty();
         assertThat(refreshToken).isNotEmpty();

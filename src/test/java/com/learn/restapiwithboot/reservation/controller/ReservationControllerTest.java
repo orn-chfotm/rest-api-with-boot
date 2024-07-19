@@ -59,7 +59,7 @@ class ReservationControllerTest extends BaseTest {
     }
 
     private String getToken(Account account) {
-        return jwtTokenProvider.generateAsseccToken(account);
+        return jwtTokenProvider.generateAccessToken(account);
     }
 
     @Test

@@ -3,7 +3,6 @@ package com.learn.restapiwithboot.meeting.controller;
 import com.learn.restapiwithboot.core.dto.response.SuccessResponse;
 import com.learn.restapiwithboot.meeting.dto.request.MeetingRequest;
 import com.learn.restapiwithboot.meeting.service.MeetingService;
-import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -39,9 +38,9 @@ public class MeetingController {
         return SuccessResponse.of(meetingService.createMeeting(Long.parseLong(principal.getName()), meetingRequest));
     }
 
-    @PutMapping()
-    public ResponseEntity<?> updateMeeting(Principal principal, @RequestBody @Valid MeetingRequest meetingRequest) {
-        return SuccessResponse.of(meetingService.updateMeeting(Long.parseLong(principal.getName()), meetingRequest));
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateMeeting(Principal principal, @PathVariable Long id, @RequestBody @Valid MeetingRequest meetingRequest) {
+        return SuccessResponse.of(meetingService.updateMeeting(Long.parseLong(principal.getName()), id, meetingRequest));
     }
 
     @DeleteMapping()
