@@ -3,6 +3,7 @@ package com.learn.restapiwithboot.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.config.authentication.CustomUserDetailService;
+import com.learn.restapiwithboot.config.filter.AuthenticationProcessingFilter;
 import com.learn.restapiwithboot.config.filter.CustomUsernamePasswordAuthenticationFilter;
 import com.learn.restapiwithboot.config.filter.JwtReqeustFilter;
 import com.learn.restapiwithboot.config.handler.CustomAuthenticationFailureHandler;
@@ -13,6 +14,7 @@ import com.learn.restapiwithboot.config.properties.JwtProperties;
 import com.learn.restapiwithboot.config.provider.JwtAuthenticationProvider;
 import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,6 +24,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -62,9 +65,12 @@ public class SecurityConfig{
     }
 
     @Bean
-    public CustomUsernamePasswordAuthenticationFilter customUsernamePasswordAuthenticationFilter() throws Exception {
-        CustomUsernamePasswordAuthenticationFilter filter = new CustomUsernamePasswordAuthenticationFilter(objectMapper);
-        filter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/api/login", "POST"));
+    public AuthenticationProcessingFilter authenticationProcessingFilter() throws Exception {
+        AuthenticationProcessingFilter filter = new AuthenticationProcessingFilter(
+                "/api/login",
+                objectMapper
+        );
+
         filter.setAuthenticationManager(authenticationManager(null));
         filter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
         filter.setAuthenticationFailureHandler(authenticationFailureHandler);
@@ -91,17 +97,29 @@ public class SecurityConfig{
     }
 
     @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring()
+                .requestMatchers(PathRequest.toH2Console())
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+    }
+
+    @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
             .httpBasic().disable()
             .csrf().disable()
+            .formLogin().disable()
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http
             .authorizeRequests()
-            .antMatchers("/api/login").permitAll() // /api/login 경로 허용
-            .antMatchers("/api/auth/**").permitAll() // /api/auth 경로 허용
+            .antMatchers(HttpMethod.POST, "/api/account").permitAll()
+            .antMatchers(
+                    "/api/login",
+                    "/api/auth/**",
+                    "/h2-console/**"
+            ).permitAll()
             .antMatchers(HttpMethod.POST, "/api/account/refresh").permitAll() // /api/auth 경로 허용
             .anyRequest().authenticated(); // 다른 모든 요청은 인증 필요
 
@@ -110,7 +128,7 @@ public class SecurityConfig{
                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint(objectMapper));
 
         http.addFilterBefore(jwtReqeustFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAt(customUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(authenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
