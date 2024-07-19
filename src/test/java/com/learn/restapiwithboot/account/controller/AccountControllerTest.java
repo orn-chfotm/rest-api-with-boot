@@ -32,6 +32,8 @@ class AccountControllerTest extends BaseTest {
                 .email("userTest@email.com")
                 .password("1234")
                 .roles(Set.of(AccountRole.USER))
+                .gender("man")
+                .phoneNumber("010-1234-5678")
                 .build();
     }
 
@@ -45,14 +47,12 @@ class AccountControllerTest extends BaseTest {
         mockMvc.perform(post("/api/account")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(request))
-                        .param("email", request.getEmail())
-                        .param("password", request.getPassword())
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("data.email", is(request.getEmail())))
                 .andExpect(jsonPath("data.roles", hasSize(1)))
-                .andExpect(jsonPath("data.roles", contains(request.getRoles())))
+                .andExpect(jsonPath("data.roles", contains("USER")))
                 .andDo(document("create-account",
                         requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content-Type")
@@ -60,7 +60,9 @@ class AccountControllerTest extends BaseTest {
                         requestFields(
                                 fieldWithPath("email").description("이메일"),
                                 fieldWithPath("password").description("비밀번호"),
-                                fieldWithPath("roles").description("권한")
+                                fieldWithPath("roles").description("권한"),
+                                fieldWithPath("gender").description("성별"),
+                                fieldWithPath("phoneNumber").description("전화번호")
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content-Type")
@@ -69,7 +71,9 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("statusCode").description("상태코드"),
                                 fieldWithPath("message").description("상태 메시지"),
                                 fieldWithPath("data.email").description("이메일"),
-                                fieldWithPath("data.roles").description("권한")
+                                fieldWithPath("data.roles[]").description("권한"),
+                                fieldWithPath("data.gender").description("성별"),
+                                fieldWithPath("data.phoneNumber").description("전화번호")
                         )
                 ))
         ;

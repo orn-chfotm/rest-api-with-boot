@@ -43,6 +43,8 @@ class AuthControllerTest extends BaseTest {
     void getLogin() throws Exception {
         // given
         AuthRequest reqeust = AuthRequest.builder()
+                .email("user@email.com")
+                .password("1234")
                 .build();
 
         // when && then

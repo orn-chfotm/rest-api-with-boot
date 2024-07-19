@@ -1,13 +1,14 @@
 package com.learn.restapiwithboot.account.controller;
 
 import com.learn.restapiwithboot.account.domain.Account;
+import com.learn.restapiwithboot.account.dto.request.AccountRequest;
 import com.learn.restapiwithboot.account.service.AccountService;
 import com.learn.restapiwithboot.core.dto.response.SuccessResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/account")
@@ -20,13 +21,8 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createAccount(@RequestBody Account account) {
-        return SuccessResponse.of(accountService.createAccount(account));
-    }
-
-    @PostMapping("/rejoin")
-    public ResponseEntity<?> rejoinAccount(@RequestBody Account account) {
-        return SuccessResponse.of(accountService.reJoinAccount(account));
+    public ResponseEntity<?> createAccount(@RequestBody @Valid AccountRequest accountRequest) {
+        return SuccessResponse.of(accountService.createAccount(accountRequest));
     }
 
     @DeleteMapping

@@ -31,7 +31,7 @@ public class Account extends BaseTimeEntity {
     private String gender;
 
     @Comment("전화번호")
-   @Column(nullable = false)
+    @Column(nullable = false)
     private String phoneNumber;
 
     @Comment("권한")
@@ -40,15 +40,15 @@ public class Account extends BaseTimeEntity {
     private Set<AccountRole> roles;
 
     @Comment("탈퇴 여부")
-    @Column(nullable = false, columnDefinition = "boolean default false")
-    private boolean isWithdraw = false;
+    @Column(nullable = false)
+    private boolean isWithdraw;
 
     @Builder
     public Account(String email, String password, String gender, String phoneNumber, Set<AccountRole> roles) {
         this.email = email;
         this.password = password;
         this.gender = gender;
-        this.phoneNumber = phoneNumber.replaceAll("-", "");
+        this.phoneNumber = phoneNumber.replace("-", "");
         this.roles = roles;
     }
 
