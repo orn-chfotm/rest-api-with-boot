@@ -57,7 +57,7 @@ class AuthControllerTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("Token 발급 테스트 - 성공")
+    @DisplayName("Token 발급 테스트 - Login 성공")
     void getAuth() throws Exception {
         // given
         AuthRequest reqeust = AuthRequest.builder()
