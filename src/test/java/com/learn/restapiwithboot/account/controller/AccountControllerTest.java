@@ -31,8 +31,8 @@ class AccountControllerTest extends BaseTest {
         return AccountRequest.builder()
                 .email("userTest@email.com")
                 .password("1234")
-                .roles(Set.of(AccountRole.USER))
-                .gender("man")
+                .roles(AccountRole.USER)
+                .gender("M")
                 .phoneNumber("010-1234-5678")
                 .build();
     }

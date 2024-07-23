@@ -1,6 +1,7 @@
 package com.learn.restapiwithboot.core.exceptions;
 
-import com.learn.restapiwithboot.core.enums.ErrorMessage;
+import com.learn.restapiwithboot.core.exceptions.base.BaseException;
+import com.learn.restapiwithboot.core.exceptions.enums.ErrorMessage;
 
 public class ResourceNotFoundException extends BaseException {
 

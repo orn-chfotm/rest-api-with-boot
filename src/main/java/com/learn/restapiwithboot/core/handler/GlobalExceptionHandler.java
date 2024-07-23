@@ -1,8 +1,9 @@
 package com.learn.restapiwithboot.core.handler;
 
 import com.learn.restapiwithboot.core.dto.response.FailResponse;
-import com.learn.restapiwithboot.core.enums.ErrorMessage;
 import com.learn.restapiwithboot.core.exceptions.*;
+import com.learn.restapiwithboot.core.exceptions.base.BaseException;
+import com.learn.restapiwithboot.core.exceptions.enums.ErrorMessage;
 import io.jsonwebtoken.JwtException;
 import lombok.Builder;
 import lombok.Getter;

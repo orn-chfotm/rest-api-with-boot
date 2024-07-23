@@ -1,4 +1,4 @@
-package com.learn.restapiwithboot.core.enums;
+package com.learn.restapiwithboot.core.exceptions.enums;
 
 public enum ErrorMessage {
 

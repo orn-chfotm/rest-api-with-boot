@@ -1,6 +1,7 @@
 package com.learn.restapiwithboot.account.domain;
 
 import com.learn.restapiwithboot.account.domain.enums.AccountRole;
+import com.learn.restapiwithboot.account.domain.enums.Gender;
 import com.learn.restapiwithboot.core.domain.BaseTimeEntity;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -28,23 +29,23 @@ public class Account extends BaseTimeEntity {
 
     @Comment("성별")
     @Column(nullable = false)
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @Comment("전화번호")
     @Column(nullable = false)
     private String phoneNumber;
 
     @Comment("권한")
-    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private Set<AccountRole> roles;
+    private AccountRole roles;
 
     @Comment("탈퇴 여부")
     @Column(nullable = false)
     private boolean isWithdraw;
 
     @Builder
-    public Account(String email, String password, String gender, String phoneNumber, Set<AccountRole> roles) {
+    public Account(String email, String password, Gender gender, String phoneNumber, AccountRole roles) {
         this.email = email;
         this.password = password;
         this.gender = gender;

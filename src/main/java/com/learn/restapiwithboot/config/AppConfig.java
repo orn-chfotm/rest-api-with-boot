@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.domain.enums.AccountRole;
+import com.learn.restapiwithboot.account.domain.enums.Gender;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,16 +49,16 @@ public class AppConfig {
                 accountRepository.save(Account.builder()
                         .email("user@email.com")
                         .password(passwordEncoder.encode("1234"))
-                        .roles(Set.of(AccountRole.USER))
-                        .gender("man")
+                        .roles(AccountRole.USER)
+                        .gender(Gender.getName("M"))
                         .phoneNumber("010-1234-5678")
                         .build());
 
                 accountRepository.save(Account.builder()
                         .email("admin@email.com")
                         .password(passwordEncoder.encode("1234"))
-                        .roles(Set.of(AccountRole.ADMIN))
-                        .gender("man")
+                        .roles(AccountRole.ADMIN)
+                        .gender(Gender.getName("F"))
                         .phoneNumber("010-1234-5678")
                         .build());
             }

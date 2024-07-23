@@ -3,6 +3,7 @@ package com.learn.restapiwithboot.reservation.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learn.restapiwithboot.account.domain.Account;
+import com.learn.restapiwithboot.account.domain.enums.Gender;
 import com.learn.restapiwithboot.account.dto.request.AccountRequest;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
@@ -180,6 +181,8 @@ class ReservationControllerTest extends BaseTest {
         Account account = Account.builder()
                 .email("user@email.com")
                 .password("1234")
+                .phoneNumber("010-1234-5678")
+                .gender(Gender.getName("M"))
                 .build();
 
         return accountRepository.save(account);

@@ -1,7 +1,7 @@
-package com.learn.restapiwithboot.core.enums;
+package com.learn.restapiwithboot.core.exceptions.enums;
 
 import com.learn.restapiwithboot.core.exceptions.BadCredentialsException;
-import com.learn.restapiwithboot.core.exceptions.BaseException;
+import com.learn.restapiwithboot.core.exceptions.base.BaseException;
 import com.learn.restapiwithboot.core.exceptions.ResourceNotFoundException;
 import com.learn.restapiwithboot.core.exceptions.TokenInvalidException;
 import lombok.RequiredArgsConstructor;

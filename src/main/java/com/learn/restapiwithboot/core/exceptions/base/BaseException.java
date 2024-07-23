@@ -1,6 +1,6 @@
-package com.learn.restapiwithboot.core.exceptions;
+package com.learn.restapiwithboot.core.exceptions.base;
 
-import com.learn.restapiwithboot.core.enums.ErrorMessage;
+import com.learn.restapiwithboot.core.exceptions.enums.ErrorMessage;
 import lombok.Getter;
 
 @Getter
