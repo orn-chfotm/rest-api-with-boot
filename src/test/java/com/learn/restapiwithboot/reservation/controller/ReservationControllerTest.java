@@ -3,6 +3,7 @@ package com.learn.restapiwithboot.reservation.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learn.restapiwithboot.account.domain.Account;
+import com.learn.restapiwithboot.account.domain.enums.AccountRole;
 import com.learn.restapiwithboot.account.domain.enums.Gender;
 import com.learn.restapiwithboot.account.dto.request.AccountRequest;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
@@ -29,6 +30,8 @@ import org.springframework.web.context.WebApplicationContext;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -107,6 +110,7 @@ class ReservationControllerTest extends BaseTest {
         mockMvc.perform(post("/api/reservation")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .content(objectMapper.writeValueAsString(reservation))
+                    .headers(getHeader(account))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -118,6 +122,7 @@ class ReservationControllerTest extends BaseTest {
     @DisplayName("예약을 생성한다. - 실패")
     void createReservationFail() throws Exception {
         // Given
+        Optional<Account> getAccount = accountRepository.findByEmail("user@email.com");
         Reservation request = Reservation.builder()
                 .accountId(1L)
                 .meetingId(1L)
@@ -126,7 +131,9 @@ class ReservationControllerTest extends BaseTest {
         // When && Then
         mockMvc.perform(post("/api/reservation")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(request))
+                        .headers(getHeader(getAccount.get()))
+                )
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
@@ -144,17 +151,21 @@ class ReservationControllerTest extends BaseTest {
 
         ResultActions resultActions = mockMvc.perform(post("/api/reservation")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(request))
+                        .headers(getHeader(account))
+                )
                 .andDo(print())
                 .andExpect(status().isOk());
 
         String contentAsString = resultActions.andReturn().getResponse().getContentAsString();
         JsonNode jsonNode = objectMapper.readTree(contentAsString);
-        String reservationId = jsonNode.path("data.id").toString();
-        System.out.println(reservationId);
+        String reservationId = jsonNode.path("data").path("id").toString();
 
         // When
-        ResultActions perform = mockMvc.perform(delete("/api/reservation/{id}", reservationId));
+        ResultActions perform = mockMvc.perform(
+                delete("/api/reservation/{id}", reservationId)
+                        .headers(getHeader(account))
+        );
 
         // Then
         perform
@@ -169,7 +180,6 @@ class ReservationControllerTest extends BaseTest {
     void getAccountTest() {
         // Given
         Account account = createAccount();
-        accountRepository.save(account);
         // When
         Account getAccount = accountRepository.findByEmail(account.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("해당 이메일을 가진 계정이 없습니다."));
@@ -179,16 +189,19 @@ class ReservationControllerTest extends BaseTest {
 
     private Account createAccount() {
         Account account = Account.builder()
-                .email("user@email.com")
+                .email("usertest@email.com")
                 .password("1234")
                 .phoneNumber("010-1234-5678")
                 .gender(Gender.getName("M"))
+                .roles(Collections.singleton(AccountRole.USER))
                 .build();
 
         return accountRepository.save(account);
     }
 
     private Meeting createMeeting() {
+        Optional<Account> getAcccount = accountRepository.findByEmail("user@email.com");
+
         Meeting meeting = Meeting.builder()
                 .title("회의 제목")
                 .content("회의 내용")
@@ -200,6 +213,7 @@ class ReservationControllerTest extends BaseTest {
                         .address(Address.builder().build())
                         .build())
                 .dues(10000)
+                .regId(getAcccount.get().getId())
                 .build();
 
         return meetingRepository.save(meeting);
