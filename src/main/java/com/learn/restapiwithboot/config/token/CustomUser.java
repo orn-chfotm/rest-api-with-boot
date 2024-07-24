@@ -20,12 +20,12 @@ public class CustomUser extends User {
         this.account = account;
     }
 
-    private static Collection<? extends GrantedAuthority> authorities(AccountRole role) {
-        /*return roles.stream()
+    private static Collection<? extends GrantedAuthority> authorities(Set<AccountRole> roles) {
+        return roles.stream()
                 .map(r -> new SimpleGrantedAuthority("ROLE_" + r.name()))
-                .collect(Collectors.toSet());*/
+                .collect(Collectors.toSet());
 
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        //return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     public Account getAccount() {

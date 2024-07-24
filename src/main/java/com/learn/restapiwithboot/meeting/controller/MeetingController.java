@@ -1,5 +1,6 @@
 package com.learn.restapiwithboot.meeting.controller;
 
+import com.learn.restapiwithboot.core.annotation.CurrentUser;
 import com.learn.restapiwithboot.core.dto.response.SuccessResponse;
 import com.learn.restapiwithboot.meeting.dto.request.MeetingRequest;
 import com.learn.restapiwithboot.meeting.service.MeetingService;
@@ -34,18 +35,21 @@ public class MeetingController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createMeeting(Principal principal, @RequestBody @Valid MeetingRequest meetingRequest) {
-        return SuccessResponse.of(meetingService.createMeeting(Long.parseLong(principal.getName()), meetingRequest));
+    public ResponseEntity<?> createMeeting(@CurrentUser String accountId,
+                                           @RequestBody @Valid MeetingRequest meetingRequest) {
+        return SuccessResponse.of(meetingService.createMeeting(Long.parseLong(accountId), meetingRequest));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateMeeting(Principal principal, @PathVariable Long id, @RequestBody @Valid MeetingRequest meetingRequest) {
-        return SuccessResponse.of(meetingService.updateMeeting(Long.parseLong(principal.getName()), id, meetingRequest));
+    public ResponseEntity<?> updateMeeting(@CurrentUser String accountId,
+                                           @PathVariable Long id,
+                                           @RequestBody @Valid MeetingRequest meetingRequest) {
+        return SuccessResponse.of(meetingService.updateMeeting(Long.parseLong(accountId), id, meetingRequest));
     }
 
     @DeleteMapping()
-    public ResponseEntity<?> deleteMeeting(Principal principal) {
-        meetingService.deleteMeeting(Long.parseLong(principal.getName()));
+    public ResponseEntity<?> deleteMeeting(@CurrentUser String accountId) {
+        meetingService.deleteMeeting(Long.parseLong(accountId));
         return SuccessResponse.of(null);
     }
 }

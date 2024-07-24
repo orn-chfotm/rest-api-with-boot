@@ -13,10 +13,9 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Set;
+import java.util.Collections;
 
 @Configuration
 public class AppConfig {
@@ -49,7 +48,7 @@ public class AppConfig {
                 accountRepository.save(Account.builder()
                         .email("user@email.com")
                         .password(passwordEncoder.encode("1234"))
-                        .roles(AccountRole.USER)
+                        .roles(Collections.singleton(AccountRole.USER))
                         .gender(Gender.getName("M"))
                         .phoneNumber("010-1234-5678")
                         .build());
@@ -57,7 +56,7 @@ public class AppConfig {
                 accountRepository.save(Account.builder()
                         .email("admin@email.com")
                         .password(passwordEncoder.encode("1234"))
-                        .roles(AccountRole.ADMIN)
+                        .roles(Collections.singleton(AccountRole.ADMIN))
                         .gender(Gender.getName("F"))
                         .phoneNumber("010-1234-5678")
                         .build());
