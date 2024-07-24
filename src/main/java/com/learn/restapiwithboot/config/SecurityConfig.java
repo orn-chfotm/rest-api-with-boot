@@ -63,11 +63,6 @@ public class SecurityConfig{
     }
 
     @Bean
-    public JwtReqeustFilter jwtReqeustFilter() throws Exception {
-        return new JwtReqeustFilter(jwtTokenProvider, jwtProperties, authenticationManager());
-    }
-
-    @Bean
     public JwtAuthenticationProvider jwtAuthenticationProvider() {
         return new JwtAuthenticationProvider(jwtTokenProvider);
     }
@@ -87,11 +82,8 @@ public class SecurityConfig{
     }
 
     @Bean
-    public AuthenticationManager authenticationManager() throws Exception {
-        //return new ProviderManager(List.of(jwtAuthenticationProvider(), daoAuthenticationProvider()));
-        authenticationManagerBuilder.authenticationProvider(jwtAuthenticationProvider());
-        authenticationManagerBuilder.authenticationProvider(daoAuthenticationProvider());
-        return authenticationConfiguration.getAuthenticationManager();
+    public JwtReqeustFilter jwtReqeustFilter() throws Exception {
+        return new JwtReqeustFilter(jwtTokenProvider, jwtProperties, authenticationManager());
     }
 
     @Bean
@@ -100,6 +92,12 @@ public class SecurityConfig{
         daoAuthenticationProvider.setUserDetailsService(customUserDetailService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager() throws Exception {
+        authenticationManagerBuilder.authenticationProvider(jwtAuthenticationProvider());
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
