@@ -1,7 +1,5 @@
 package com.learn.restapiwithboot.account.domain.enums;
 
-import com.learn.restapiwithboot.core.enums.EnumInterface;
-
 public enum Gender {
     MALE("M"), FEMALE("F");
 
@@ -21,10 +19,8 @@ public enum Gender {
             throw new IllegalArgumentException("inputValue is null");
         }
 
-        inputValue = inputValue.trim();
-
         for (Gender gender : Gender.values()) {
-            if (gender.getValue().equalsIgnoreCase(inputValue)) {
+            if (gender.getValue().equalsIgnoreCase(inputValue.trim())) {
                 return gender;
             }
         }

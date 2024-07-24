@@ -21,8 +21,6 @@ public class AccountRequest {
     @NotNull(message = "비밀번호를 입력해주세요.")
     private String password;
 
-    private AccountRole roles;
-
     @NotNull(message = "성별을 입력해주세요.")
     private String gender;
 
@@ -30,10 +28,9 @@ public class AccountRequest {
     private String phoneNumber;
 
     @Builder
-    public AccountRequest(String email, String password, AccountRole roles, String gender, String phoneNumber) {
+    public AccountRequest(String email, String password, String gender, String phoneNumber) {
         this.email = email;
         this.password = password;
-        this.roles = roles;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
     }

@@ -37,15 +37,16 @@ public class Account extends BaseTimeEntity {
     private String phoneNumber;
 
     @Comment("권한")
+    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private AccountRole roles;
+    private Set<AccountRole> roles;
 
     @Comment("탈퇴 여부")
     @Column(nullable = false)
     private boolean isWithdraw;
 
     @Builder
-    public Account(String email, String password, Gender gender, String phoneNumber, AccountRole roles) {
+    public Account(String email, String password, Gender gender, String phoneNumber, Set<AccountRole> roles) {
         this.email = email;
         this.password = password;
         this.gender = gender;

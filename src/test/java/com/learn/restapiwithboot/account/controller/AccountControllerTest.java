@@ -1,7 +1,9 @@
 package com.learn.restapiwithboot.account.controller;
 
-import com.learn.restapiwithboot.account.domain.enums.AccountRole;
+import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.dto.request.AccountRequest;
+import com.learn.restapiwithboot.account.repository.AccountRepository;
+import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
 import com.learn.restapiwithboot.meeting.common.BaseTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,7 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Set;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -18,20 +20,33 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.web.servlet.function.RequestPredicates.headers;
 
 class AccountControllerTest extends BaseTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    private HttpHeaders getHeader(String token) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        httpHeaders.add("Authorization", "Bearer " + token);
+        return httpHeaders;
+    }
+
     private AccountRequest createAccount() {
         return AccountRequest.builder()
                 .email("userTest@email.com")
                 .password("1234")
-                .roles(AccountRole.USER)
                 .gender("M")
                 .phoneNumber("010-1234-5678")
                 .build();
@@ -60,7 +75,6 @@ class AccountControllerTest extends BaseTest {
                         requestFields(
                                 fieldWithPath("email").description("이메일"),
                                 fieldWithPath("password").description("비밀번호"),
-                                fieldWithPath("roles").description("권한"),
                                 fieldWithPath("gender").description("성별"),
                                 fieldWithPath("phoneNumber").description("전화번호")
                         ),
@@ -92,5 +106,19 @@ class AccountControllerTest extends BaseTest {
         assertTrue(passwordEncoder.matches(password, encodedPassword));
     }
 
+    @Test
+    @DisplayName("회원 정보 조회 테스트")
+    void getAccountInfo() throws Exception {
+        // Given
+        Optional<Account> getAccount = accountRepository.findByEmail("user@email.com");
+        Long accountId = getAccount.get().getId();
 
+        String accessToken = jwtTokenProvider.generateAccessToken(getAccount.get());
+
+        // When & Then
+        mockMvc.perform(get("/api/account")
+                        .headers(getHeader(accessToken)))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
 }

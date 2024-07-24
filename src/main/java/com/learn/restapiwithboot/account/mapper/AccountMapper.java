@@ -13,6 +13,7 @@ public interface AccountMapper {
     AccountMapper INSTANCE = Mappers.getMapper(AccountMapper.class);
 
     @Mapping(target = "gender", expression = "java(com.learn.restapiwithboot.account.domain.enums.Gender.getName(accountRequest.getGender()))")
+    @Mapping(target = "roles", ignore = true)
     Account accountRequestToAccount(AccountRequest accountRequest);
 
     @Mapping(target = "gender", expression = "java(account.getGender().getValue())")

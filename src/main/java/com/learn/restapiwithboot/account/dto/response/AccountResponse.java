@@ -15,7 +15,7 @@ public class AccountResponse {
 
     private String email;
 
-    private AccountRole roles;
+    private Set<AccountRole> roles;
 
     private String gender;
 

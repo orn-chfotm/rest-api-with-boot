@@ -1,6 +1,7 @@
 package com.learn.restapiwithboot.account.service;
 
 import com.learn.restapiwithboot.account.domain.Account;
+import com.learn.restapiwithboot.account.domain.enums.AccountRole;
 import com.learn.restapiwithboot.account.dto.request.AccountRequest;
 import com.learn.restapiwithboot.account.dto.response.AccountResponse;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -37,6 +39,7 @@ public class AccountService {
         }
 
         Account account = accountMapper.accountRequestToAccount(accountRequest);
+        account.setRoles(Collections.singleton(AccountRole.USER));
 
         account.setPassword(this.passwordEncoder.encode(account.getPassword()));
         Account saveAccount = accountRepository.save(account);
@@ -56,5 +59,13 @@ public class AccountService {
         }
 
         return true;
+    }
+
+    @Transactional(readOnly = true)
+    public AccountResponse getAccountInfo(Long accountId) {
+        Account getAccount = accountRepository.findById(accountId)
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 계정입니다."));
+
+        return accountMapper.accountToAccountResponse(getAccount);
     }
 }
