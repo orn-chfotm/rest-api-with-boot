@@ -2,7 +2,7 @@ package com.learn.restapiwithboot.reservation.service;
 
 import com.learn.restapiwithboot.account.domain.QAccount;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
-import com.learn.restapiwithboot.core.exceptions.ResourceNotFoundException;
+import com.learn.restapiwithboot.core.exceptions.impl.ResourceNotFoundException;
 import com.learn.restapiwithboot.core.query.QueryDslUtil;
 import com.learn.restapiwithboot.meeting.domain.QMeeting;
 import com.learn.restapiwithboot.meeting.repsitory.MeetingRepository;
@@ -21,7 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 

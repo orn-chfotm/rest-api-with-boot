@@ -2,7 +2,6 @@ package com.learn.restapiwithboot.config.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learn.restapiwithboot.auth.dto.request.AuthRequest;
-import com.learn.restapiwithboot.core.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
