@@ -1,6 +1,6 @@
-package com.learn.restapiwithboot.core.exceptions;
+package com.learn.restapiwithboot.core.exceptions.impl;
 
-import com.learn.restapiwithboot.core.exceptions.base.BaseException;
+import com.learn.restapiwithboot.core.exceptions.BaseException;
 import com.learn.restapiwithboot.core.exceptions.enums.ErrorMessage;
 
 public class BadCredentialsException extends BaseException {
