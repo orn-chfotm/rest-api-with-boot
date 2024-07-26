@@ -32,28 +32,19 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        log.info("Login Success Process Start");
         Account account = ((CustomUser) authentication.getPrincipal()).getAccount();
-
-        setResponse(response);
-        response.getWriter().write(objectMapper.writeValueAsString(getSucceeResponse(account)));
-
-        log.info("Login Success Process End");
-    }
-
-    private AuthResponse getSucceeResponse (Account account) {
         log.info("Login Success Useremail {}", account.getEmail());
-        log.info("generate Token");
-        return AuthResponse.builder()
+
+        AuthResponse authResponse = AuthResponse.builder()
                 .email(account.getEmail())
                 .accessToken(this.jwtTokenProvider.generateAccessToken(account))
                 .refreshToken(this.jwtTokenProvider.generateRefreshToken(account))
                 .build();
-    }
-
-    private void setResponse(HttpServletResponse response) {
         response.setStatus(SC_OK);
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        String responseBody = objectMapper.writeValueAsString(authResponse);
+
+        response.getWriter().write(responseBody);
     }
 }

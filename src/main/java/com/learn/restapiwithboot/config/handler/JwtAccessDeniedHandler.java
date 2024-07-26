@@ -28,18 +28,12 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        log.error("Unauthoriz Token Error : {}", accessDeniedException.getMessage());
-        setResponse(response);
-        response.getWriter().write(objectMapper.writeValueAsString(setException(accessDeniedException)));
-    }
-
-    private FailResponse setException(AccessDeniedException authException) {
-        return new FailResponse(SC_UNAUTHORIZED, authException.getMessage());
-    }
-
-    private void setResponse(HttpServletResponse response) {
+        log.warn("AccessDenied : {}", accessDeniedException.getMessage());
         response.setStatus(SC_UNAUTHORIZED);
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        String responseBody = objectMapper.writeValueAsString(new FailResponse<>(SC_UNAUTHORIZED, accessDeniedException.getMessage()));
+
+        response.getWriter().write(responseBody);
     }
 }

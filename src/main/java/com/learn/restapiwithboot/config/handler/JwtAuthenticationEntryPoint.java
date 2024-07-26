@@ -26,19 +26,12 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        log.error("Unauthoriz Token Error : {}", authException.getMessage());
-        setResponse(response);
-        response.getWriter().write(objectMapper.writeValueAsString(setException(authException)));
-    }
-
-    private FailResponse setException(AuthenticationException authException) {
-        return new FailResponse(SC_UNAUTHORIZED, authException.getMessage());
-    }
-
-    private void setResponse(HttpServletResponse response) {
+        log.warn("AuthenticationEntryPoint : {}", authException.getMessage());
         response.setStatus(SC_UNAUTHORIZED);
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-    }
+        String responseBody = objectMapper.writeValueAsString(new FailResponse<>(SC_UNAUTHORIZED, authException.getMessage()));
 
+        response.getWriter().write(responseBody);
+    }
 }

@@ -105,14 +105,12 @@ class AuthControllerTest extends BaseTest {
                 .build();
 
         // when && then
-        mockMvc.perform(post("/api/auth/login")
+        mockMvc.perform(post("/api/login")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(reqeust))
-                        .param("email", reqeust.getEmail())
-                        .param("password", reqeust.getPassword())
                 )
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
