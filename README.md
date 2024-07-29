@@ -46,4 +46,13 @@
   - Filter를 통한 Login 처리 및 토큰 발급
 - JWT
   - JWT Lib 를 통한 로그인 시 토큰 발급 과정 구현
+    - **비교 사례**
+      - Spring Security Basic Token
+        - Spring Security 프레임워크 내장 
+        - 제한적 - Security 설정에 의존
+        - 기본적인 Base64 인코딩 토큰
+      - JJWT **-> 선택**
+        - JWT 형식의 토큰을 발급
+        - 유연성 - 여러 설정 가능(만료 시간, 암호화 알고리즘, 다양한 Claim 등)
+        - 토큰의 유효성 검사 가능 - 만료, 형식 등 Exception 처리 가능
   - Refresh 토큰을 이용한 토큰 재 발급 구현
