@@ -7,15 +7,15 @@
   - Rest GET, POST, PUT, DELETE 를 활용하여 BackEnd 로직 구현
   - 변환을 위한 Mapper Lib 선택 및 구현
     - **비교 사례**
-      - ObjectMapper(Spring default), 
+      - ObjectMapper(Spring default) **-> 부분 선택**
         - RunTime 시에 객체를 변환
         - 런타임 변환으로 속도가 느리다
-        - 주 사용 사례 :: Json <-> Object 간 변환
+        - 주 사용 사례 :: Json <-> Java 객체 간 변환
       - ModelMapper(Lib)
         - RunTime 시에 객체를 변환
         - 리플렉션 개념으로 접근, 타입 접근성은 좋지만 소모성이 많다
         - 런타임 변환으로 속도가 느리다
-        - 주 사용 사례 :: Java Bean 규약을 따르는 객체간 변환
+        - 주 사용 사례 :: Java 객체간 변환
       - MapStruct (Lib) **-> 선택**
         - Compile 시에 객체를 변환
         - 컴파일 변환 타입 -> 런타임 방식 보다 속도 보장
