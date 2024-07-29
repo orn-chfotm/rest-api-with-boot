@@ -80,6 +80,15 @@ public class JwtTokenProvider {
         }
     }
 
+    /**
+     * Use JwtAuthenticationProvider.class
+     * new JwtAtuhenticationToken
+     */
+    public JwtAuthenticationToken getAuthentication(String token) {
+        Claims claims = getClaims(token, this.jwtproperties.getAccessToken().getSecretKey());
+        return new JwtAuthenticationToken(claims.get("accountId").toString(), token, this.getAuthorities(claims));
+    }
+
     /* Get Token Claims */
     public Claims getClaims(String token, Key tokenKey) {
         return Jwts.parserBuilder()
@@ -93,35 +102,18 @@ public class JwtTokenProvider {
      * Generate Claims
      */
     private Claims generateClaims(Account account, int expTime) {
-        Claims claims = setExpTime(expTime);
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime expirationTime = now.plusMinutes(expTime);
+
+        Claims claims = Jwts.claims()
+                .setIssuedAt(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()))
+                .setExpiration(Date.from(expirationTime.atZone(ZoneId.systemDefault()).toInstant()));
 
         claims.put("accountId", account.getId());
         claims.put("email", account.getEmail());
         claims.put("role", account.getRoles());
 
         return claims;
-    }
-
-    /**
-     * Set Claims Common Setting
-     */
-    private Claims setExpTime(int expiration) {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime expirationTime = now.plusMinutes(expiration);
-
-        return Jwts.claims()
-                .setIssuedAt(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()))
-                .setExpiration(Date.from(expirationTime.atZone(ZoneId.systemDefault()).toInstant()))
-                ;
-    }
-
-    /**
-     * Use JwtAuthenticationProvider.class
-     * new JwtAtuhenticationToken
-     */
-    public JwtAuthenticationToken getAuthentication(String token) {
-        Claims claims = getClaims(token, this.jwtproperties.getAccessToken().getSecretKey());
-        return new JwtAuthenticationToken(claims.get("accountId").toString(), token, this.getAuthorities(claims));
     }
 
     /**
