@@ -1,4 +1,4 @@
-package com.learn.restapiwithboot.config.provider;
+package com.learn.restapiwithboot.config.token;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -3,14 +3,13 @@ package com.learn.restapiwithboot.config.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.auth.dto.response.AuthResponse;
-import com.learn.restapiwithboot.config.token.CustomUser;
-import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
+import com.learn.restapiwithboot.config.authentication.CustomUser;
+import com.learn.restapiwithboot.config.token.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;

@@ -27,6 +27,9 @@ public class AuthenticationProcessingFilter extends AbstractAuthenticationProces
     }
 
 
+    /**
+     * 로그인 시 param 으로 전달되는 값 Dto 변환 처리
+     */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
         if (request.getMethod().equals(HttpMethod.POST.toString())) {

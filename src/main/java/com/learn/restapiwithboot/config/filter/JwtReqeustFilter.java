@@ -1,15 +1,12 @@
 package com.learn.restapiwithboot.config.filter;
 
 import com.learn.restapiwithboot.config.properties.JwtProperties;
-import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
+import com.learn.restapiwithboot.config.token.JwtTokenProvider;
 import com.learn.restapiwithboot.config.token.JwtAuthenticationToken;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
