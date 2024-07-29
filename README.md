@@ -6,6 +6,22 @@
 - REST API
   - Rest GET, POST, PUT, DELETE 를 활용하여 BackEnd 로직 구현
   - 변환을 위한 Mapper Lib 선택 및 구현
+    - **비교 사례**
+      - ObjectMapper(Spring default), 
+        - RunTime 시에 객체를 변환
+        - 런타임 변환으로 속도가 느리다
+        - 주 사용 사례 :: Json <-> Object 간 변환
+      - ModelMapper(Lib)
+        - RunTime 시에 객체를 변환
+        - 리플렉션 개념으로 접근, 타입 접근성은 좋지만 소모성이 많다
+        - 런타임 변환으로 속도가 느리다
+        - 주 사용 사례 :: Java Bean 규약을 따르는 객체간 변환
+      - MapStruct (Lib) **-> 선택**
+        - Compile 시에 객체를 변환
+        - 컴파일 변환 타입 -> 런타임 방식 보다 속도 보장
+        - 컴파일 단계에서 에러를 발견 가능 -> 안전성 보장
+        - Mapper Interface 를 통한 변환 -> 코드 가독성 및 유지보수성 향상
+        - 주 사용 사례 :: Dto, Entity, Vo 등 객체간 변환
 - Test Code
   - Junit 활용
   - Mock 객체 활용
@@ -13,6 +29,17 @@
 - JPA
   - Entity 설계
   - 복잡한 조건 쿼리 Query Dsl 구현
+    - **비교 사례**
+      - JPA @Query 어노테이션
+        - 쿼리를 문자열로 작성하여 컴파일 시점에 오류를 확인 불가
+        - 정적 쿼리에 적합
+        - 복잡한 쿼리는 가독성이 떨어질 수 있다
+      - Query Dsl **-> 선택**
+        - 컴파일 시점에 쿼리 오류를 확인 가능
+        - IDE 자동완성을 통해 쿼리 작성 가능
+        - 쿼리를 객체화하여 가독성이 높아진다
+        - 쿼리를 재사용하기 용이하다
+    
 - Spring Security
   - Custom Filter 구현
   - Authentication 객체 및 인증 Provider 구현
