@@ -28,22 +28,6 @@ public class AuthService {
 
     private final JwtProperties jwtProperties;
 
-    public AuthResponse getAuth(AuthRequest authRequest) {
-        Account account = accountRepository.findByEmail(authRequest.getEmail()).orElseThrow(
-                () -> new IllegalArgumentException("해당 이메일을 가진 계정이 존재하지 않습니다.")
-        );
-
-        if (!passwordEncoder.matches(authRequest.getPassword(), account.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-        }
-
-        return AuthResponse.builder()
-                .email(account.getEmail())
-                .accessToken(this.jwtTokenProvider.generateAccessToken(account))
-                .refreshToken(this.jwtTokenProvider.generateRefreshToken(account))
-                .build();
-    }
-
     public AuthResponse getRefresh(String refreshToken) {
         if (!this.jwtTokenProvider.validateToken(refreshToken, this.jwtProperties.getRefreshToken().getSecretKey())) {
             log.warn("Refresh Token이 유효하지 않습니다.");

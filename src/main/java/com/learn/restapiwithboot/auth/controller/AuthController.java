@@ -18,11 +18,6 @@ public class AuthController {
         this.authService = authservice;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> getLogin(@RequestBody @Valid AuthRequest authRequest) {
-        return SuccessResponse.of(authService.getAuth(authRequest));
-    }
-
     @PostMapping("/refresh")
     public ResponseEntity<?> getLogout(@RequestParam("refreshToken") String refreshToken) {
         return SuccessResponse.of(authService.getRefresh(refreshToken));
