@@ -2,8 +2,8 @@ package com.learn.restapiwithboot.meeting.controller;
 
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
-import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
-import com.learn.restapiwithboot.meeting.common.BaseTest;
+import com.learn.restapiwithboot.config.token.JwtTokenProvider;
+import com.learn.restapiwithboot.common.BaseTest;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
 import com.learn.restapiwithboot.meeting.domain.embed.Address;
 import com.learn.restapiwithboot.meeting.domain.embed.Place;
@@ -63,7 +63,7 @@ class MeetingControllerTest extends BaseTest {
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("get-meetingList",
+                .andDo(document("get-events",
                         requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content-Type, charset=utf-8"),
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("JWT Access-Token")
@@ -137,7 +137,7 @@ class MeetingControllerTest extends BaseTest {
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("get-meeting",
+                .andDo(document("get-event",
                         requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content Type, charset=utf-8"),
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization JWT token")
@@ -195,7 +195,7 @@ class MeetingControllerTest extends BaseTest {
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("insert-meeting",
+                .andDo(document("create-event",
                         requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content Type - application/json, charset=utf-8"),
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization JWT Access token")
@@ -293,7 +293,7 @@ class MeetingControllerTest extends BaseTest {
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("update-meeting",
+                .andDo(document("update-event",
                     requestHeaders(
                             headerWithName(HttpHeaders.CONTENT_TYPE).description("content type, char set"),
                             headerWithName(HttpHeaders.AUTHORIZATION).description("authorization JWT Access Token")

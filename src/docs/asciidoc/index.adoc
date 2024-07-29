@@ -70,8 +70,6 @@
 
 예를 들어, 잘못된 요청으로 이벤트를 만들려고 했을 때 다음과 같은 `400 Bad Request` 응답을 받는다.
 
-////
-
 [[overview-hypermedia]]
 == 하이퍼미디어
 
@@ -94,8 +92,6 @@
 `GET` 요청을 사용하여 인덱스에 접근할 수 있다.
 
 operation::index[snippets='response-body,http-response,links']
-////
-
 
 [[resources-events]]
 == 이벤트
@@ -103,7 +99,7 @@ operation::index[snippets='response-body,http-response,links']
 이벤트 리소스는 이벤트를 만들거나 조회할 때 사용한다.
 
 [[resources-events-list]]
-=== 이벤트 목록 조회
+=== 목록 조회
 
 `GET` 요청을 사용하여 서비스의 모든 이벤트를 조회할 수 있다.
 
@@ -117,9 +113,9 @@ operation::get-events[snippets='response-fields,curl-request,http-response,links
 operation::create-event[snippets='request-fields,curl-request,http-request,request-headers,http-response,response-headers,response-fields,links']
 
 [[resources-events-get]]
-=== 이벤트 조회
+=== 상세 조회
 
-`Get` 요청을 사용해서 기존 이벤트 하나를 조회할 수 있다.
+`Get` 요청을 사용해서 기존 목록 중 하나를 조회할 수 있다.
 
 operation::get-event[snippets='request-fields,curl-request,http-response,links']
 

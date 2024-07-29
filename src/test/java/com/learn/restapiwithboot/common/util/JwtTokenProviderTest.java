@@ -2,9 +2,9 @@ package com.learn.restapiwithboot.common.util;
 
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
-import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
+import com.learn.restapiwithboot.config.token.JwtTokenProvider;
 import com.learn.restapiwithboot.config.properties.JwtProperties;
-import com.learn.restapiwithboot.meeting.common.BaseTest;
+import com.learn.restapiwithboot.common.BaseTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

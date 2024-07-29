@@ -1,12 +1,11 @@
 package com.learn.restapiwithboot.auth.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.auth.dto.request.AuthRequest;
-import com.learn.restapiwithboot.config.provider.JwtTokenProvider;
+import com.learn.restapiwithboot.config.token.JwtTokenProvider;
 import com.learn.restapiwithboot.config.properties.JwtProperties;
-import com.learn.restapiwithboot.meeting.common.BaseTest;
+import com.learn.restapiwithboot.common.BaseTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,7 +130,7 @@ class AuthControllerTest extends BaseTest {
                 .andExpect(jsonPath("data.email", is(account.getEmail())))
                 .andExpect(jsonPath("data.accessToken", is(notNullValue())))
                 .andExpect(jsonPath("data.refreshToken", is(notNullValue())))
-                .andDo(document("token-refresh",
+                .andDo(document("refresh-token",
                         requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content-Type")
                         ),
