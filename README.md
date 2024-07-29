@@ -4,7 +4,7 @@
   - Exception Handler 구현
   - Response Entity 객체 공통화
 - REST API
-  - Rest GET, POST, PUT, DELETE 를 활용하여 BackEnd 로직 구현
+  - Rest(GET, POST, PUT, DELETE, UPDATE)를 활용하여 BackEnd 로직 구현
   - 변환을 위한 Mapper Lib 선택 및 구현
     - **비교 사례**
       - ObjectMapper(Spring default) **-> 부분 선택**
@@ -22,10 +22,6 @@
         - 컴파일 단계에서 에러를 발견 가능 -> 안전성 보장
         - Mapper Interface 를 통한 변환 -> 코드 가독성 및 유지보수성 향상
         - 주 사용 사례 :: Dto, Entity, Vo 등 객체간 변환
-- Test Code
-  - Junit 활용
-  - Mock 객체 활용
-  - Document 정리
 - JPA
   - Entity 설계
   - 복잡한 조건 쿼리 Query Dsl 구현
@@ -39,7 +35,6 @@
         - IDE 자동완성을 통해 쿼리 작성 가능
         - 쿼리를 객체화하여 가독성이 높아진다
         - 쿼리를 재사용하기 용이하다
-    
 - Spring Security
   - Custom Filter 구현
   - Authentication 객체 및 인증 Provider 구현
@@ -56,3 +51,7 @@
         - 유연성 - 여러 설정 가능(만료 시간, 암호화 알고리즘, 다양한 Claim 등)
         - 토큰의 유효성 검사 가능 - 만료, 형식 등 Exception 처리 가능
   - Refresh 토큰을 이용한 토큰 재 발급 구현
+- Test Code
+  - Junit 활용
+  - Mock 객체 활용
+  - Document 정리
