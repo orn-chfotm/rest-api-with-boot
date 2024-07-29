@@ -2,6 +2,7 @@ package com.learn.restapiwithboot.reservation.service;
 
 import com.learn.restapiwithboot.account.domain.QAccount;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
+import com.learn.restapiwithboot.core.exceptions.enums.ExceptionType;
 import com.learn.restapiwithboot.core.exceptions.impl.ResourceNotFoundException;
 import com.learn.restapiwithboot.core.query.QueryDslUtil;
 import com.learn.restapiwithboot.meeting.domain.QMeeting;
@@ -81,10 +82,10 @@ public class ReservationService {
     public ReservationResponse createReservation(Long accountId, ReservationRequest reservationRequest) {
 
         if (!accountRepository.existsById(accountId)) {
-            throw new ResourceNotFoundException("해당하는 사용자가 없습니다.");
+            throw ExceptionType.ACCOUNT_NOT_FOUND.getException();
         }
         if (!meetingRepository.existsById(reservationRequest.getMeetingId())) {
-            throw new ResourceNotFoundException("해당하는 회의가 없습니다.");
+            throw ExceptionType.RESOURCE_RESERVATION_NOT_FOUND.getException();
         }
 
         Reservation reservation = reservationMapper.reservationRequestToReservation(reservationRequest);
@@ -103,7 +104,7 @@ public class ReservationService {
                 .fetch().size() == 1;
 
         if (!isExistence) {
-            throw new ResourceNotFoundException("해당하는 예약이 없습니다.");
+            throw ExceptionType.RESOURCE_RESERVATION_NOT_FOUND.getException();
         }
 
         reservationRepository.deleteById(ReservationId);

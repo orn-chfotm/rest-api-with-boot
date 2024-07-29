@@ -6,6 +6,7 @@ import com.learn.restapiwithboot.account.dto.request.AccountRequest;
 import com.learn.restapiwithboot.account.dto.response.AccountResponse;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.account.mapper.AccountMapper;
+import com.learn.restapiwithboot.core.exceptions.enums.ExceptionType;
 import com.learn.restapiwithboot.core.exceptions.impl.AccountExistenceException;
 import com.learn.restapiwithboot.core.exceptions.impl.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +33,9 @@ public class AccountService {
 
         if (getAccount.isPresent()) {
             if (getAccount.get().isWithdraw()) {
-               throw new AccountExistenceException("이미 탈퇴 처리된 계정입니다.");
+               throw ExceptionType.ACCOUNT_WITHDRAWAL_EXCEPTION.getException();
             } else {
-                throw new AccountExistenceException("이미 존재하는 계정입니다.");
+                throw ExceptionType.ACCOUNT_EXIST_EXCEPTION.getException();
             }
         }
 
@@ -50,12 +51,12 @@ public class AccountService {
     @Transactional
     public boolean deleteAccount(Long accountId) {
         Account getAccount = accountRepository.findById(accountId)
-                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 계정입니다."));
+                .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
 
         if (!getAccount.isWithdraw()) {
             getAccount.withDraw();
         } else {
-            throw new AccountExistenceException("이미 탈퇴 처리된 계정입니다.");
+            throw ExceptionType.ACCOUNT_WITHDRAWAL_EXCEPTION.getException();
         }
 
         return true;
@@ -64,7 +65,7 @@ public class AccountService {
     @Transactional(readOnly = true)
     public AccountResponse getAccountInfo(Long accountId) {
         Account getAccount = accountRepository.findById(accountId)
-                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 계정입니다."));
+                .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
 
         return accountMapper.accountToAccountResponse(getAccount);
     }

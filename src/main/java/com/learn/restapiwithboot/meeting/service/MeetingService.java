@@ -1,5 +1,6 @@
 package com.learn.restapiwithboot.meeting.service;
 
+import com.learn.restapiwithboot.core.exceptions.enums.ExceptionType;
 import com.learn.restapiwithboot.meeting.mapper.MeetingMapper;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
 import com.learn.restapiwithboot.meeting.dto.request.MeetingRequest;
@@ -35,7 +36,7 @@ public class MeetingService {
 
     public MeetingResponse getMeeting(Long id) {
         Meeting meeting = meetingRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 모임이 없습니다."));
+                .orElseThrow(ExceptionType.RESOURCE_MEETING_NOT_FOUND::getException);
 
         return meetingMapper.meetingToMeetingResponse(meeting);
     }
@@ -53,7 +54,7 @@ public class MeetingService {
     @Transactional
     public MeetingResponse updateMeeting(Long id, Long meetingId, MeetingRequest meetingRequest) {
         Meeting meeting = meetingRepository.findById(meetingId)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 모임이 없습니다."));
+                .orElseThrow(ExceptionType.RESOURCE_MEETING_NOT_FOUND::getException);
 
         meetingMapper.updateMeetingFromRequest(meetingRequest, meeting);
 
@@ -63,7 +64,7 @@ public class MeetingService {
     @Transactional
     public void deleteMeeting(Long accountId) {
         if (!meetingRepository.existsById(accountId)) {
-            throw new IllegalArgumentException("해당하는 모임이 없습니다.");
+            throw ExceptionType.RESOURCE_MEETING_NOT_FOUND.getException();
         }
         meetingRepository.deleteById(accountId);
     }

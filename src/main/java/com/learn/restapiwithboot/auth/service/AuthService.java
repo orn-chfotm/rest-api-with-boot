@@ -6,6 +6,7 @@ import com.learn.restapiwithboot.auth.dto.response.AuthResponse;
 import com.learn.restapiwithboot.auth.dto.request.AuthRequest;
 import com.learn.restapiwithboot.config.token.JwtTokenProvider;
 import com.learn.restapiwithboot.config.properties.JwtProperties;
+import com.learn.restapiwithboot.core.exceptions.enums.ExceptionType;
 import com.learn.restapiwithboot.core.exceptions.impl.ResourceNotFoundException;
 import com.learn.restapiwithboot.core.exceptions.impl.TokenInvalidException;
 import io.jsonwebtoken.Claims;
@@ -46,14 +47,14 @@ public class AuthService {
     public AuthResponse getRefresh(String refreshToken) {
         if (!this.jwtTokenProvider.validateToken(refreshToken, this.jwtProperties.getRefreshToken().getSecretKey())) {
             log.warn("Refresh Token이 유효하지 않습니다.");
-            throw new TokenInvalidException("Refresh Token이 유효하지 않습니다.");
+            throw ExceptionType.INVALID_REFRESH_TOKEN_EXCEPTION.getException();
         }
 
         Claims claims = this.jwtTokenProvider.getClaims(refreshToken, this.jwtProperties.getRefreshToken().getSecretKey());
         String email = claims.get("email").toString();
 
         Account account = accountRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("해당하는 사용자가 없습니다."));
+                .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
 
         return AuthResponse.builder()
                 .email(account.getEmail())

@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<FailResponse> hadelException(Exception exception) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         ErrorMessage invalidJwtDecode = ErrorMessage.NOT_FOUND;
-        return ResponseEntity.status(status).body(new FailResponse(
+        return ResponseEntity.status(status).body(new FailResponse<>(
                 invalidJwtDecode.getStatus(),
                 invalidJwtDecode.getMessage()
         ));
@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<FailResponse> handelRuntimeException(RuntimeException exception) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         ErrorMessage notFound = ErrorMessage.NOT_FOUND;
-        return ResponseEntity.status(status).body(new FailResponse(
+        return ResponseEntity.status(status).body(new FailResponse<>(
                 notFound.getStatus(),
                 notFound.getMessage()
         ));
@@ -63,7 +63,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<FailResponse> hadelJwtException(JwtException exception) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         ErrorMessage invalidJwtDecode = ErrorMessage.INVALID_JWT_TOKEN;
-        return ResponseEntity.status(status).body(new FailResponse(
+        return ResponseEntity.status(status).body(new FailResponse<>(
                 invalidJwtDecode.getStatus(),
                 invalidJwtDecode.getMessage()
         ));
@@ -119,7 +119,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({ResourceNotFoundException.class})
     protected ResponseEntity<FailResponse> hadleResourceNotFoundException(ResourceNotFoundException exception) {
-        return getFailResponseResponseEntity(exception, ErrorMessage.RESOURCE_NOT_FOUND);
+        return ResponseEntity.badRequest().body(new FailResponse<>(exception.getStatus(), exception.getMessage()));
     }
 
     /**
@@ -130,7 +130,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({TokenInvalidException.class})
     protected ResponseEntity<FailResponse> handleInvalidTokenException(TokenInvalidException exception) {
-        return this.getFailResponseResponseEntity(exception, ErrorMessage.INVALID_JWT_TOKEN);
+        return ResponseEntity.badRequest().body(new FailResponse<>(exception.getStatus(), exception.getMessage()));
     }
 
     /**
@@ -141,7 +141,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({BadCredentialsException.class})
     protected ResponseEntity<FailResponse> handleBadCredentialsException(BadCredentialsException exception) {
-        return this.getFailResponseResponseEntity(exception, ErrorMessage.BAD_CREDENTIALS);
+        return ResponseEntity.badRequest().body(new FailResponse<>(exception.getStatus(), exception.getMessage()));
     }
 
     /**
@@ -152,9 +152,11 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({AccountExistenceException.class})
     protected ResponseEntity<FailResponse> handleAccountExistenceException(AccountExistenceException exception) {
-        return this.getFailResponseResponseEntity(exception, ErrorMessage.ACCOUNT_EXIST);
+        return ResponseEntity.badRequest().body(new FailResponse<>(exception.getStatus(), exception.getMessage()));
     }
 
+    /* 추후 제거 예정 */
+    @Deprecated
     private ResponseEntity<FailResponse> getFailResponseResponseEntity(BaseException exception, ErrorMessage errorMessage) {
         return ResponseEntity.badRequest().body(new FailResponse(
                 exception.getStatus() == null ? errorMessage.getStatus() : exception.getStatus(),

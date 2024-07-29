@@ -8,11 +8,15 @@ public enum ErrorMessage {
     INVALID_JWT_KEY(401, "Invalid JWT Key"),
     EXPIRED_TOKEN(401, "Expired Token"),
     BAD_CREDENTIALS(401, "BadCredentials::Authentication Failed"),
+    ACCOUNT_NOT_FOUND(401, "Account information not found"),
     NOT_FOUND(404, "Not Found"),
     RESOURCE_NOT_FOUND(404, "Resource Not Found"),
+    RESOURCE_MEETING_NOT_FOUND(404, "There is no such meeting."),
+    RESOURCE_RESERVATION_NOT_FOUND(404, "There is no such reservation."),
     METHOD_NOT_ALLOWED(405, "Method Not Allowed"),
     INTERNAL_SERVER_ERROR(500, "Server Error"),
-    ACCOUNT_EXIST(409, "Account is already exist")
+    ACCOUNT_EXIST(409, "Account is already exist"),
+    ACCOUNT_WITHDRAWAL(409, "Account is already withdrawal")
     ;
 
     /* Default status */
