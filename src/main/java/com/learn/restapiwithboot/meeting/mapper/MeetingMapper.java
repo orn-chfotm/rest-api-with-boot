@@ -8,8 +8,6 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring", uses = {PlaceMapper.class, AddressMapper.class})
 public interface MeetingMapper {
-    MeetingMapper INSTANCE = Mappers.getMapper(MeetingMapper.class);
-
     @Mapping(target = "reservedMember", ignore = true)
     @Mapping(target = "regId", ignore = true)
     Meeting meetingReqeustToMeeting(MeetingRequest meetingRequest);

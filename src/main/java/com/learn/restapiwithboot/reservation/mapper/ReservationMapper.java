@@ -11,8 +11,6 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring", uses = {AccountMapper.class, MeetingMapper.class})
 public interface ReservationMapper {
-    ReservationMapper INSTANCE = Mappers.getMapper(ReservationMapper.class);
-
     @Mapping(source = "account", target = "accountResponse")
     @Mapping(source = "meeting", target = "meetingResponse")
     ReservationResponse reservationToReservationResponse(Reservation reservation);
