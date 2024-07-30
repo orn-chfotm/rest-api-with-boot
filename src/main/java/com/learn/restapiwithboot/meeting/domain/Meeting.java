@@ -69,6 +69,27 @@ public class Meeting extends BaseTimeEntity {
         this.regId = regId;
     }
 
+    public void is() {
+        if (this.reservedMember >= maxMember) {
+            throw new RuntimeException("인원이 초과되었습니다.");
+        }
+        this.reservedMember++;
+    }
+
+    public void increaseReservedMembers() {
+        if (this.reservedMember >= maxMember) {
+            throw new RuntimeException("인원이 초과되었습니다.");
+        }
+        this.reservedMember++;
+    }
+
+    public void decreaseReservedMembers() {
+        if (this.reservedMember <= 0) {
+            throw new RuntimeException("예약 인원이 없습니다.");
+        }
+        this.reservedMember--;
+    }
+
     @Builder
     public Meeting(String title, String content, String description, int dues, int maxMember, int reservedMember, LocalDateTime meetingDate, MeetingType meetingType, Place place, Long regId) {
         this.title = title;

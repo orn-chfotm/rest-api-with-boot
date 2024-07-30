@@ -3,8 +3,8 @@ package com.learn.restapiwithboot.reservation.service;
 import com.learn.restapiwithboot.account.domain.QAccount;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.core.exceptions.enums.ExceptionType;
-import com.learn.restapiwithboot.core.exceptions.impl.ResourceNotFoundException;
 import com.learn.restapiwithboot.core.query.QueryDslUtil;
+import com.learn.restapiwithboot.meeting.domain.Meeting;
 import com.learn.restapiwithboot.meeting.domain.QMeeting;
 import com.learn.restapiwithboot.meeting.repsitory.MeetingRepository;
 import com.learn.restapiwithboot.reservation.domain.QReservation;
@@ -15,7 +15,6 @@ import com.learn.restapiwithboot.reservation.mapper.ReservationMapper;
 import com.learn.restapiwithboot.reservation.repository.ReservationRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -37,13 +36,11 @@ public class ReservationService {
 
     private final ReservationMapper reservationMapper;
 
-    private final ModelMapper modelMapper;
-
     private final JPAQueryFactory jpaQueryFactory;
 
     private final QueryDslUtil queryDslUtil;
 
-    public Page<ReservationResponse> getReservation(Long accountId, Pageable pageable) {
+    public Page<ReservationResponse> getAllReservation(Long accountId, Pageable pageable) {
 
         List<Reservation> reservationList = jpaQueryFactory.selectFrom(QReservation.reservation)
                 .where(QReservation.reservation.accountId.eq(accountId))
@@ -89,6 +86,13 @@ public class ReservationService {
         }
 
         Reservation reservation = reservationMapper.reservationRequestToReservation(reservationRequest);
+
+        Meeting meeting = meetingRepository.findById(reservation.getMeetingId())
+                .orElseThrow(ExceptionType.RESOURCE_MEETING_NOT_FOUND::getException);
+
+        if (meeting.getReservedMember() >= meeting.getMaxMember()) {
+        }
+        meeting.increaseReservedMembers();
         reservation.setAccountId(accountId);
         reservationRepository.save(reservation);
 
