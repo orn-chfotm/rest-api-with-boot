@@ -21,7 +21,7 @@ public class ReservationController {
     @GetMapping
     public ResponseEntity<?> getAllReservation(@AuthenticationPrincipal String accountId,
                                                Pageable pageable) {
-        return SuccessResponse.of(reservationService.getReservation(Long.parseLong(accountId), pageable));
+        return SuccessResponse.of(reservationService.getAllReservation(Long.parseLong(accountId), pageable));
     }
 
     @PostMapping
