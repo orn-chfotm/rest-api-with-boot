@@ -9,7 +9,9 @@ import org.hibernate.annotations.Comment;
 import javax.persistence.*;
 import java.util.Set;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
 @ToString
@@ -24,34 +26,30 @@ public class Account extends BaseTimeEntity {
     private String email;
 
     @Comment("비밀번호")
-    @Column(nullable = false)
     private String password;
 
     @Comment("성별")
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @Comment("전화번호")
-    @Column(nullable = false)
     private String phoneNumber;
 
     @Comment("권한")
-    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private Set<AccountRole> roles;
+    private AccountRole role;
 
     @Comment("탈퇴 여부")
     @Column(nullable = false)
     private boolean isWithdraw;
 
     @Builder
-    public Account(String email, String password, Gender gender, String phoneNumber, Set<AccountRole> roles) {
+    public Account(String email, String password, Gender gender, String phoneNumber, AccountRole role) {
         this.email = email;
         this.password = password;
         this.gender = gender;
         this.phoneNumber = phoneNumber.replace("-", "");
-        this.roles = roles;
+        this.role = role;
     }
 
     public void withDraw() {
