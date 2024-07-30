@@ -63,7 +63,7 @@ class MeetingControllerTest extends BaseTest {
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("get-events",
+                .andDo(document("get-meeting-list",
                         requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content-Type, charset=utf-8"),
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("JWT Access-Token")
@@ -137,7 +137,7 @@ class MeetingControllerTest extends BaseTest {
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("get-event",
+                .andDo(document("get-meeting",
                         requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content Type, charset=utf-8"),
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization JWT token")
@@ -195,7 +195,7 @@ class MeetingControllerTest extends BaseTest {
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("create-event",
+                .andDo(document("create-meeting",
                         requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content Type - application/json, charset=utf-8"),
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization JWT Access token")
@@ -293,7 +293,7 @@ class MeetingControllerTest extends BaseTest {
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("update-event",
+                .andDo(document("update-meeting",
                     requestHeaders(
                             headerWithName(HttpHeaders.CONTENT_TYPE).description("content type, char set"),
                             headerWithName(HttpHeaders.AUTHORIZATION).description("authorization JWT Access Token")

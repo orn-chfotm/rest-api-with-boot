@@ -15,12 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -42,9 +40,9 @@ class AccountControllerTest extends BaseTest {
         return httpHeaders;
     }
 
-    private AccountRequest createAccount() {
+    private AccountRequest createAccount(String email) {
         return AccountRequest.builder()
-                .email("userTest@email.com")
+                .email(email)
                 .password("1234")
                 .gender("M")
                 .phoneNumber("010-1234-5678")
@@ -55,7 +53,7 @@ class AccountControllerTest extends BaseTest {
     @DisplayName("회원가입 테스트")
     void putAccount() throws Exception {
         // Given
-        AccountRequest request = createAccount();
+        AccountRequest request = createAccount("userTest1@eamil.com");
 
         // When & Then
         mockMvc.perform(post("/api/account")
@@ -65,8 +63,7 @@ class AccountControllerTest extends BaseTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("data.email", is(request.getEmail())))
-                .andExpect(jsonPath("data.roles", hasSize(1)))
-                .andExpect(jsonPath("data.roles", contains("USER")))
+                .andExpect(jsonPath("data.role", is("USER")))
                 .andDo(document("create-account",
                         requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content-Type")
@@ -84,7 +81,7 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("statusCode").description("상태코드"),
                                 fieldWithPath("message").description("상태 메시지"),
                                 fieldWithPath("data.email").description("이메일"),
-                                fieldWithPath("data.roles[]").description("권한"),
+                                fieldWithPath("data.role").description("권한"),
                                 fieldWithPath("data.gender").description("성별"),
                                 fieldWithPath("data.phoneNumber").description("전화번호")
                         )
@@ -93,31 +90,67 @@ class AccountControllerTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("PW 암호화 테스트")
-    void encodePassword() {
-        // Given
-        String password = "1234";
-
-        // When
-        String encodedPassword = passwordEncoder.encode(password);
-
-        // Then
-        assertTrue(passwordEncoder.matches(password, encodedPassword));
-    }
-
-    @Test
     @DisplayName("회원 정보 조회 테스트")
     void getAccountInfo() throws Exception {
         // Given
         Optional<Account> getAccount = accountRepository.findByEmail("user@email.com");
-        Long accountId = getAccount.get().getId();
-
         String accessToken = jwtTokenProvider.generateAccessToken(getAccount.get());
 
         // When & Then
         mockMvc.perform(get("/api/account")
                         .headers(getHeader(accessToken)))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(document("get-account-info",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("Bearer Token")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content-Type")
+                        ),
+                        relaxedResponseFields(
+                                fieldWithPath("statusCode").description("상태코드"),
+                                fieldWithPath("message").description("상태 메시지"),
+                                fieldWithPath("data.email").description("이메일"),
+                                fieldWithPath("data.role").description("권한"),
+                                fieldWithPath("data.gender").description("성별"),
+                                fieldWithPath("data.phoneNumber").description("전화번호")
+                        )
+                ));
     }
+
+   @Test
+   @DisplayName("회원 탈퇴 테스트")
+    void deleteAccount() throws Exception {
+       // Given
+       String email = "userTest2@eamil.com";
+       AccountRequest request = createAccount(email);
+       mockMvc.perform(post("/api/account")
+               .contentType(MediaType.APPLICATION_JSON_VALUE)
+               .content(objectMapper.writeValueAsString(request))
+       );
+
+       Optional<Account> getAccount = accountRepository.findByEmail(email);
+       String accessToken = jwtTokenProvider.generateAccessToken(getAccount.get());
+
+        // When & Then
+       mockMvc.perform(delete("/api/account")
+                       .headers(getHeader(accessToken))
+               )
+               .andDo(print())
+               .andExpect(status().isOk())
+               .andDo(document("delete-account",
+                       requestHeaders(
+                               headerWithName(HttpHeaders.AUTHORIZATION).description("Bearer Token")
+                       ),
+                       responseHeaders(
+                               headerWithName(HttpHeaders.CONTENT_TYPE).description("Content-Type")
+                       ),
+                       relaxedResponseFields(
+                               fieldWithPath("statusCode").description("상태코드"),
+                               fieldWithPath("message").description("상태 메시지")
+                       )
+               ));
+
+   }
 }

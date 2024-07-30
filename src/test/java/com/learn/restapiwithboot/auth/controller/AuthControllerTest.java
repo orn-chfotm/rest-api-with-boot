@@ -74,7 +74,7 @@ class AuthControllerTest extends BaseTest {
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("access-token",
+                .andDo(document("get-access-token",
                         requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content-Type")
                         ),
@@ -130,12 +130,15 @@ class AuthControllerTest extends BaseTest {
                 .andExpect(jsonPath("data.email", is(account.getEmail())))
                 .andExpect(jsonPath("data.accessToken", is(notNullValue())))
                 .andExpect(jsonPath("data.refreshToken", is(notNullValue())))
-                .andDo(document("refresh-token",
+                .andDo(document("get-refresh-token",
                         requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content-Type")
                         ),
                         requestParameters(
                                 parameterWithName("refreshToken").description("Refresh Token")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content-Type")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").description("Status Code"),

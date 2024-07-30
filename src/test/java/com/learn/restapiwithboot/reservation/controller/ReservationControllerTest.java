@@ -27,6 +27,13 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.JsonFieldType.OBJECT;
+import static org.springframework.restdocs.payload.JsonFieldType.STRING;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -34,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class ReservationControllerTest extends BaseTest {
 
-   /* @Autowired
+    @Autowired
     AccountRepository accountRepository;
 
     @Autowired
@@ -59,15 +66,13 @@ class ReservationControllerTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("계정 Email 기준으로 예약을 조회한다.")
+    @DisplayName("Token 계정 기준으로 예약을 조회한다.")
     void getReservations() throws Exception {
         // Given
         Meeting meeting = createMeeting();
 
         Account account = accountRepository.findByEmail("user@email.com")
                 .orElseThrow(() -> new IllegalArgumentException("계정을 찾을 수 없습니다."));
-
-        HttpHeaders header = getHeader(account);
 
         reservationRepository.save(Reservation.builder()
                 .accountId(account.getId())
@@ -78,20 +83,58 @@ class ReservationControllerTest extends BaseTest {
         mockMvc.perform(get("/api/reservation")
                         .characterEncoding(StandardCharsets.UTF_8.toString())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .headers(header)
+                        .headers(getHeader(account))
                         .param("page", "0")
                         .param("size", "10")
                         .param("sort", "createDate,DESC")
                 )
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(document("get-reservation-list",
+                        requestHeaders(
+                                headerWithName("content-type").description("Content Type")
+                        ),
+                        requestParameters(
+                                parameterWithName("page").description("페이지 번호"),
+                                parameterWithName("size").description("페이지 사이즈"),
+                                parameterWithName("sort").description("정렬 기준")
+                        ),
+                        responseHeaders(
+                                headerWithName("content-type").description("Content Type")
+                        ),
+                        relaxedResponseFields(
+                                fieldWithPath("data.content[].id").description("Reservation ID"),
+                                fieldWithPath("data.content[].accountResponse.email").description("Reservation person Eamil"),
+                                fieldWithPath("data.content[].accountResponse.role").description("Reservatio sperson role"),
+                                fieldWithPath("data.content[].accountResponse.gender").description("Reservation person gender"),
+                                fieldWithPath("data.content[].accountResponse.phoneNumber").description("Reservation person phoneNumber"),
+                                fieldWithPath("data.content[].meetingResponse.id").description("Reservation meet ID"),
+                                fieldWithPath("data.content[].meetingResponse.title").description("Reservation meet title"),
+                                fieldWithPath("data.content[].meetingResponse.content").description("Reservation meet content"),
+                                fieldWithPath("data.content[].meetingResponse.description").description("Reservation meet description"),
+                                fieldWithPath("data.content[].meetingResponse.meetingType").description("Reservation meet type"),
+                                fieldWithPath("data.content[].meetingResponse.place").description("Reservation meet place"),
+                                fieldWithPath("data.content[].meetingResponse.place.placeType").description("Reservation meet place Type"),
+                                fieldWithPath("data.content[].meetingResponse.place.address").type(OBJECT).description("Reservation place address").optional(),
+                                fieldWithPath("data.content[].meetingResponse.place.address.roadName").type(STRING).description("Reservation meet place road name").optional(),
+                                fieldWithPath("data.content[].meetingResponse.place.address.city").type(STRING).description("Reservation meet place city name").optional(),
+                                fieldWithPath("data.content[].meetingResponse.place.address.state").type(STRING).description("Reservation meet place state").optional(),
+                                fieldWithPath("data.content[].meetingResponse.place.address.postalCode").type(STRING).description("Reservation meet place postal code").optional(),
+                                fieldWithPath("data.content[].meetingResponse.dues").description("Reservation meet dues"),
+                                fieldWithPath("data.content[].meetingResponse.maxMember").description("Reservation meet max member"),
+                                fieldWithPath("data.content[].meetingResponse.reservedMember").description("Reservation meet now member"),
+                                fieldWithPath("data.content[].meetingResponse.meetingDate").description("Reservation meet date"),
+                                fieldWithPath("data.content[].meetingResponse.regEmail").description("Reservation regEmail"),
+                                fieldWithPath("data.pageable").description("pageable data")
+                        )
+                ));
     }
 
     @Test
     @DisplayName("예약을 생성한다. - 성공")
     void createReservation() throws Exception {
         // Given
-        Account account = createAccount();
+        Account account = createAccount("createReservationSuccess@email.com");
         Meeting meeting = createMeeting();
 
         ReservationRequest reservation = ReservationRequest.builder()
@@ -107,7 +150,22 @@ class ReservationControllerTest extends BaseTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("data.id").exists())
-        ;
+                .andDo(document("create-reservation",
+                        requestHeaders(
+                            headerWithName("content-type").description("Content Type")
+                        ),
+                        requestFields(
+                            fieldWithPath("meetingId").description("Meeting ID")
+                        ),
+                        responseHeaders(
+                            headerWithName("content-type").description("Content Type")
+                        ),
+                        relaxedResponseFields(
+                            fieldWithPath("statusCode").description("Status Code"),
+                            fieldWithPath("message").description("response message"),
+                            fieldWithPath("data.id").description("reservation ID")
+                        )
+                ));
     }
 
     @Test
@@ -115,9 +173,8 @@ class ReservationControllerTest extends BaseTest {
     void createReservationFail() throws Exception {
         // Given
         Optional<Account> getAccount = accountRepository.findByEmail("user@email.com");
-        Reservation request = Reservation.builder()
-                .accountId(1L)
-                .meetingId(1L)
+        ReservationRequest request = ReservationRequest.builder()
+                .meetingId(null)
                 .build();
 
         // When && Then
@@ -134,7 +191,7 @@ class ReservationControllerTest extends BaseTest {
     @DisplayName("예약을 취소한다.")
     void deleteReservation() throws Exception {
         // Given
-        Account account = this.createAccount();
+        Account account = this.createAccount("ReservationDelete@eamil.com");
         Meeting meeting = this.createMeeting();
 
         ReservationRequest request = ReservationRequest.builder()
@@ -163,29 +220,29 @@ class ReservationControllerTest extends BaseTest {
         perform
                 .andDo(print())
                 .andExpect(status().isOk())
-        ;
+                .andDo(document("delete-reservation",
+                        requestHeaders(
+                                headerWithName("content-type").description("Content Type")
+                        ),
+                        responseHeaders(
+                                headerWithName("content-type").description("Content Type")
+                        ),
+                        relaxedResponseFields(
+                                fieldWithPath("statusCode").description("Status Code"),
+                                fieldWithPath("message").description("response message"),
+                                fieldWithPath("data.id").description("reservation ID")
+                        )
+                ));
 
     }
 
-    @Test
-    @DisplayName("계정 Email를 이용하여 계정 Id를 조회한다.")
-    void getAccountTest() {
-        // Given
-        Account account = createAccount();
-        // When
-        Account getAccount = accountRepository.findByEmail(account.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("해당 이메일을 가진 계정이 없습니다."));
-        // Then
-        assertThat(getAccount.getId()).isNotNull();
-    }
-
-    private Account createAccount() {
+    private Account createAccount(String email) {
         Account account = Account.builder()
-                .email("usertest@email.com")
+                .email(email)
                 .password("1234")
                 .phoneNumber("010-1234-5678")
                 .gender(Gender.getName("M"))
-                .roles(Collections.singleton(AccountRole.USER))
+                .role(AccountRole.USER)
                 .build();
 
         return accountRepository.save(account);
@@ -209,6 +266,6 @@ class ReservationControllerTest extends BaseTest {
                 .build();
 
         return meetingRepository.save(meeting);
-    }*/
+    }
 
 }
