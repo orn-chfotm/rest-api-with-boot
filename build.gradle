@@ -32,6 +32,10 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    snippetsDir = file("build/generated-snippets")
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
@@ -61,16 +65,8 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.24.2'
 }
 
-tasks.named("test") {
-    useJUnitPlatform()
-}
-
-ext {
-    snippetsDir = file("build/generated-snippets")
-    querydslSrcDir = "$buildDir/generated/querydsl"
-}
-
 /* query dsl */
+def querydslSrcDir = "$buildDir/generated/querydsl"
 querydsl {
     jpa = true
     querydslSourcesDir = querydslSrcDir
@@ -99,14 +95,22 @@ test {
 }
 
 asciidoctor {
+    configurations 'asciidoctorExt'
+    baseDirFollowsSourceFile()
     inputs.dir snippetsDir
     dependsOn test
-    outputDir file('src/docs/asciidoc')
 }
 
-bootJar {
+asciidoctor.doFirst {
+    delete file('src/main/resources/static/docs')
+}
+
+task createDocument(type: Copy) {
     dependsOn asciidoctor
-    from("${asciidoctor.outputDir}") {
-        into 'static/docs'
-    }
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static/docs")
+}
+
+build {
+    dependsOn createDocument
 }
