@@ -32,7 +32,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         Account account = ((CustomUser) authentication.getPrincipal()).getAccount();
-        log.info("Login Success Useremail {}", account.getEmail());
 
         AuthResponse authResponse = AuthResponse.builder()
                 .email(account.getEmail())

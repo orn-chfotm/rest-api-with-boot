@@ -1,5 +1,7 @@
 package com.learn.restapiwithboot.account.domain.enums;
 
+import java.util.Arrays;
+
 public enum Gender {
     MALE("M"), FEMALE("F");
 
@@ -14,17 +16,14 @@ public enum Gender {
     }
 
     public static Gender getName(String inputValue) {
-
-        if(inputValue == null) {
+        if (inputValue == null) {
             throw new IllegalArgumentException("inputValue is null");
         }
 
-        for (Gender gender : Gender.values()) {
-            if (gender.getValue().equalsIgnoreCase(inputValue.trim())) {
-                return gender;
-            }
-        }
-        throw new IllegalArgumentException("Unknown gender: " + inputValue);
+        return Arrays.stream(Gender.values())
+                .filter(gender -> gender.getValue().equalsIgnoreCase(inputValue.trim()))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("Unknown gender: " + inputValue));
     }
 
 }

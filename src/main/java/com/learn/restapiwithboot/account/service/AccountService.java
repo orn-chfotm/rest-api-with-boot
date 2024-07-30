@@ -22,9 +22,7 @@ import java.util.Optional;
 public class AccountService {
 
     private final AccountRepository accountRepository;
-
     private final PasswordEncoder passwordEncoder;
-
     private final AccountMapper accountMapper;
 
     @Transactional

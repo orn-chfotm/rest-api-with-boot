@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+// TODO : Configuration Service sadasdasd
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
@@ -19,10 +20,9 @@ public class CustomUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        log.info("CustomUserDetailService loadUserByUsername :: {}", email);
         Account account = accountRepository.findByEmail(email)
                 .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
+
         return new CustomUser(account);
     }
-
 }

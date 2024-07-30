@@ -3,7 +3,7 @@ package com.learn.restapiwithboot.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learn.restapiwithboot.config.authentication.CustomUserDetailService;
 import com.learn.restapiwithboot.config.filter.AuthenticationProcessingFilter;
-import com.learn.restapiwithboot.config.filter.JwtReqeustFilter;
+import com.learn.restapiwithboot.config.filter.JwtRequestFilter;
 import com.learn.restapiwithboot.config.handler.CustomAuthenticationFailureHandler;
 import com.learn.restapiwithboot.config.handler.CustomAuthenticationSuccessHandler;
 import com.learn.restapiwithboot.config.handler.JwtAccessDeniedHandler;
@@ -75,8 +75,8 @@ public class SecurityConfig{
     }
 
     @Bean
-    public JwtReqeustFilter jwtReqeustFilter() throws Exception {
-        return new JwtReqeustFilter(jwtTokenProvider, jwtProperties, authenticationManager());
+    public JwtRequestFilter jwtReqeustFilter() throws Exception {
+        return new JwtRequestFilter(jwtTokenProvider, jwtProperties, authenticationManager());
     }
 
     @Bean

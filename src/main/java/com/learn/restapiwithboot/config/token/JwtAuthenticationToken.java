@@ -8,9 +8,7 @@ import java.util.Collection;
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
     private final String jwtToken;
-
     private String principal;
-
     private Object credentials;
 
     public JwtAuthenticationToken(String jwtToken) {

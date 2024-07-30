@@ -43,7 +43,7 @@ public class MeetingController {
         return SuccessResponse.of(meetingService.updateMeeting(Long.parseLong(accountId), id, meetingRequest));
     }
 
-    @DeleteMapping()
+    @DeleteMapping
     public ResponseEntity<?> deleteMeeting(@AuthenticationPrincipal String accountId) {
         meetingService.deleteMeeting(Long.parseLong(accountId));
         return SuccessResponse.of(null);

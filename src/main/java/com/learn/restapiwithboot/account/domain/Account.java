@@ -17,7 +17,8 @@ import java.util.Set;
 @ToString
 public class Account extends BaseTimeEntity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Comment("Account PK")
     private Long id;
 
