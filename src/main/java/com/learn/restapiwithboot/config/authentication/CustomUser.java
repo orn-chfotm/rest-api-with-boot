@@ -16,15 +16,14 @@ public class CustomUser extends User {
     private final Account account;
 
     public CustomUser(Account account) {
-        super(account.getEmail(), account.getPassword(), authorities(account.getRoles()));
+        super(account.getEmail(), account.getPassword(), authorities(account.getRole()));
         this.account = account;
     }
 
-    private static Collection<? extends GrantedAuthority> authorities(Set<AccountRole> roles) {
-        return roles.stream()
-                .map(r -> new SimpleGrantedAuthority("ROLE_" + r.name()))
+    private static Collection<? extends GrantedAuthority> authorities(AccountRole roles) {
+        return roles.getValue().stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                 .collect(Collectors.toSet());
-
         //return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 

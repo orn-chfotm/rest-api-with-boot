@@ -3,8 +3,10 @@ package com.learn.restapiwithboot.config.token;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learn.restapiwithboot.account.domain.Account;
+import com.learn.restapiwithboot.account.domain.enums.AccountRole;
 import com.learn.restapiwithboot.config.properties.JwtProperties;
 import com.learn.restapiwithboot.config.token.JwtAuthenticationToken;
+import com.learn.restapiwithboot.core.exceptions.enums.ExceptionType;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +20,7 @@ import java.security.Key;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -111,7 +110,7 @@ public class JwtTokenProvider {
 
         claims.put("accountId", account.getId());
         claims.put("email", account.getEmail());
-        claims.put("role", account.getRoles());
+        claims.put("role", account.getRole());
 
         return claims;
     }
@@ -120,19 +119,23 @@ public class JwtTokenProvider {
      * Get Conversion Authorities
      */
     private Collection<? extends GrantedAuthority> getAuthorities(Claims claims) {
-        Object rolesObject = claims.get("role");
-        if (rolesObject instanceof String) {
-            rolesObject = List.of(rolesObject);
+        String role = (String) claims.get("role");
+
+        if (role == null) {
+            log.warn("Claims Role is Null :: {}", claims.get("email"));
+            throw ExceptionType.BAD_CREDENTIALS_EXCETPION.getException();
         }
 
+        Set<String> roles = new HashSet<>();
         try {
-            List<String> roles = objectMapper.convertValue(rolesObject, new TypeReference<List<String>>() {});
-            return roles.stream()
-                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                    .collect(Collectors.toSet());
+             roles = AccountRole.valueOf(role).getValue();
         } catch (IllegalArgumentException e) {
-            return Collections.emptySet();
+            log.warn("IllegalArgumentException :: {}", e.getMessage());
+            throw ExceptionType.BAD_CREDENTIALS_EXCETPION.getException();
         }
+        return roles.stream()
+                .map(enumRoles -> new SimpleGrantedAuthority("ROLE_" + enumRoles))
+                .collect(Collectors.toSet());
     }
 
 }

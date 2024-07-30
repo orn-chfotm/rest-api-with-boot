@@ -49,7 +49,7 @@ public class AppConfig {
                 accountRepository.save(Account.builder()
                         .email("user@email.com")
                         .password(passwordEncoder.encode("1234"))
-                        .roles(Collections.singleton(AccountRole.USER))
+                        .role(AccountRole.USER)
                         .gender(Gender.getName("M"))
                         .phoneNumber("010-1234-5678")
                         .build());
@@ -57,7 +57,7 @@ public class AppConfig {
                 accountRepository.save(Account.builder()
                         .email("admin@email.com")
                         .password(passwordEncoder.encode("1234"))
-                        .roles(Collections.singleton(AccountRole.ADMIN))
+                        .role(AccountRole.ADMIN)
                         .gender(Gender.getName("F"))
                         .phoneNumber("010-1234-5678")
                         .build());

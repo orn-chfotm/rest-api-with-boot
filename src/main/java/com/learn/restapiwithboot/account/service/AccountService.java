@@ -40,7 +40,7 @@ public class AccountService {
         }
 
         Account account = accountMapper.accountRequestToAccount(accountRequest);
-        account.setRoles(Collections.singleton(AccountRole.USER));
+        account.setRole(AccountRole.USER);
 
         account.setPassword(this.passwordEncoder.encode(account.getPassword()));
         Account saveAccount = accountRepository.save(account);
@@ -49,7 +49,7 @@ public class AccountService {
     }
 
     @Transactional
-    public boolean deleteAccount(Long accountId) {
+    public void deleteAccount(Long accountId) {
         Account getAccount = accountRepository.findById(accountId)
                 .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
 
@@ -58,8 +58,6 @@ public class AccountService {
         } else {
             throw ExceptionType.ACCOUNT_WITHDRAWAL_EXCEPTION.getException();
         }
-
-        return true;
     }
 
     @Transactional(readOnly = true)

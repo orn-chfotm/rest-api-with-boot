@@ -29,7 +29,6 @@ public class JwtProperties {
     @Getter
     @Setter
     public static class TonkenProperties {
-
         private int expTime;
 
         private Key secretKey;

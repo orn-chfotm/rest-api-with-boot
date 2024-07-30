@@ -22,8 +22,6 @@ public class AuthService {
 
     private final AccountRepository accountRepository;
 
-    private final PasswordEncoder passwordEncoder;
-
     private final JwtTokenProvider jwtTokenProvider;
 
     private final JwtProperties jwtProperties;

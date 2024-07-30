@@ -26,7 +26,6 @@ public class AuthenticationProcessingFilter extends AbstractAuthenticationProces
         this.objectMapper = objectMapper;
     }
 
-
     /**
      * 로그인 시 param 으로 전달되는 값 Dto 변환 처리
      */
