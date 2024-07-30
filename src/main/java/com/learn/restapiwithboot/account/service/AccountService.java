@@ -53,11 +53,11 @@ public class AccountService {
         Account getAccount = accountRepository.findById(accountId)
                 .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
 
-        if (!getAccount.isWithdraw()) {
-            getAccount.withDraw();
-        } else {
+        if (getAccount.isWithdraw()) {
             throw ExceptionType.ACCOUNT_WITHDRAWAL_EXCEPTION.getException();
         }
+
+        getAccount.withDraw();
     }
 
     @Transactional(readOnly = true)
