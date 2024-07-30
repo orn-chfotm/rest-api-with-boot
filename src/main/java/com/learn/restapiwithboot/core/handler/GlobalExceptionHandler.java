@@ -155,6 +155,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(new FailResponse<>(exception.getStatus(), exception.getMessage()));
     }
 
+    /**
+     * ApplicantsCountException 예외 처리
+     * <p>
+     *     신청자 수 초과, 미만 시 발생하는 예외 처리
+     * </p>
+     */
+    @ExceptionHandler({ApplicantCountException.class})
+    protected ResponseEntity<FailResponse> handleAccountExistenceException(ApplicantCountException exception) {
+        return ResponseEntity.badRequest().body(new FailResponse<>(exception.getStatus(), exception.getMessage()));
+    }
+
     /* 추후 제거 예정 */
     @Deprecated
     private ResponseEntity<FailResponse> getFailResponseResponseEntity(BaseException exception, ErrorMessage errorMessage) {

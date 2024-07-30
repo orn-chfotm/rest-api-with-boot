@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -90,11 +91,11 @@ public class ReservationService {
         Meeting meeting = meetingRepository.findById(reservation.getMeetingId())
                 .orElseThrow(ExceptionType.RESOURCE_MEETING_NOT_FOUND::getException);
 
-        if (meeting.getReservedMember() >= meeting.getMaxMember()) {
-        }
         meeting.increaseReservedMembers();
         reservation.setAccountId(accountId);
         reservationRepository.save(reservation);
+
+        System.out.println("Meeting :: " + meeting);
 
         return reservationMapper.reservationToReservationResponse(reservation);
     }
@@ -102,15 +103,20 @@ public class ReservationService {
     @Transactional
     public ReservationResponse deleteReservation(Long accountId, Long ReservationId) {
 
-        boolean isExistence = jpaQueryFactory.selectFrom(QReservation.reservation)
+        Reservation reservation = jpaQueryFactory.selectFrom(QReservation.reservation)
                 .where(QReservation.reservation.id.eq(ReservationId)
                         .and(QReservation.reservation.accountId.eq(accountId)))
-                .fetch().size() == 1;
+                .fetchOne();
 
-        if (!isExistence) {
+        if (reservation == null) {
             throw ExceptionType.RESOURCE_RESERVATION_NOT_FOUND.getException();
         }
 
+        Meeting meeting = meetingRepository.findById(reservation.getMeetingId())
+                .orElseThrow(ExceptionType.RESOURCE_MEETING_NOT_FOUND::getException);
+
+
+        meeting.decreaseReservedMembers();
         reservationRepository.deleteById(ReservationId);
 
         return ReservationResponse.builder().id(ReservationId).build();

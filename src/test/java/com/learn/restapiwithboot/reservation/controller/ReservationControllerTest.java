@@ -263,6 +263,7 @@ class ReservationControllerTest extends BaseTest {
                         .build())
                 .dues(10000)
                 .regId(getAcccount.get().getId())
+                .maxMember(1)
                 .build();
 
         return meetingRepository.save(meeting);

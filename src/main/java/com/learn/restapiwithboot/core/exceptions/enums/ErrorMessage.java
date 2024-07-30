@@ -13,8 +13,8 @@ public enum ErrorMessage {
     RESOURCE_RESERVATION_NOT_FOUND(404, "There is no such reservation."),
     ACCOUNT_WITHDRAWAL(409, "Account is already withdrawal"),
     ACCOUNT_EXIST(409, "Account is already exist"),
-    RESERVATION_FULL(409, "Reservation is full"),
-    RESERVATION_MIN(409, "Reservation is minimum"),
+    APPLICANT_MAX(409, "Reservation is full"),
+    APPLICANT_MIN(409, "Reservation is minimum"),
     INTERNAL_SERVER_ERROR(500, "Server Error")
     ;
 

@@ -2,6 +2,7 @@ package com.learn.restapiwithboot.meeting.domain;
 
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.core.domain.BaseTimeEntity;
+import com.learn.restapiwithboot.core.exceptions.enums.ExceptionType;
 import com.learn.restapiwithboot.meeting.domain.embed.Place;
 import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
 import lombok.*;
@@ -69,23 +70,16 @@ public class Meeting extends BaseTimeEntity {
         this.regId = regId;
     }
 
-    public void is() {
-        if (this.reservedMember >= maxMember) {
-            throw new RuntimeException("인원이 초과되었습니다.");
-        }
-        this.reservedMember++;
-    }
-
     public void increaseReservedMembers() {
         if (this.reservedMember >= maxMember) {
-            throw new RuntimeException("인원이 초과되었습니다.");
+            throw ExceptionType.APPLICANT_MAX_EXCEPTION.getException();
         }
         this.reservedMember++;
     }
 
     public void decreaseReservedMembers() {
         if (this.reservedMember <= 0) {
-            throw new RuntimeException("예약 인원이 없습니다.");
+            throw ExceptionType.APPLICANT_MIN_EXCEPTION.getException();
         }
         this.reservedMember--;
     }

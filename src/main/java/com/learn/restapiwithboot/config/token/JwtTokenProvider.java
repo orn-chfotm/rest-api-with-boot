@@ -123,7 +123,7 @@ public class JwtTokenProvider {
 
         if (role == null) {
             log.warn("Claims Role is Null :: {}", claims.get("email"));
-            throw ExceptionType.BAD_CREDENTIALS_EXCETPION.getException();
+            throw ExceptionType.BAD_CREDENTIALS_EXCEPTION.getException();
         }
 
         Set<String> roles = new HashSet<>();
@@ -131,7 +131,7 @@ public class JwtTokenProvider {
              roles = AccountRole.valueOf(role).getValue();
         } catch (IllegalArgumentException e) {
             log.warn("IllegalArgumentException :: {}", e.getMessage());
-            throw ExceptionType.BAD_CREDENTIALS_EXCETPION.getException();
+            throw ExceptionType.BAD_CREDENTIALS_EXCEPTION.getException();
         }
         return roles.stream()
                 .map(enumRoles -> new SimpleGrantedAuthority("ROLE_" + enumRoles))
