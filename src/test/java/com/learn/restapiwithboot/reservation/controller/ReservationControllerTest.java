@@ -5,8 +5,8 @@ import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.domain.enums.AccountRole;
 import com.learn.restapiwithboot.account.domain.enums.Gender;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
-import com.learn.restapiwithboot.config.token.JwtTokenProvider;
 import com.learn.restapiwithboot.common.BaseTest;
+import com.learn.restapiwithboot.config.token.JwtTokenProvider;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
 import com.learn.restapiwithboot.meeting.domain.embed.Address;
 import com.learn.restapiwithboot.meeting.domain.embed.Place;
@@ -16,17 +16,19 @@ import com.learn.restapiwithboot.meeting.repsitory.MeetingRepository;
 import com.learn.restapiwithboot.reservation.domain.Reservation;
 import com.learn.restapiwithboot.reservation.dto.request.ReservationRequest;
 import com.learn.restapiwithboot.reservation.repository.ReservationRepository;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.JsonFieldType.OBJECT;
@@ -234,6 +236,61 @@ class ReservationControllerTest extends BaseTest {
                         )
                 ));
 
+    }
+
+    // TODO 수정 중
+    @Test
+    @DisplayName("동시성 테스트 - 예약 성공")
+    void concurrentCreateTest() throws Exception {
+        // Given
+        Account account = createAccount("createReservationSuccess2@email.com");
+        Meeting meeting = createMeeting();
+
+        ReservationRequest reservation = ReservationRequest.builder()
+                .meetingId(meeting.getId())
+                .build();
+
+        // When -> 요청이 100 번 동시 실행 될 경우
+        int nThreads = 100;
+        ExecutorService executorService = Executors.newFixedThreadPool(nThreads);
+        CountDownLatch countDownLatch = new CountDownLatch(nThreads);
+
+        for (int i = 0; i < nThreads; i++) {
+            executorService.submit(() -> {
+                try {
+                    mockMvc.perform(post("/api/reservation")
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .content(objectMapper.writeValueAsString(reservation))
+                                    .headers(getHeader(account))
+                            )
+                            //.andDo(print())
+                            .andExpect(status().isOk());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    countDownLatch.countDown();
+                }
+            });
+        }
+        countDownLatch.await();
+
+        // Then -> 실제 예약된 인원이 5명인지 확인
+        ResultActions resultActions = mockMvc.perform(get("/api/meeting/{id}", meeting.getId())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .headers(getHeader(account)
+                        ))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        String contentAsString = resultActions.andReturn().getResponse().getContentAsString();
+        JsonNode jsonNode = objectMapper.readTree(contentAsString);
+
+        System.out.println("Meeting reservedMember :: " + jsonNode.get("data").get("reservedMember").asInt());
+    }
+
+    @Test
+    @DisplayName("동시성 테스트 - 예약 취소")
+    void concurrentDeleteTest() throws Exception {
     }
 
     private Account createAccount(String email) {

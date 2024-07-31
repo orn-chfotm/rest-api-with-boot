@@ -1,10 +1,10 @@
 package com.learn.restapiwithboot.meeting.service;
 
 import com.learn.restapiwithboot.core.exceptions.enums.ExceptionType;
-import com.learn.restapiwithboot.meeting.mapper.MeetingMapper;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
 import com.learn.restapiwithboot.meeting.dto.request.MeetingRequest;
 import com.learn.restapiwithboot.meeting.dto.response.MeetingResponse;
+import com.learn.restapiwithboot.meeting.mapper.MeetingMapper;
 import com.learn.restapiwithboot.meeting.repsitory.MeetingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -41,7 +41,7 @@ public class MeetingService {
     }
 
     @Transactional
-    public MeetingResponse createMeeting(long accountId, MeetingRequest meetingRequest) {
+    public MeetingResponse createMeeting(Long accountId, MeetingRequest meetingRequest) {
         Meeting meeting = meetingMapper.meetingRequestToMeeting(meetingRequest);
         meeting.setRegId(accountId);
 

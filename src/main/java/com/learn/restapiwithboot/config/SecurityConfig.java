@@ -40,6 +40,8 @@ public class SecurityConfig{
     private final CustomUserDetailService customUserDetailService;
     private final CustomAuthenticationSuccessHandler authenticationSuccessHandler;
     private final CustomAuthenticationFailureHandler authenticationFailureHandler;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final AuthenticationConfiguration authenticationConfiguration;
 
@@ -111,8 +113,8 @@ public class SecurityConfig{
             .anyRequest().authenticated(); // 다른 모든 요청은 인증 필요
 
         http.exceptionHandling()
-                .accessDeniedHandler(new JwtAccessDeniedHandler(objectMapper))
-                .authenticationEntryPoint(new JwtAuthenticationEntryPoint(objectMapper));
+                .accessDeniedHandler(jwtAccessDeniedHandler)
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint);
 
         http.addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(authenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
