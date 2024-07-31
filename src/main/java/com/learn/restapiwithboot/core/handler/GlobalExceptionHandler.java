@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
      * </p>
      */
     @ExceptionHandler({Exception.class})
-    protected ResponseEntity<FailResponse> hadleException(Exception exception) {
+    protected ResponseEntity<FailResponse<Void>> hadleException(Exception exception) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         ErrorMessage invalidJwtDecode = ErrorMessage.NOT_FOUND;
         return ResponseEntity.status(status).body(new FailResponse<>(
@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
      * </p>
      */
     @ExceptionHandler({RuntimeException.class})
-    protected ResponseEntity<FailResponse> handleRuntimeException(RuntimeException exception) {
+    protected ResponseEntity<FailResponse<Void>> handleRuntimeException(RuntimeException exception) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         ErrorMessage notFound = ErrorMessage.NOT_FOUND;
         return ResponseEntity.status(status).body(new FailResponse<>(
@@ -56,11 +56,10 @@ public class GlobalExceptionHandler {
      * JwtException 예외 처리
      * <p>
      *      Root JwtException 예외 처리로 Exception을 처리하면 Jwt 관련 예외를 처리할 수 있다.
-     *      Run
      * </p>
      */
     @ExceptionHandler({JwtException.class})
-    protected ResponseEntity<FailResponse> hadleJwtException(JwtException exception) {
+    protected ResponseEntity<FailResponse<Void>> hadleJwtException(JwtException exception) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         ErrorMessage invalidJwtDecode = ErrorMessage.INVALID_JWT_TOKEN;
         return ResponseEntity.status(status).body(new FailResponse<>(
@@ -76,7 +75,7 @@ public class GlobalExceptionHandler {
      *  </p>
      */
     @ExceptionHandler({MethodArgumentNotValidException.class})
-    protected ResponseEntity<FailResponse> hadleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+    protected ResponseEntity<FailResponse<List<ValidationErrorResponse>>> hadleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         ErrorMessage invalidInputValue = ErrorMessage.INVALID_INPUT_VALUE;
         List<ValidationErrorResponse> notValidList = new ArrayList<>();
         for (FieldError fieldError : exception.getFieldErrors()) {
@@ -87,7 +86,7 @@ public class GlobalExceptionHandler {
             );
         }
 
-        return ResponseEntity.badRequest().body(new FailResponse(
+        return ResponseEntity.badRequest().body(new FailResponse<>(
                 invalidInputValue.getStatus(),
                 invalidInputValue.getMessage(),
                 notValidList
@@ -112,66 +111,17 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * ResourceNotFoundException 예외 처리
+     *  Custom Exception 예외 처리 통합 -> BaseException.class extentds Exceptions
      *  <p>
-     *      JPA find 시 조회 기준에 맞는 결과 값이 없을 때 발생하는 예외 처리
+     *      ResourceNotFoundException 예외 처리 - JPA find 시 조회 기준에 맞는 결과 값이 없을 때 발생하는 예외 처리
+     *      TokenInvalidException 예외 처리 - JWT 토큰이 유효하지 않을 때 발생하는 예외 처리
+     *      BadCredentialsException 예외 처리 - 인증, 인가 과정 시 발생하는 예외 처리
+     *      AccountExistenceException 예외 처리 - 계정 생성 시 이미 존재하는 계정, 탈퇴한 계정일 때 발생하는 예외 처리
+     *      ApplicantsCountException 예외 처리 - 신청자 수 초과, 미만 시 발생하는 예외 처리
      *  </p>
      */
-    @ExceptionHandler({ResourceNotFoundException.class})
-    protected ResponseEntity<FailResponse> hadleResourceNotFoundException(ResourceNotFoundException exception) {
+    @ExceptionHandler({BaseException.class})
+    protected ResponseEntity<FailResponse<Void>> hadleResourceNotFoundException(BaseException exception) {
         return ResponseEntity.badRequest().body(new FailResponse<>(exception.getStatus(), exception.getMessage()));
-    }
-
-    /**
-     * TokenInvalidException 예외 처리
-     * <p>
-     *     JWT 토큰이 유효하지 않을 때 발생하는 예외 처리
-     * </p>
-     */
-    @ExceptionHandler({TokenInvalidException.class})
-    protected ResponseEntity<FailResponse> handleInvalidTokenException(TokenInvalidException exception) {
-        return ResponseEntity.badRequest().body(new FailResponse<>(exception.getStatus(), exception.getMessage()));
-    }
-
-    /**
-     * BadCredentialsException 예외 처리
-     * <p>
-     *     인증, 인가 과정 시 발생하는 예외 처리
-     * </p>
-     */
-    @ExceptionHandler({BadCredentialsException.class})
-    protected ResponseEntity<FailResponse> handleBadCredentialsException(BadCredentialsException exception) {
-        return ResponseEntity.badRequest().body(new FailResponse<>(exception.getStatus(), exception.getMessage()));
-    }
-
-    /**
-     * AccountExistenceException 예외 처리
-     * <p>
-     *     계정 생성 시 이미 존재하는 계정, 탈퇴한 계정일 때 발생하는 예외 처리
-     * </p>
-     */
-    @ExceptionHandler({AccountExistenceException.class})
-    protected ResponseEntity<FailResponse> handleAccountExistenceException(AccountExistenceException exception) {
-        return ResponseEntity.badRequest().body(new FailResponse<>(exception.getStatus(), exception.getMessage()));
-    }
-
-    /**
-     * ApplicantsCountException 예외 처리
-     * <p>
-     *     신청자 수 초과, 미만 시 발생하는 예외 처리
-     * </p>
-     */
-    @ExceptionHandler({ApplicantCountException.class})
-    protected ResponseEntity<FailResponse> handleAccountExistenceException(ApplicantCountException exception) {
-        return ResponseEntity.badRequest().body(new FailResponse<>(exception.getStatus(), exception.getMessage()));
-    }
-
-    /* 추후 제거 예정 */
-    @Deprecated
-    private ResponseEntity<FailResponse> getFailResponseResponseEntity(BaseException exception, ErrorMessage errorMessage) {
-        return ResponseEntity.badRequest().body(new FailResponse(
-                exception.getStatus() == null ? errorMessage.getStatus() : exception.getStatus(),
-                exception.getMessage() == null ? errorMessage.getMessage() : exception.getMessage()
-        ));
     }
 }

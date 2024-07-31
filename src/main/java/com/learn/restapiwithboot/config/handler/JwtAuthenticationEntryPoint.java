@@ -2,6 +2,7 @@ package com.learn.restapiwithboot.config.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learn.restapiwithboot.core.dto.response.FailResponse;
+import com.learn.restapiwithboot.core.handler.response.HandlerResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -23,15 +24,13 @@ import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private final ObjectMapper objectMapper;
+    private final HandlerResponse handlerResponse;
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         log.warn("AuthenticationEntryPoint :: {}", authException.getMessage());
-        response.setStatus(SC_FORBIDDEN);
-        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        String responseBody = objectMapper.writeValueAsString(new FailResponse<>(SC_FORBIDDEN, authException.getMessage()));
+        FailResponse<Object> failResponse = new FailResponse<>(SC_FORBIDDEN, authException.getMessage());
 
-        response.getWriter().write(responseBody);
+        handlerResponse.setHandlerResponse(response, SC_FORBIDDEN, failResponse);
     }
 }

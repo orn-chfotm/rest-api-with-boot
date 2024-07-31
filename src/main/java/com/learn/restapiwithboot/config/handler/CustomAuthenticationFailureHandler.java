@@ -2,6 +2,7 @@ package com.learn.restapiwithboot.config.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learn.restapiwithboot.core.dto.response.FailResponse;
+import com.learn.restapiwithboot.core.handler.response.HandlerResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -23,17 +24,15 @@ import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 @RequiredArgsConstructor
 public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
+    private final HandlerResponse authenticationResponseHandler;
+
     private final ObjectMapper objectMapper;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         log.warn("Login Fail : {}", exception.getMessage());
+        FailResponse<Object> failResponse = new FailResponse<>(SC_UNAUTHORIZED, exception.getMessage());
 
-        response.setStatus(SC_UNAUTHORIZED);
-        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        String responseBody = objectMapper.writeValueAsString(new FailResponse<>(SC_UNAUTHORIZED, exception.getMessage()));
-
-        response.getWriter().write(responseBody);
+        authenticationResponseHandler.setHandlerResponse(response, SC_UNAUTHORIZED, failResponse);
     }
 }
