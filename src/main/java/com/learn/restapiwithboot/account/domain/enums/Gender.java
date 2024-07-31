@@ -16,7 +16,7 @@ public enum Gender {
         return value;
     }
 
-    public static Gender getName(String inputValue) {
+    public static Gender getByValue(String inputValue) {
         if (inputValue == null) {
             throw new IllegalArgumentException("inputValue is null");
         }

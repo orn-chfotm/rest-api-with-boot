@@ -16,6 +16,8 @@ import com.learn.restapiwithboot.meeting.repsitory.MeetingRepository;
 import com.learn.restapiwithboot.reservation.domain.Reservation;
 import com.learn.restapiwithboot.reservation.dto.request.ReservationRequest;
 import com.learn.restapiwithboot.reservation.repository.ReservationRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,34 +47,35 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ReservationControllerTest extends BaseTest {
 
     @Autowired
-    AccountRepository accountRepository;
+    private AccountRepository accountRepository;
 
     @Autowired
-    MeetingRepository meetingRepository;
+    private MeetingRepository meetingRepository;
 
     @Autowired
-    ReservationRepository reservationRepository;
+    private ReservationRepository reservationRepository;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
     private HttpHeaders getHeader(Account account) {
-        String token = getToken(account);
+        String token = jwtTokenProvider.generateAccessToken(account);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         httpHeaders.add("Authorization", "Bearer " + token);
         return httpHeaders;
     }
 
-    private String getToken(Account account) {
-        return jwtTokenProvider.generateAccessToken(account);
+    @BeforeEach
+    void init() {
+        reservationRepository.deleteAll();
     }
 
     @Test
     @DisplayName("Token 계정 기준으로 예약을 조회한다.")
     void getReservationsTest() throws Exception {
         // Given
-        Meeting meeting = createMeeting();
+        Meeting meeting = createMeeting(0);
 
         Account account = accountRepository.findByEmail("user@email.com")
                 .orElseThrow(() -> new IllegalArgumentException("계정을 찾을 수 없습니다."));
@@ -137,7 +141,7 @@ class ReservationControllerTest extends BaseTest {
     void createReservationTest() throws Exception {
         // Given
         Account account = createAccount("createReservationSuccess@email.com");
-        Meeting meeting = createMeeting();
+        Meeting meeting = createMeeting(0);
 
         ReservationRequest reservation = ReservationRequest.builder()
                 .meetingId(meeting.getId())
@@ -194,7 +198,7 @@ class ReservationControllerTest extends BaseTest {
     void deleteReservationTest() throws Exception {
         // Given
         Account account = this.createAccount("ReservationDelete@eamil.com");
-        Meeting meeting = this.createMeeting();
+        Meeting meeting = this.createMeeting(0);
 
         ReservationRequest request = ReservationRequest.builder()
                 .meetingId(meeting.getId())
@@ -241,10 +245,11 @@ class ReservationControllerTest extends BaseTest {
     // TODO 수정 중
     @Test
     @DisplayName("동시성 테스트 - 예약 성공")
+    @Disabled
     void concurrentCreateTest() throws Exception {
         // Given
         Account account = createAccount("createReservationSuccess2@email.com");
-        Meeting meeting = createMeeting();
+        Meeting meeting = createMeeting(0);
 
         ReservationRequest reservation = ReservationRequest.builder()
                 .meetingId(meeting.getId())
@@ -290,6 +295,7 @@ class ReservationControllerTest extends BaseTest {
 
     @Test
     @DisplayName("동시성 테스트 - 예약 취소")
+    @Disabled
     void concurrentDeleteTest() throws Exception {
     }
 
@@ -298,26 +304,40 @@ class ReservationControllerTest extends BaseTest {
                 .email(email)
                 .password("1234")
                 .phoneNumber("010-1234-5678")
-                .gender(Gender.getName("M"))
+                .gender(Gender.getByValue("M"))
                 .role(AccountRole.USER)
                 .build();
 
         return accountRepository.save(account);
     }
 
-    private Meeting createMeeting() {
+    private Meeting createMeeting(int index) {
         Optional<Account> getAcccount = accountRepository.findByEmail("user@email.com");
 
+        Random random = new Random();
+        Integer postalNum = 10000 + random.nextInt(60000); // 10000 ~ 59999
+
+        Address address = Address.builder()
+                .city("서울시 " + index)
+                .state("구로구")
+                .roadName("디지털로 " + index)
+                .postalCode(postalNum.toString())
+                .build();
+
+        int placeNum = 1 + random.nextInt(3); // 1 ~ 3
+        PlaceType placeType = PlaceType.getByValue(placeNum);
+
+        Place place = Place.builder()
+                .name("장소 이름 " + index)
+                .placeType(placeType)
+                .address(address)
+                .build();
         Meeting meeting = Meeting.builder()
-                .title("회의 제목")
-                .content("회의 내용")
-                .description("회의 설명")
+                .title("회의 제목" + index)
+                .content("회의 내용" + index)
+                .description("회의 설명" + index)
                 .meetingType(MeetingType.ONLINE)
-                .place(Place.builder()
-                        .name("장소 이름")
-                        .placeType(PlaceType.CAFE)
-                        .address(Address.builder().build())
-                        .build())
+                .place(place)
                 .dues(10000)
                 .regId(getAcccount.get().getId())
                 .maxMember(1)

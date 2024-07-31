@@ -45,7 +45,7 @@ public class AppConfig {
                         .email("user@email.com")
                         .password(passwordEncoder.encode("1234"))
                         .role(AccountRole.USER)
-                        .gender(Gender.getName("M"))
+                        .gender(Gender.getByValue("M"))
                         .phoneNumber("010-1234-5678")
                         .build());
 
@@ -53,7 +53,7 @@ public class AppConfig {
                         .email("admin@email.com")
                         .password(passwordEncoder.encode("1234"))
                         .role(AccountRole.ADMIN)
-                        .gender(Gender.getName("F"))
+                        .gender(Gender.getByValue("F"))
                         .phoneNumber("010-1234-5678")
                         .build());
             }

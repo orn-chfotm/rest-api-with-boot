@@ -11,14 +11,14 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Address {
 
-    @Comment("도로명")
-    private String roadName;
-
     @Comment("도시")
     private String city;
 
     @Comment("주")
     private String state;
+
+    @Comment("도로명")
+    private String roadName;
 
     @Comment("우편번호")
     private String postalCode;
