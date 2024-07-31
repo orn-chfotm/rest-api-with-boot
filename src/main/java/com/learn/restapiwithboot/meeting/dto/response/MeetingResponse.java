@@ -17,26 +17,17 @@ import java.time.LocalDateTime;
 public class MeetingResponse {
 
     private Long id;
-
     private String title;
-
     private String content;
-
     private String description;
-
-    private MeetingType meetingType;
-
-    private Place place;
-
+    private String regEmail;
     private Integer dues;
-
     private Integer maxMember;
-
     private Integer reservedMember;
 
     private LocalDateTime meetingDate;
-
-    private String regEmail;
+    private Place place;
+    private MeetingType meetingType;
 
     @Builder
     public MeetingResponse(Long id, String title, String content, String description, MeetingType meetingType, Place place, Integer dues, Integer maxMember, Integer reservedMember, LocalDateTime meetingDate, String regEmail) {

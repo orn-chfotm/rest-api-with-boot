@@ -35,19 +35,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig{
 
     private final JwtProperties jwtProperties;
-
     private final JwtTokenProvider jwtTokenProvider;
-
     private final ObjectMapper objectMapper;
-
     private final CustomUserDetailService customUserDetailService;
-
     private final CustomAuthenticationSuccessHandler authenticationSuccessHandler;
-
     private final CustomAuthenticationFailureHandler authenticationFailureHandler;
-
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-
     private final AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
@@ -75,7 +68,7 @@ public class SecurityConfig{
     }
 
     @Bean
-    public JwtRequestFilter jwtReqeustFilter() throws Exception {
+    public JwtRequestFilter jwtRequestFilter() throws Exception {
         return new JwtRequestFilter(jwtTokenProvider, jwtProperties, authenticationManager());
     }
 
@@ -121,7 +114,7 @@ public class SecurityConfig{
                 .accessDeniedHandler(new JwtAccessDeniedHandler(objectMapper))
                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint(objectMapper));
 
-        http.addFilterBefore(jwtReqeustFilter(), UsernamePasswordAuthenticationFilter.class)
+        http.addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(authenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

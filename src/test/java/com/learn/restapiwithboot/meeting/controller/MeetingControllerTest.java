@@ -49,7 +49,7 @@ class MeetingControllerTest extends BaseTest {
 
     @Test
     @DisplayName("전체 회의 목록을 조회한다. - 성공 시")
-    void testGetAllMeeting() throws Exception {
+    void GetAllMeetingTest() throws Exception {
         // Given
         Meeting meeting = createMeeting();
 
@@ -125,7 +125,7 @@ class MeetingControllerTest extends BaseTest {
 
     @Test
     @DisplayName("특정 회의를 조회한다. - 성공 시")
-    void testGetMeeting() throws Exception {
+    void getMeetingTest() throws Exception {
         // Given
         Meeting meeting = createMeeting();
         Long id = meeting.getId();
@@ -169,7 +169,7 @@ class MeetingControllerTest extends BaseTest {
 
     @Test
     @DisplayName("특정 회의를 조회한다. - 실패 시")
-    void testExceptionGetMeeting() throws Exception {
+    void exceptionGetMeetingTest() throws Exception {
         // Given
         Long id = 3L;
         // When && Then
@@ -183,7 +183,7 @@ class MeetingControllerTest extends BaseTest {
 
     @Test
     @DisplayName("회의를 등록한다. - 성공 시")
-    void testCreateMeeting() throws Exception {
+    void createMeetingTest() throws Exception {
         // Given
         MeetingRequest meeting = createSuccessRequestMeeting();
 
@@ -243,7 +243,7 @@ class MeetingControllerTest extends BaseTest {
 
     @Test
     @DisplayName("회의를 등록한다. - 실패 시")
-    void testFailCreateMeeting() throws Exception {
+    void failCreateMeetingTest() throws Exception {
         // Given
         MeetingRequest meeting = createFailRequestMeeting();
 
@@ -260,7 +260,7 @@ class MeetingControllerTest extends BaseTest {
 
     @Test
     @DisplayName("회의를 수정한다 - 성공 시")
-    void testUpdateMeeting() throws Exception {
+    void updateMeetingTest() throws Exception {
         // Given
         Meeting meeting = createMeeting();
 

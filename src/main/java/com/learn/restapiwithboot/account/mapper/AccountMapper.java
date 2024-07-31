@@ -10,6 +10,7 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface AccountMapper {
+
     @Mapping(target = "gender", expression = "java(com.learn.restapiwithboot.account.domain.enums.Gender.getName(accountRequest.getGender()))")
     @Mapping(target = "role", ignore = true)
     Account accountRequestToAccount(AccountRequest accountRequest);

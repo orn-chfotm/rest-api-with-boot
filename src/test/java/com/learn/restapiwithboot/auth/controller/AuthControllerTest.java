@@ -39,9 +39,9 @@ class AuthControllerTest extends BaseTest {
 
     @Test
     @DisplayName("Token 발급 테스트 - 성공")
-    void getLogin() throws Exception {
+    void getLoginTest() throws Exception {
         // given
-        AuthRequest reqeust = AuthRequest.builder()
+        AuthRequest request = AuthRequest.builder()
                 .email("user@email.com")
                 .password("1234")
                 .build();
@@ -49,7 +49,7 @@ class AuthControllerTest extends BaseTest {
         // when && then
         mockMvc.perform(post("/api/login")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(reqeust))
+                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -57,9 +57,9 @@ class AuthControllerTest extends BaseTest {
 
     @Test
     @DisplayName("Token 발급 테스트 - Login 성공")
-    void getAuth() throws Exception {
+    void getAuthTest() throws Exception {
         // given
-        AuthRequest reqeust = AuthRequest.builder()
+        AuthRequest request = AuthRequest.builder()
                 .email("user@email.com")
                 .password("1234")
                 .build();
@@ -68,9 +68,9 @@ class AuthControllerTest extends BaseTest {
         mockMvc.perform(post("/api/login")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .characterEncoding("UTF-8")
-                        .content(objectMapper.writeValueAsString(reqeust))
-                        .param("email", reqeust.getEmail())
-                        .param("password", reqeust.getPassword())
+                        .content(objectMapper.writeValueAsString(request))
+                        .param("email", request.getEmail())
+                        .param("password", request.getPassword())
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -96,9 +96,9 @@ class AuthControllerTest extends BaseTest {
 
     @Test
     @DisplayName("Token 발급 테스트 - 실패")
-    void getAuthFail() throws Exception {
+    void getAuthFailTest() throws Exception {
         // given
-        AuthRequest reqeust = AuthRequest.builder()
+        AuthRequest request = AuthRequest.builder()
                 .email("fail@email.com")
                 .password("1234")
                 .build();
@@ -106,7 +106,7 @@ class AuthControllerTest extends BaseTest {
         // when && then
         mockMvc.perform(post("/api/login")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(reqeust))
+                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andDo(print())
                 .andExpect(status().is4xxClientError());
@@ -114,7 +114,7 @@ class AuthControllerTest extends BaseTest {
 
     @Test
     @DisplayName("Refresh토큰을 이용한 Token 재 발급 테스트 - 성공")
-    void getAuthUseRefreshToken() throws Exception {
+    void getAuthUseRefreshTokenTest() throws Exception {
         // given
         Account account = accountRepository.findByEmail("user@email.com").get();
 
@@ -152,7 +152,7 @@ class AuthControllerTest extends BaseTest {
 
     @Test
     @DisplayName("Refresh토큰을 이용한 Token 재 발급 테스트 - 실패")
-    void getAuthUseRefreshTokenFail() throws Exception {
+    void getAuthUseRefreshTokenFailTest() throws Exception {
         // given
         Account account = accountRepository.findByEmail("user@email.com").get();
 

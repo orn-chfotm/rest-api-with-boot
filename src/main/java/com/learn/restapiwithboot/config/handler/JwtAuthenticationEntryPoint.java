@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 
 @Slf4j
 @Component
@@ -26,11 +26,11 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        log.warn("AuthenticationEntryPoint : {}", authException.getMessage());
-        response.setStatus(SC_UNAUTHORIZED);
+        log.warn("AuthenticationEntryPoint :: {}", authException.getMessage());
+        response.setStatus(SC_FORBIDDEN);
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        String responseBody = objectMapper.writeValueAsString(new FailResponse<>(SC_UNAUTHORIZED, authException.getMessage()));
+        String responseBody = objectMapper.writeValueAsString(new FailResponse<>(SC_FORBIDDEN, authException.getMessage()));
 
         response.getWriter().write(responseBody);
     }

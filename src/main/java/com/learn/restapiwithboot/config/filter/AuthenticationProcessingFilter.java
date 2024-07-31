@@ -10,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +23,7 @@ public class AuthenticationProcessingFilter extends AbstractAuthenticationProces
 
     public AuthenticationProcessingFilter(String defaultFilterProcessesUrl,
                                           ObjectMapper objectMapper) {
-        super(defaultFilterProcessesUrl);
+        super(new AntPathRequestMatcher(defaultFilterProcessesUrl, HttpMethod.POST.toString()));
         this.objectMapper = objectMapper;
     }
 

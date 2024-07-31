@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @NoArgsConstructor
 public class AddressRequest {
+
     @NotNull(message = "도로명을 입력해주세요.")
     private String roadName;
 

@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
      * </p>
      */
     @ExceptionHandler({Exception.class})
-    protected ResponseEntity<FailResponse> hadelException(Exception exception) {
+    protected ResponseEntity<FailResponse> hadleException(Exception exception) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         ErrorMessage invalidJwtDecode = ErrorMessage.NOT_FOUND;
         return ResponseEntity.status(status).body(new FailResponse<>(
@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
      * </p>
      */
     @ExceptionHandler({RuntimeException.class})
-    protected ResponseEntity<FailResponse> handelRuntimeException(RuntimeException exception) {
+    protected ResponseEntity<FailResponse> handleRuntimeException(RuntimeException exception) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         ErrorMessage notFound = ErrorMessage.NOT_FOUND;
         return ResponseEntity.status(status).body(new FailResponse<>(
@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
      * </p>
      */
     @ExceptionHandler({JwtException.class})
-    protected ResponseEntity<FailResponse> hadelJwtException(JwtException exception) {
+    protected ResponseEntity<FailResponse> hadleJwtException(JwtException exception) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         ErrorMessage invalidJwtDecode = ErrorMessage.INVALID_JWT_TOKEN;
         return ResponseEntity.status(status).body(new FailResponse<>(

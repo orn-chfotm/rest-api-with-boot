@@ -24,7 +24,7 @@ class JwtTokenProviderTest extends BaseTest {
 
     @Test
     @DisplayName("토큰 생성 테스트")
-    void generateToken() {
+    void generateTokenTest() {
         // given
         String email = "user@email.com";
 
@@ -40,7 +40,7 @@ class JwtTokenProviderTest extends BaseTest {
 
     @Test
     @DisplayName("토큰 검증 테스트")
-    void getAuthentication() {
+    void getAuthenticationTest() {
         // given
         String email = "user@email.com";
 

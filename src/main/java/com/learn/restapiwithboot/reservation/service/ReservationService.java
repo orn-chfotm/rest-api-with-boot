@@ -30,15 +30,10 @@ import java.util.stream.Collectors;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
-
     private final AccountRepository accountRepository;
-
     private final MeetingRepository meetingRepository;
-
     private final ReservationMapper reservationMapper;
-
     private final JPAQueryFactory jpaQueryFactory;
-
     private final QueryDslUtil queryDslUtil;
 
     public Page<ReservationResponse> getAllReservation(Long accountId, Pageable pageable) {
@@ -95,8 +90,6 @@ public class ReservationService {
         reservation.setAccountId(accountId);
         reservationRepository.save(reservation);
 
-        System.out.println("Meeting :: " + meeting);
-
         return reservationMapper.reservationToReservationResponse(reservation);
     }
 
@@ -114,7 +107,6 @@ public class ReservationService {
 
         Meeting meeting = meetingRepository.findById(reservation.getMeetingId())
                 .orElseThrow(ExceptionType.RESOURCE_MEETING_NOT_FOUND::getException);
-
 
         meeting.decreaseReservedMembers();
         reservationRepository.deleteById(ReservationId);

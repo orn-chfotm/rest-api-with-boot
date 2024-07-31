@@ -21,9 +21,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final AccountRepository accountRepository;
-
     private final JwtTokenProvider jwtTokenProvider;
-
     private final JwtProperties jwtProperties;
 
     public AuthResponse getRefresh(String refreshToken) {

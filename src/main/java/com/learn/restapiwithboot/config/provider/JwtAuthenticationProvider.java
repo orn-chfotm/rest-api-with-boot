@@ -8,7 +8,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
-@Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
@@ -16,7 +15,6 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        log.info("JwtAuthenticationProvider authenticate");
         return jwtTokenProvider.getAuthentication(((JwtAuthenticationToken) authentication).getJwtToken());
     }
 

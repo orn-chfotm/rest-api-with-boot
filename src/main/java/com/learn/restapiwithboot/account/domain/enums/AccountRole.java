@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 public enum AccountRole {
+
     SUPER_ADMIN("SUPERADMIN", "ADMIN"),
     ADMIN("ADMIN"),
     USER("USER", "ADMIN");

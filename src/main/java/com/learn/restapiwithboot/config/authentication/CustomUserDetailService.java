@@ -9,10 +9,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
-// TODO : Configuration Service sadasdasd
-@Slf4j
-@Configuration
+@Service
 @RequiredArgsConstructor
 public class CustomUserDetailService implements UserDetailsService {
 

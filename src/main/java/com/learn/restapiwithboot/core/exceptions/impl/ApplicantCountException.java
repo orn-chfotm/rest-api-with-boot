@@ -4,6 +4,7 @@ import com.learn.restapiwithboot.core.exceptions.BaseException;
 import com.learn.restapiwithboot.core.exceptions.enums.ErrorMessage;
 
 public class ApplicantCountException extends BaseException {
+    
     public ApplicantCountException(ErrorMessage errorType) {
         super(errorType);
     }

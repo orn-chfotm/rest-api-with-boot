@@ -51,7 +51,7 @@ class AccountControllerTest extends BaseTest {
 
     @Test
     @DisplayName("회원가입 테스트")
-    void putAccount() throws Exception {
+    void putAccountTest() throws Exception {
         // Given
         AccountRequest request = createAccount("userTest1@eamil.com");
 
@@ -91,7 +91,7 @@ class AccountControllerTest extends BaseTest {
 
     @Test
     @DisplayName("회원 정보 조회 테스트")
-    void getAccountInfo() throws Exception {
+    void getAccountInfoTest() throws Exception {
         // Given
         Optional<Account> getAccount = accountRepository.findByEmail("user@email.com");
         String accessToken = jwtTokenProvider.generateAccessToken(getAccount.get());
@@ -121,7 +121,7 @@ class AccountControllerTest extends BaseTest {
 
    @Test
    @DisplayName("회원 탈퇴 테스트")
-    void deleteAccount() throws Exception {
+    void deleteAccountTest() throws Exception {
        // Given
        String email = "userTest2@eamil.com";
        AccountRequest request = createAccount(email);

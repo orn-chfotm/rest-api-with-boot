@@ -19,11 +19,9 @@ import java.security.Key;
 public class JwtProperties {
 
     private String header;
-
     private String prefix;
 
     private TonkenProperties accessToken;
-
     private TonkenProperties refreshToken;
 
     @Getter

@@ -1,6 +1,7 @@
 package com.learn.restapiwithboot.meeting.domain.enums;
 
 public enum PlaceType {
+
     CAFE(1),
     RESTAURANT(2),
     COMPANY(3);

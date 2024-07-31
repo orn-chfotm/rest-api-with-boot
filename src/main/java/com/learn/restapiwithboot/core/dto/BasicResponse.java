@@ -6,7 +6,6 @@ import lombok.Getter;
 public abstract class BasicResponse {
 
    private final Integer statusCode;
-
    private final String message;
 
     public BasicResponse(Integer statusCode, String message) {

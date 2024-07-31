@@ -20,13 +20,11 @@ import java.nio.charset.StandardCharsets;
 
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtTokenProvider jwtTokenProvider;
-
     private final ObjectMapper objectMapper;
 
     @Override

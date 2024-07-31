@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 public class MeetingService {
 
     private final MeetingRepository meetingRepository;
-
     private final MeetingMapper meetingMapper;
 
     public Page<MeetingResponse> getAllMeeting(Pageable pageable) {
@@ -43,7 +42,7 @@ public class MeetingService {
 
     @Transactional
     public MeetingResponse createMeeting(long accountId, MeetingRequest meetingRequest) {
-        Meeting meeting = meetingMapper.meetingReqeustToMeeting(meetingRequest);
+        Meeting meeting = meetingMapper.meetingRequestToMeeting(meetingRequest);
         meeting.setRegId(accountId);
 
         Meeting saveMettring = meetingRepository.save(meeting);

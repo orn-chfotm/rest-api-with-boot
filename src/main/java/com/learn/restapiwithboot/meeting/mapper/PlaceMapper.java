@@ -7,6 +7,7 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring", uses = {AddressMapper.class})
 public interface PlaceMapper {
+
     Place placeRequestToPlace(PlaceRequest placeRequest);
 
     PlaceRequest placeToPlaceRequest(Place place);

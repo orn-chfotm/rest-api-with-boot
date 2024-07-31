@@ -6,15 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
 public class AuthResponse {
 
-    String email;
-
-    String accessToken;
-
-    String refreshToken;
+    private String email;
+    private String accessToken;
+    private String refreshToken;
 
     @Builder
     public AuthResponse(String email, String accessToken, String refreshToken) {

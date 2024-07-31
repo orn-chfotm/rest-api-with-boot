@@ -19,20 +19,16 @@ import java.io.IOException;
 
 @Slf4j
 @RequiredArgsConstructor
-public class JwtReqeustFilter extends OncePerRequestFilter {
+public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-
     private final JwtProperties jwtProperties;
-
     private final AuthenticationManager authenticationManager;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = jwtTokenProvider.extractToken(request);
 
-        log.info("JwtReqeustFilter doFilterInternal");
-        log.info("JwtReqeustFilter token: {}", token);
         if (token != null && jwtTokenProvider.validateToken(token, jwtProperties.getAccessToken().getSecretKey())) {
             JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(token);
             jwtAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -44,7 +40,6 @@ public class JwtReqeustFilter extends OncePerRequestFilter {
                 SecurityContextHolder.clearContext();
             }
         }
-        log.info("JwtReqeustFilter doFilterInternal end");
         filterChain.doFilter(request, response);
     }
 }

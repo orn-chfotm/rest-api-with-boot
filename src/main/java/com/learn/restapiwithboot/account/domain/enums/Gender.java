@@ -3,6 +3,7 @@ package com.learn.restapiwithboot.account.domain.enums;
 import java.util.Arrays;
 
 public enum Gender {
+
     MALE("M"), FEMALE("F");
 
     private final String value;

@@ -14,10 +14,8 @@ import java.util.Set;
 public class AccountResponse {
 
     private String email;
+    private String gender;
+    private String phoneNumber;
 
     private AccountRole role;
-
-    private String gender;
-
-    private String phoneNumber;
 }

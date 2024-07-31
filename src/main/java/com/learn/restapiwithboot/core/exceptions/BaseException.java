@@ -4,7 +4,7 @@ import com.learn.restapiwithboot.core.exceptions.enums.ErrorMessage;
 import lombok.Getter;
 
 @Getter
-public class BaseException extends RuntimeException {
+public abstract class BaseException extends RuntimeException {
 
     private Integer status;
 

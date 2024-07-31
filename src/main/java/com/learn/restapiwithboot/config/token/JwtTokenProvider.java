@@ -29,13 +29,10 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
 
     private final JwtProperties jwtproperties;
-
-    private final ObjectMapper objectMapper;
-
     private static final Map<String, Object> CLAIMS_HEADER = Map.of("type", "JWT", "alg", "HS256");
 
     /**
-     * Reqeust Header Authentication JwtToken extract
+     * Request Header Authentication JwtToken extract
      */
     public String extractToken(HttpServletRequest request) {
         String bearer = request.getHeader(this.jwtproperties.getHeader());

@@ -11,7 +11,6 @@ public class ReservationResponse {
     private Long id;
 
     private AccountResponse accountResponse;
-
     private MeetingResponse meetingResponse;
 
     @Builder

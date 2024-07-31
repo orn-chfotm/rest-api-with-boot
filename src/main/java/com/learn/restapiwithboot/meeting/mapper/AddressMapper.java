@@ -7,6 +7,7 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface AddressMapper {
+
     Address addressRequestToAddress(AddressRequest address);
 
     AddressRequest addressToAddressRequest(Address address);

@@ -67,7 +67,7 @@ class ReservationControllerTest extends BaseTest {
 
     @Test
     @DisplayName("Token 계정 기준으로 예약을 조회한다.")
-    void getReservations() throws Exception {
+    void getReservationsTest() throws Exception {
         // Given
         Meeting meeting = createMeeting();
 
@@ -132,7 +132,7 @@ class ReservationControllerTest extends BaseTest {
 
     @Test
     @DisplayName("예약을 생성한다. - 성공")
-    void createReservation() throws Exception {
+    void createReservationTest() throws Exception {
         // Given
         Account account = createAccount("createReservationSuccess@email.com");
         Meeting meeting = createMeeting();
@@ -170,7 +170,7 @@ class ReservationControllerTest extends BaseTest {
 
     @Test
     @DisplayName("예약을 생성한다. - 실패")
-    void createReservationFail() throws Exception {
+    void createReservationFailTest() throws Exception {
         // Given
         Optional<Account> getAccount = accountRepository.findByEmail("user@email.com");
         ReservationRequest request = ReservationRequest.builder()
@@ -189,7 +189,7 @@ class ReservationControllerTest extends BaseTest {
 
     @Test
     @DisplayName("예약을 취소한다.")
-    void deleteReservation() throws Exception {
+    void deleteReservationTest() throws Exception {
         // Given
         Account account = this.createAccount("ReservationDelete@eamil.com");
         Meeting meeting = this.createMeeting();

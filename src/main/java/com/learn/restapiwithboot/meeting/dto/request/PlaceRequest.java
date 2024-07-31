@@ -8,7 +8,6 @@ import lombok.Setter;
 import javax.validation.constraints.NotNull;
 
 @Getter
-@Setter
 @NoArgsConstructor
 public class PlaceRequest {
 
@@ -18,7 +17,7 @@ public class PlaceRequest {
     @NotNull(message = "장소 타입을 입력해주세요.")
     private String placeType;
 
-    AddressRequest address;
+    private AddressRequest address;
 
     @Builder
     public PlaceRequest(String name, String placeType, AddressRequest address) {

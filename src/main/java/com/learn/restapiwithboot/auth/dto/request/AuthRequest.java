@@ -8,9 +8,9 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 public class AuthRequest {
-    String email;
 
-    String password;
+    private String email;
+    private String password;
 
     @Builder
     public AuthRequest(String email, String password) {
