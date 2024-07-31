@@ -9,5 +9,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     List<Reservation> findAllByAccountId(Long accountId);
 
-    boolean existsByIdAndAccountId(Long id, Long accountId);
+    boolean existsByMeetingIdAndAccountId(Long meetingId, Long accountId);
 }

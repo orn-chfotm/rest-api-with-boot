@@ -15,12 +15,14 @@ import com.learn.restapiwithboot.reservation.mapper.ReservationMapper;
 import com.learn.restapiwithboot.reservation.repository.ReservationRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.LockMode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.LockModeType;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -80,13 +82,18 @@ public class ReservationService {
         if (!meetingRepository.existsById(reservationRequest.getMeetingId())) {
             throw ExceptionType.RESOURCE_RESERVATION_NOT_FOUND.getException();
         }
+        if (reservationRepository.existsByMeetingIdAndAccountId(reservationRequest.getMeetingId(), accountId)) {
+            throw ExceptionType.APPLICANT_ALREADY_EXCEPTION.getException();
+        }
 
         Reservation reservation = reservationMapper.reservationRequestToReservation(reservationRequest);
 
-        Meeting meeting = meetingRepository.findById(reservation.getMeetingId())
+        Meeting meeting = meetingRepository.findByIdWithLock(reservation.getMeetingId())
                 .orElseThrow(ExceptionType.RESOURCE_MEETING_NOT_FOUND::getException);
 
         meeting.increaseReservedMembers();
+        meetingRepository.save(meeting);
+
         reservation.setAccountId(accountId);
         reservationRepository.save(reservation);
 
@@ -105,10 +112,11 @@ public class ReservationService {
             throw ExceptionType.RESOURCE_RESERVATION_NOT_FOUND.getException();
         }
 
-        Meeting meeting = meetingRepository.findById(reservation.getMeetingId())
+        Meeting meeting = meetingRepository.findByIdWithLock(reservation.getMeetingId())
                 .orElseThrow(ExceptionType.RESOURCE_MEETING_NOT_FOUND::getException);
 
         meeting.decreaseReservedMembers();
+        meetingRepository.save(meeting);
         reservationRepository.deleteById(ReservationId);
 
         return ReservationResponse.builder().id(ReservationId).build();

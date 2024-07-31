@@ -14,6 +14,7 @@ public enum ExceptionType {
     RESOURCE_MEETING_NOT_FOUND(new ResourceNotFoundException(ErrorMessage.RESOURCE_MEETING_NOT_FOUND)),
     RESOURCE_RESERVATION_NOT_FOUND(new ResourceNotFoundException(ErrorMessage.RESOURCE_RESERVATION_NOT_FOUND)),
     ACCOUNT_EXIST_EXCEPTION(new AccountExistenceException(ErrorMessage.ACCOUNT_EXIST)),
+    APPLICANT_ALREADY_EXCEPTION(new ApplicantCountException(ErrorMessage.APPLICANT_ALREADY)),
     APPLICANT_MAX_EXCEPTION(new ApplicantCountException(ErrorMessage.APPLICANT_MAX)),
     APPLICANT_MIN_EXCEPTION(new ApplicantCountException(ErrorMessage.APPLICANT_MIN)),
     ACCOUNT_WITHDRAWAL_EXCEPTION(new AccountExistenceException(ErrorMessage.ACCOUNT_WITHDRAWAL))
