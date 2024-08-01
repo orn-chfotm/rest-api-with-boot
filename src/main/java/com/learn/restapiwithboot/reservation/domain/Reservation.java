@@ -8,7 +8,9 @@ import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
 @ToString
@@ -18,25 +20,19 @@ public class Reservation extends BaseTimeEntity {
     @GeneratedValue
     private Long id;
 
-    @Comment("모임 신청 유저 ID")
-    @Column(name = "account_id", nullable = false)
-    private Long accountId;
-
-    @Comment("모임 ID")
-    @Column(name = "meeting_id", nullable = false)
-    private Long meetingId;
-
+    @Comment("모임 신청 유저")
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "meeting_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "meeting_id", referencedColumnName = "id")
     private Meeting meeting;
 
+    @Comment("모임 정보")
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
     private Account account;
 
     @Builder
-    public Reservation(Long accountId, Long meetingId) {
-        this.accountId = accountId;
-        this.meetingId = meetingId;
+    public Reservation(Account account, Meeting meeting) {
+        this.account = account;
+        this.meeting = meeting;
     }
 }

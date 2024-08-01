@@ -7,6 +7,7 @@ import com.learn.restapiwithboot.account.domain.enums.Gender;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.common.BaseTest;
 import com.learn.restapiwithboot.config.token.JwtTokenProvider;
+import com.learn.restapiwithboot.core.exceptions.enums.ExceptionType;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
 import com.learn.restapiwithboot.meeting.domain.embed.Address;
 import com.learn.restapiwithboot.meeting.domain.embed.Place;
@@ -78,11 +79,11 @@ class ReservationControllerTest extends BaseTest {
         Meeting meeting = createMeeting(0);
 
         Account account = accountRepository.findByEmail("user@email.com")
-                .orElseThrow(() -> new IllegalArgumentException("계정을 찾을 수 없습니다."));
+                .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
 
         reservationRepository.save(Reservation.builder()
-                .accountId(account.getId())
-                .meetingId(meeting.getId())
+                .account(account)
+                .meeting(meeting)
                 .build()
         );
 
@@ -245,7 +246,6 @@ class ReservationControllerTest extends BaseTest {
     // TODO 수정 중
     @Test
     @DisplayName("동시성 테스트 - 예약 성공")
-    @Disabled
     void concurrentCreateTest() throws Exception {
         // Given
         Account account = createAccount("createReservationSuccess2@email.com");
@@ -268,7 +268,7 @@ class ReservationControllerTest extends BaseTest {
                                     .content(objectMapper.writeValueAsString(reservation))
                                     .headers(getHeader(account))
                             )
-                            //.andDo(print())
+                            .andDo(print())
                             .andExpect(status().isOk());
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -279,7 +279,7 @@ class ReservationControllerTest extends BaseTest {
         }
         countDownLatch.await();
 
-        // Then -> 실제 예약된 인원이 5명인지 확인
+        // Then -> 실제 예약된 인원이 1명인지 확인
         ResultActions resultActions = mockMvc.perform(get("/api/meeting/{id}", meeting.getId())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .headers(getHeader(account)
@@ -294,9 +294,37 @@ class ReservationControllerTest extends BaseTest {
     }
 
     @Test
+    @DisplayName("기존에 등록된 예약에 대한 예약 시 Exception 확인")
+    void createDuplicationExceptionTest() {
+
+    }
+
+    @Test
     @DisplayName("동시성 테스트 - 예약 취소")
     @Disabled
     void concurrentDeleteTest() throws Exception {
+        Account account = createAccount("concurrentDeleteTest@email.com");
+        Meeting meeting = createMeeting(0);
+
+        ReservationRequest reservation = ReservationRequest.builder()
+                .meetingId(meeting.getId())
+                .build();
+
+        mockMvc.perform(post("/api/reservation")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(reservation))
+                        .headers(getHeader(account))
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/api/reservation")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(reservation))
+                        .headers(getHeader(account))
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
     private Account createAccount(String email) {
@@ -312,7 +340,8 @@ class ReservationControllerTest extends BaseTest {
     }
 
     private Meeting createMeeting(int index) {
-        Optional<Account> getAcccount = accountRepository.findByEmail("user@email.com");
+        Account getAccount = accountRepository.findByEmail("user@email.com")
+                .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
 
         Random random = new Random();
         Integer postalNum = 10000 + random.nextInt(60000); // 10000 ~ 59999
@@ -339,9 +368,10 @@ class ReservationControllerTest extends BaseTest {
                 .meetingType(MeetingType.ONLINE)
                 .place(place)
                 .dues(10000)
-                .regId(getAcccount.get().getId())
                 .maxMember(1)
                 .build();
+
+        meeting.setAccount(getAccount);
 
         return meetingRepository.save(meeting);
     }

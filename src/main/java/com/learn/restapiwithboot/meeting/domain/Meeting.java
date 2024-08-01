@@ -58,16 +58,13 @@ public class Meeting extends BaseTimeEntity {
     @Embedded
     private Place place;
 
-    @Comment("모임 등록자 Account Id")
-    @Column(name = "reg_id", nullable = false)
-    private Long regId;
-
+    @Comment("모임 등록자")
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reg_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "reg_account_id", referencedColumnName = "id")
     private Account account;
 
-    public void setRegId(Long regId) {
-        this.regId = regId;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     public void increaseReservedMembers() {
@@ -85,7 +82,7 @@ public class Meeting extends BaseTimeEntity {
     }
 
     @Builder
-    public Meeting(String title, String content, String description, int dues, int maxMember, int reservedMember, LocalDateTime meetingDate, MeetingType meetingType, Place place, Long regId) {
+    public Meeting(String title, String content, String description, int dues, int maxMember, int reservedMember, LocalDateTime meetingDate, MeetingType meetingType, Place place) {
         this.title = title;
         this.content = content;
         this.description = description;
@@ -95,6 +92,5 @@ public class Meeting extends BaseTimeEntity {
         this.meetingDate = meetingDate;
         this.meetingType = meetingType;
         this.place = place;
-        this.regId = regId;
     }
 }

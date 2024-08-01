@@ -1,5 +1,7 @@
 package com.learn.restapiwithboot.meeting.service;
 
+import com.learn.restapiwithboot.account.domain.Account;
+import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.core.exceptions.enums.ExceptionType;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
 import com.learn.restapiwithboot.meeting.dto.request.MeetingRequest;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 @Service
 public class MeetingService {
 
+    private final AccountRepository accountRepository;
     private final MeetingRepository meetingRepository;
     private final MeetingMapper meetingMapper;
 
@@ -42,12 +45,15 @@ public class MeetingService {
 
     @Transactional
     public MeetingResponse createMeeting(Long accountId, MeetingRequest meetingRequest) {
+        Account regAccount = accountRepository.findById(accountId)
+                .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
+
         Meeting meeting = meetingMapper.meetingRequestToMeeting(meetingRequest);
-        meeting.setRegId(accountId);
+        meeting.setAccount(regAccount);
 
-        Meeting saveMettring = meetingRepository.save(meeting);
+        Meeting savedMeeting = meetingRepository.save(meeting);
 
-        return meetingMapper.meetingToMeetingResponse(saveMettring);
+        return meetingMapper.meetingToMeetingResponse(savedMeeting);
     }
 
     @Transactional

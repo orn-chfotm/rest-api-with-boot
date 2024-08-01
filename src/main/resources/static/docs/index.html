@@ -572,7 +572,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#resources-reservation-delete">예약 취소</a>
 <ul class="sectlevel3">
-<li><a href="#resources-reservation-delete_request_fields">Request fields</a></li>
 <li><a href="#resources-reservation-delete_curl_request">Example request</a></li>
 <li><a href="#resources-reservation-delete_http_request">HTTP request</a></li>
 <li><a href="#resources-reservation-delete_request_headers">Request headers</a></li>
@@ -801,7 +800,7 @@ Expires: 0
 X-Frame-Options: DENY
 Content-Length: 127
 
-{"statusCode":200,"message":"OK","data":{"email":"userTest1@eamil.com","role":"USER","gender":"M","phoneNumber":"01012345678"}}</code></pre>
+{"statusCode":200,"message":"OK","data":{"email":"userTest1@eamil.com","gender":"M","phoneNumber":"01012345678","role":"USER"}}</code></pre>
 </div>
 </div>
 </div>
@@ -936,7 +935,7 @@ Content-Length: 127
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://localhost:8080/api/account' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjIzMjg2NTcsImV4cCI6MTkzODMyODY1NywiYWNjb3VudElkIjoxLCJlbWFpbCI6InVzZXJAZW1haWwuY29tIiwicm9sZSI6IlVTRVIifQ.lu6YkbH1epr1vZYEVmoWSbQM0ZZqqPKEJYKd0fyrhRg'</code></pre>
+    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjI0OTg2NDUsImV4cCI6MTkzODQ5ODY0NSwiYWNjb3VudElkIjoxLCJlbWFpbCI6InVzZXJAZW1haWwuY29tIiwicm9sZSI6IlVTRVIifQ.4L0kZhqnGKnDh6UWhdjAvhLTDElLXFaKCsHaXepHaXo'</code></pre>
 </div>
 </div>
 </div>
@@ -954,7 +953,7 @@ Expires: 0
 X-Frame-Options: DENY
 Content-Length: 122
 
-{"statusCode":200,"message":"OK","data":{"email":"user@email.com","role":"USER","gender":"M","phoneNumber":"01012345678"}}</code></pre>
+{"statusCode":200,"message":"OK","data":{"email":"user@email.com","gender":"M","phoneNumber":"01012345678","role":"USER"}}</code></pre>
 </div>
 </div>
 </div>
@@ -972,7 +971,7 @@ Soft Delete로 처리되며, 회원 탈퇴 시 사용자 정보는 삭제되지 
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://localhost:8080/api/account' -i -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjIzMjg2NTYsImV4cCI6MTkzODMyODY1NiwiYWNjb3VudElkIjozLCJlbWFpbCI6InVzZXJUZXN0MkBlYW1pbC5jb20iLCJyb2xlIjoiVVNFUiJ9.6yJ-bc-DLcSkT3QURfmf10KalJ-QwQkVjZKYuEzFx-c'</code></pre>
+    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjI0OTg2NDUsImV4cCI6MTkzODQ5ODY0NSwiYWNjb3VudElkIjo4LCJlbWFpbCI6InVzZXJUZXN0MkBlYW1pbC5jb20iLCJyb2xlIjoiVVNFUiJ9.LZPjkiOjUD4YqorId89vIGs739M-j0jnIv3fKM_TgM8'</code></pre>
 </div>
 </div>
 </div>
@@ -982,7 +981,7 @@ Soft Delete로 처리되며, 회원 탈퇴 시 사용자 정보는 삭제되지 
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/account HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjIzMjg2NTYsImV4cCI6MTkzODMyODY1NiwiYWNjb3VudElkIjozLCJlbWFpbCI6InVzZXJUZXN0MkBlYW1pbC5jb20iLCJyb2xlIjoiVVNFUiJ9.6yJ-bc-DLcSkT3QURfmf10KalJ-QwQkVjZKYuEzFx-c
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjI0OTg2NDUsImV4cCI6MTkzODQ5ODY0NSwiYWNjb3VudElkIjo4LCJlbWFpbCI6InVzZXJUZXN0MkBlYW1pbC5jb20iLCJyb2xlIjoiVVNFUiJ9.LZPjkiOjUD4YqorId89vIGs739M-j0jnIv3fKM_TgM8
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1177,7 +1176,7 @@ Expires: 0
 X-Frame-Options: DENY
 Content-Length: 464
 
-{"email":"user@email.com","accessToken":"eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjIzMjg2NTcsImV4cCI6MTkzODMyODY1NywiYWNjb3VudElkIjoxLCJlbWFpbCI6InVzZXJAZW1haWwuY29tIiwicm9sZSI6IlVTRVIifQ.lu6YkbH1epr1vZYEVmoWSbQM0ZZqqPKEJYKd0fyrhRg","refreshToken":"eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjIzMjg2NTcsImV4cCI6NTM1NjIzMjg2NTcsImFjY291bnRJZCI6MSwiZW1haWwiOiJ1c2VyQGVtYWlsLmNvbSIsInJvbGUiOiJVU0VSIn0.wyFvYjX1wKgCpCQROsnMAJYDSwdj5pC4VLOcAhmCk0w"}</code></pre>
+{"email":"user@email.com","accessToken":"eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjI0OTg2NDUsImV4cCI6MTkzODQ5ODY0NSwiYWNjb3VudElkIjoxLCJlbWFpbCI6InVzZXJAZW1haWwuY29tIiwicm9sZSI6IlVTRVIifQ.4L0kZhqnGKnDh6UWhdjAvhLTDElLXFaKCsHaXepHaXo","refreshToken":"eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjI0OTg2NDUsImV4cCI6NTM1NjI0OTg2NDUsImFjY291bnRJZCI6MSwiZW1haWwiOiJ1c2VyQGVtYWlsLmNvbSIsInJvbGUiOiJVU0VSIn0.fAFKHIxOV5AgBnbHr3vth1M0tGeKsil5T6zpnFQugJk"}</code></pre>
 </div>
 </div>
 </div>
@@ -1269,7 +1268,7 @@ Content-Length: 464
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://localhost:8080/api/auth/refresh' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d 'refreshToken=eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjIzMjg2NTcsImV4cCI6NTM1NjIzMjg2NTcsImFjY291bnRJZCI6MSwiZW1haWwiOiJ1c2VyQGVtYWlsLmNvbSIsInJvbGUiOiJVU0VSIn0.wyFvYjX1wKgCpCQROsnMAJYDSwdj5pC4VLOcAhmCk0w'</code></pre>
+    -d 'refreshToken=eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjI0OTg2NDUsImV4cCI6NTM1NjI0OTg2NDUsImFjY291bnRJZCI6MSwiZW1haWwiOiJ1c2VyQGVtYWlsLmNvbSIsInJvbGUiOiJVU0VSIn0.fAFKHIxOV5AgBnbHr3vth1M0tGeKsil5T6zpnFQugJk'</code></pre>
 </div>
 </div>
 </div>
@@ -1281,7 +1280,7 @@ Content-Length: 464
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080
 
-refreshToken=eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjIzMjg2NTcsImV4cCI6NTM1NjIzMjg2NTcsImFjY291bnRJZCI6MSwiZW1haWwiOiJ1c2VyQGVtYWlsLmNvbSIsInJvbGUiOiJVU0VSIn0.wyFvYjX1wKgCpCQROsnMAJYDSwdj5pC4VLOcAhmCk0w</code></pre>
+refreshToken=eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjI0OTg2NDUsImV4cCI6NTM1NjI0OTg2NDUsImFjY291bnRJZCI6MSwiZW1haWwiOiJ1c2VyQGVtYWlsLmNvbSIsInJvbGUiOiJVU0VSIn0.fAFKHIxOV5AgBnbHr3vth1M0tGeKsil5T6zpnFQugJk</code></pre>
 </div>
 </div>
 </div>
@@ -1320,7 +1319,7 @@ Expires: 0
 X-Frame-Options: DENY
 Content-Length: 505
 
-{"statusCode":200,"message":"OK","data":{"email":"user@email.com","accessToken":"eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjIzMjg2NTcsImV4cCI6MTkzODMyODY1NywiYWNjb3VudElkIjoxLCJlbWFpbCI6InVzZXJAZW1haWwuY29tIiwicm9sZSI6IlVTRVIifQ.lu6YkbH1epr1vZYEVmoWSbQM0ZZqqPKEJYKd0fyrhRg","refreshToken":"eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjIzMjg2NTcsImV4cCI6NTM1NjIzMjg2NTcsImFjY291bnRJZCI6MSwiZW1haWwiOiJ1c2VyQGVtYWlsLmNvbSIsInJvbGUiOiJVU0VSIn0.wyFvYjX1wKgCpCQROsnMAJYDSwdj5pC4VLOcAhmCk0w"}}</code></pre>
+{"statusCode":200,"message":"OK","data":{"email":"user@email.com","accessToken":"eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjI0OTg2NDUsImV4cCI6MTkzODQ5ODY0NSwiYWNjb3VudElkIjoxLCJlbWFpbCI6InVzZXJAZW1haWwuY29tIiwicm9sZSI6IlVTRVIifQ.4L0kZhqnGKnDh6UWhdjAvhLTDElLXFaKCsHaXepHaXo","refreshToken":"eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjI0OTg2NDUsImV4cCI6NTM1NjI0OTg2NDUsImFjY291bnRJZCI6MSwiZW1haWwiOiJ1c2VyQGVtYWlsLmNvbSIsInJvbGUiOiJVU0VSIn0.fAFKHIxOV5AgBnbHr3vth1M0tGeKsil5T6zpnFQugJk"}}</code></pre>
 </div>
 </div>
 </div>
@@ -1505,11 +1504,6 @@ Content-Length: 505
 <td class="tableblock halign-left valign-top"><p class="tableblock">Reservation meet now join member</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].meetingDate</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Reservation meet Date</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].regEmail</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Reservation meet creater</p></td>
@@ -1618,7 +1612,7 @@ Content-Length: 505
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://localhost:8080/api/meeting?page=0&amp;size=10&amp;sort=createDate%2CDESC' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjIzMjg2NTcsImV4cCI6MTkzODMyODY1NywiYWNjb3VudElkIjoxLCJlbWFpbCI6InVzZXJAZW1haWwuY29tIiwicm9sZSI6IlVTRVIifQ.lu6YkbH1epr1vZYEVmoWSbQM0ZZqqPKEJYKd0fyrhRg'</code></pre>
+    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjI0OTg2NDUsImV4cCI6MTkzODQ5ODY0NSwiYWNjb3VudElkIjoxLCJlbWFpbCI6InVzZXJAZW1haWwuY29tIiwicm9sZSI6IlVTRVIifQ.4L0kZhqnGKnDh6UWhdjAvhLTDElLXFaKCsHaXepHaXo'</code></pre>
 </div>
 </div>
 </div>
@@ -1634,9 +1628,9 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 627
+Content-Length: 1607
 
-{"statusCode":200,"message":"OK","data":{"content":[{"id":5,"title":"회의 제목","content":"회의 내용","description":"회의 설명","meetingType":"ONLINE","place":{"name":"장소 이름","placeType":"CAFE","address":null},"dues":0,"maxMember":0,"reservedMember":0,"meetingDate":null,"regEmail":"user@email.com"}],"pageable":{"sort":{"empty":false,"sorted":true,"unsorted":false},"offset":0,"pageSize":10,"pageNumber":0,"unpaged":false,"paged":true},"last":true,"totalPages":1,"totalElements":10,"size":10,"number":0,"sort":{"empty":false,"sorted":true,"unsorted":false},"first":true,"numberOfElements":1,"empty":false}}</code></pre>
+{"statusCode":200,"message":"OK","data":{"content":[{"id":6,"title":"회의 제목","content":"회의 내용","description":"회의 설명","regEmail":"user@email.com","dues":0,"maxMember":0,"reservedMember":0,"meetingDate":"2024-08-02T16:50:45.459102","place":{"name":"장소 이름","placeType":"CAFE","address":null},"meetingType":"ONLINE"},{"id":5,"title":"회의 제목","content":"회의 내용","description":"회의 설명","regEmail":"user@email.com","dues":100,"maxMember":10,"reservedMember":0,"meetingDate":"2024-08-02T16:50:45.437784","place":{"name":"장소 이름","placeType":"CAFE","address":{"city":"서울시","state":"서울","roadName":"서울로","postalCode":"12345"}},"meetingType":"ONLINE"},{"id":4,"title":"회의 제목","content":"회의 내용","description":"회의 설명","regEmail":"user@email.com","dues":0,"maxMember":0,"reservedMember":0,"meetingDate":"2024-08-02T16:50:45.396352","place":{"name":"장소 이름","placeType":"CAFE","address":null},"meetingType":"ONLINE"},{"id":3,"title":"회의 제목","content":"회의 내용","description":"회의 설명","regEmail":"user@email.com","dues":0,"maxMember":0,"reservedMember":0,"meetingDate":"2024-08-02T16:50:45.189013","place":{"name":"장소 이름","placeType":"CAFE","address":null},"meetingType":"ONLINE"}],"pageable":{"sort":{"empty":false,"unsorted":false,"sorted":true},"offset":0,"pageNumber":0,"pageSize":10,"paged":true,"unpaged":false},"last":true,"totalPages":1,"totalElements":10,"first":true,"number":0,"sort":{"empty":false,"unsorted":false,"sorted":true},"size":10,"numberOfElements":4,"empty":false}}</code></pre>
 </div>
 </div>
 </div>
@@ -1736,8 +1730,8 @@ Content-Length: 627
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://localhost:8080/api/meeting' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjIzMjg2NTcsImV4cCI6MTkzODMyODY1NywiYWNjb3VudElkIjoxLCJlbWFpbCI6InVzZXJAZW1haWwuY29tIiwicm9sZSI6IlVTRVIifQ.lu6YkbH1epr1vZYEVmoWSbQM0ZZqqPKEJYKd0fyrhRg' \
-    -d '{"title":"회의 제목","content":"회의 내용","description":"회의 설명","dues":100,"meetingType":"ONLINE","place":{"name":"장소 이름","placeType":"CAFE","address":{"roadName":"서울로","city":"서울시","state":"서울","postalCode":"12345"}},"maxMember":10,"meetingDate":"2024-07-31T17:37:37.9269028"}'</code></pre>
+    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjI0OTg2NDUsImV4cCI6MTkzODQ5ODY0NSwiYWNjb3VudElkIjoxLCJlbWFpbCI6InVzZXJAZW1haWwuY29tIiwicm9sZSI6IlVTRVIifQ.4L0kZhqnGKnDh6UWhdjAvhLTDElLXFaKCsHaXepHaXo' \
+    -d '{"title":"회의 제목","content":"회의 내용","description":"회의 설명","dues":100,"meetingType":"ONLINE","place":{"name":"장소 이름","placeType":"CAFE","address":{"roadName":"서울로","city":"서울시","state":"서울","postalCode":"12345"}},"maxMember":10,"meetingDate":"2024-08-02T16:50:45.437784"}'</code></pre>
 </div>
 </div>
 </div>
@@ -1747,11 +1741,11 @@ Content-Length: 627
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/meeting HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjIzMjg2NTcsImV4cCI6MTkzODMyODY1NywiYWNjb3VudElkIjoxLCJlbWFpbCI6InVzZXJAZW1haWwuY29tIiwicm9sZSI6IlVTRVIifQ.lu6YkbH1epr1vZYEVmoWSbQM0ZZqqPKEJYKd0fyrhRg
-Content-Length: 318
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjI0OTg2NDUsImV4cCI6MTkzODQ5ODY0NSwiYWNjb3VudElkIjoxLCJlbWFpbCI6InVzZXJAZW1haWwuY29tIiwicm9sZSI6IlVTRVIifQ.4L0kZhqnGKnDh6UWhdjAvhLTDElLXFaKCsHaXepHaXo
+Content-Length: 317
 Host: localhost:8080
 
-{"title":"회의 제목","content":"회의 내용","description":"회의 설명","dues":100,"meetingType":"ONLINE","place":{"name":"장소 이름","placeType":"CAFE","address":{"roadName":"서울로","city":"서울시","state":"서울","postalCode":"12345"}},"maxMember":10,"meetingDate":"2024-07-31T17:37:37.9269028"}</code></pre>
+{"title":"회의 제목","content":"회의 내용","description":"회의 설명","dues":100,"meetingType":"ONLINE","place":{"name":"장소 이름","placeType":"CAFE","address":{"roadName":"서울로","city":"서울시","state":"서울","postalCode":"12345"}},"maxMember":10,"meetingDate":"2024-08-02T16:50:45.437784"}</code></pre>
 </div>
 </div>
 </div>
@@ -1792,9 +1786,9 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 401
+Content-Length: 412
 
-{"statusCode":200,"message":"OK","data":{"id":6,"title":"회의 제목","content":"회의 내용","description":"회의 설명","meetingType":"ONLINE","place":{"name":"장소 이름","placeType":"CAFE","address":{"roadName":"서울로","city":"서울시","state":"서울","postalCode":"12345"}},"dues":100,"maxMember":10,"reservedMember":0,"meetingDate":"2024-07-31T17:37:37.9269028","regEmail":null}}</code></pre>
+{"statusCode":200,"message":"OK","data":{"id":5,"title":"회의 제목","content":"회의 내용","description":"회의 설명","regEmail":"user@email.com","dues":100,"maxMember":10,"reservedMember":0,"meetingDate":"2024-08-02T16:50:45.437784","place":{"name":"장소 이름","placeType":"CAFE","address":{"city":"서울시","state":"서울","roadName":"서울로","postalCode":"12345"}},"meetingType":"ONLINE"}}</code></pre>
 </div>
 </div>
 </div>
@@ -1922,7 +1916,7 @@ Content-Length: 401
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.regEmail</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Reservation registrant date</p></td>
 </tr>
 </tbody>
@@ -1938,9 +1932,9 @@ Content-Length: 401
 <h4 id="resources-meeting-get_curl_request"><a class="link" href="#resources-meeting-get_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://localhost:8080/api/meeting/7' -i -X GET \
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://localhost:8080/api/meeting/4' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjIzMjg2NTcsImV4cCI6MTkzODMyODY1NywiYWNjb3VudElkIjoxLCJlbWFpbCI6InVzZXJAZW1haWwuY29tIiwicm9sZSI6IlVTRVIifQ.lu6YkbH1epr1vZYEVmoWSbQM0ZZqqPKEJYKd0fyrhRg'</code></pre>
+    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjI0OTg2NDUsImV4cCI6MTkzODQ5ODY0NSwiYWNjb3VudElkIjoxLCJlbWFpbCI6InVzZXJAZW1haWwuY29tIiwicm9sZSI6IlVTRVIifQ.4L0kZhqnGKnDh6UWhdjAvhLTDElLXFaKCsHaXepHaXo'</code></pre>
 </div>
 </div>
 </div>
@@ -1956,9 +1950,9 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 308
+Content-Length: 332
 
-{"statusCode":200,"message":"OK","data":{"id":7,"title":"회의 제목","content":"회의 내용","description":"회의 설명","meetingType":"ONLINE","place":{"name":"장소 이름","placeType":"CAFE","address":null},"dues":0,"maxMember":0,"reservedMember":0,"meetingDate":null,"regEmail":"user@email.com"}}</code></pre>
+{"statusCode":200,"message":"OK","data":{"id":4,"title":"회의 제목","content":"회의 내용","description":"회의 설명","regEmail":"user@email.com","dues":0,"maxMember":0,"reservedMember":0,"meetingDate":"2024-08-02T16:50:45.396352","place":{"name":"장소 이름","placeType":"CAFE","address":null},"meetingType":"ONLINE"}}</code></pre>
 </div>
 </div>
 </div>
@@ -2056,10 +2050,10 @@ Content-Length: 308
 <h4 id="resources-meeting-update_curl_request"><a class="link" href="#resources-meeting-update_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://localhost:8080/api/meeting/8' -i -X PUT \
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://localhost:8080/api/meeting/3' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjIzMjg2NTgsImV4cCI6MTkzODMyODY1OCwiYWNjb3VudElkIjoxLCJlbWFpbCI6InVzZXJAZW1haWwuY29tIiwicm9sZSI6IlVTRVIifQ.fk1cNEmckUbH3IOKAVO8r-pVEFDCWYt44k105YMT0Hs' \
-    -d '{"title":"수정된 회의 제목","content":"수정된 회의 내용","description":"수정된 회의 설명","dues":0,"meetingType":"OFFLINE","place":{"name":"수정된 장소 이름","placeType":"RESTAURANT","address":{"roadName":"서울로","city":"서울시","state":"서울","postalCode":"12345"}},"maxMember":12,"meetingDate":"2024-07-31T17:37:38.0229029"}'</code></pre>
+    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjI0OTg2NDUsImV4cCI6MTkzODQ5ODY0NSwiYWNjb3VudElkIjoxLCJlbWFpbCI6InVzZXJAZW1haWwuY29tIiwicm9sZSI6IlVTRVIifQ.4L0kZhqnGKnDh6UWhdjAvhLTDElLXFaKCsHaXepHaXo' \
+    -d '{"title":"수정된 회의 제목","content":"수정된 회의 내용","description":"수정된 회의 설명","dues":0,"meetingType":"OFFLINE","place":{"name":"수정된 장소 이름","placeType":"RESTAURANT","address":{"roadName":"서울로","city":"서울시","state":"서울","postalCode":"12345"}},"maxMember":12,"meetingDate":"2024-08-02T16:50:45.216317"}'</code></pre>
 </div>
 </div>
 </div>
@@ -2075,9 +2069,9 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 308
+Content-Length: 332
 
-{"statusCode":200,"message":"OK","data":{"id":8,"title":"회의 제목","content":"회의 내용","description":"회의 설명","meetingType":"ONLINE","place":{"name":"장소 이름","placeType":"CAFE","address":null},"dues":0,"maxMember":0,"reservedMember":0,"meetingDate":null,"regEmail":"user@email.com"}}</code></pre>
+{"statusCode":200,"message":"OK","data":{"id":3,"title":"회의 제목","content":"회의 내용","description":"회의 설명","regEmail":"user@email.com","dues":0,"maxMember":0,"reservedMember":0,"meetingDate":"2024-08-02T16:50:45.189013","place":{"name":"장소 이름","placeType":"CAFE","address":null},"meetingType":"ONLINE"}}</code></pre>
 </div>
 </div>
 </div>
@@ -2235,7 +2229,7 @@ Content-Length: 308
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://localhost:8080/api/reservation?page=0&amp;size=10&amp;sort=createDate%2CDESC' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjIzMjg2NTgsImV4cCI6MTkzODMyODY1OCwiYWNjb3VudElkIjoxLCJlbWFpbCI6InVzZXJAZW1haWwuY29tIiwicm9sZSI6IlVTRVIifQ.fk1cNEmckUbH3IOKAVO8r-pVEFDCWYt44k105YMT0Hs'</code></pre>
+    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjI0OTg2NDYsImV4cCI6MTkzODQ5ODY0NiwiYWNjb3VudElkIjoxLCJlbWFpbCI6InVzZXJAZW1haWwuY29tIiwicm9sZSI6IlVTRVIifQ.JLSYZBBLt-80PONLy_ixkhQcBmS_0A_VXuC_w2qPp0A'</code></pre>
 </div>
 </div>
 </div>
@@ -2251,9 +2245,9 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 759
+Content-Length: 857
 
-{"statusCode":200,"message":"OK","data":{"content":[{"id":16,"accountResponse":{"email":"user@email.com","role":"USER","gender":"M","phoneNumber":"01012345678"},"meetingResponse":{"id":15,"title":"회의 제목","content":"회의 내용","description":"회의 설명","meetingType":"ONLINE","place":{"name":"장소 이름","placeType":"CAFE","address":null},"dues":10000,"maxMember":0,"reservedMember":0,"meetingDate":null,"regEmail":"user@email.com"}}],"pageable":{"sort":{"empty":false,"sorted":true,"unsorted":false},"offset":0,"pageSize":10,"pageNumber":0,"unpaged":false,"paged":true},"last":true,"totalPages":1,"totalElements":1,"size":10,"number":0,"sort":{"empty":false,"sorted":true,"unsorted":false},"first":true,"numberOfElements":1,"empty":false}}</code></pre>
+{"statusCode":200,"message":"OK","data":{"content":[{"id":16,"accountResponse":{"email":"user@email.com","gender":"M","phoneNumber":"01012345678","role":"USER"},"meetingResponse":{"id":15,"title":"회의 제목0","content":"회의 내용0","description":"회의 설명0","regEmail":"user@email.com","dues":10000,"maxMember":1,"reservedMember":0,"meetingDate":null,"place":{"name":"장소 이름 0","placeType":"RESTAURANT","address":{"city":"서울시 0","state":"구로구","roadName":"디지털로 0","postalCode":"11856"}},"meetingType":"ONLINE"}}],"pageable":{"sort":{"empty":false,"unsorted":false,"sorted":true},"offset":0,"pageNumber":0,"pageSize":10,"paged":true,"unpaged":false},"last":true,"totalPages":1,"totalElements":1,"first":true,"number":0,"sort":{"empty":false,"unsorted":false,"sorted":true},"size":10,"numberOfElements":1,"empty":false}}</code></pre>
 </div>
 </div>
 </div>
@@ -2293,7 +2287,7 @@ Content-Length: 759
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://localhost:8080/api/reservation' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjIzMjg2NTgsImV4cCI6MTkzODMyODY1OCwiYWNjb3VudElkIjoxMiwiZW1haWwiOiJjcmVhdGVSZXNlcnZhdGlvblN1Y2Nlc3NAZW1haWwuY29tIiwicm9sZSI6IlVTRVIifQ.BL6-9cRdOHkF54q8_v2JtVJaxLR8Yns5bWJ2dzE22RM' \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjI0OTg2NDYsImV4cCI6MTkzODQ5ODY0NiwiYWNjb3VudElkIjoxMiwiZW1haWwiOiJjcmVhdGVSZXNlcnZhdGlvblN1Y2Nlc3NAZW1haWwuY29tIiwicm9sZSI6IlVTRVIifQ.J9n5y3ZhKby8lNU9zjEX38fNzRazpDOB08MHjHkrwqY' \
     -d '{"meetingId":13}'</code></pre>
 </div>
 </div>
@@ -2304,7 +2298,7 @@ Content-Length: 759
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/reservation HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjIzMjg2NTgsImV4cCI6MTkzODMyODY1OCwiYWNjb3VudElkIjoxMiwiZW1haWwiOiJjcmVhdGVSZXNlcnZhdGlvblN1Y2Nlc3NAZW1haWwuY29tIiwicm9sZSI6IlVTRVIifQ.BL6-9cRdOHkF54q8_v2JtVJaxLR8Yns5bWJ2dzE22RM
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjI0OTg2NDYsImV4cCI6MTkzODQ5ODY0NiwiYWNjb3VudElkIjoxMiwiZW1haWwiOiJjcmVhdGVSZXNlcnZhdGlvblN1Y2Nlc3NAZW1haWwuY29tIiwicm9sZSI6IlVTRVIifQ.J9n5y3ZhKby8lNU9zjEX38fNzRazpDOB08MHjHkrwqY
 Content-Length: 16
 Host: localhost:8080
 
@@ -2345,9 +2339,9 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 96
+Content-Length: 556
 
-{"statusCode":200,"message":"OK","data":{"id":14,"accountResponse":null,"meetingResponse":null}}</code></pre>
+{"statusCode":200,"message":"OK","data":{"id":14,"accountResponse":{"email":"createReservationSuccess@email.com","gender":"M","phoneNumber":"01012345678","role":"USER"},"meetingResponse":{"id":13,"title":"회의 제목0","content":"회의 내용0","description":"회의 설명0","regEmail":"user@email.com","dues":10000,"maxMember":1,"reservedMember":1,"meetingDate":null,"place":{"name":"장소 이름 0","placeType":"COMPANY","address":{"city":"서울시 0","state":"구로구","roadName":"디지털로 0","postalCode":"62089"}},"meetingType":"ONLINE"}}}</code></pre>
 </div>
 </div>
 </div>
@@ -2410,18 +2404,12 @@ Content-Length: 96
 <div class="sect2">
 <h3 id="resources-reservation-delete"><a class="link" href="#resources-reservation-delete">예약 취소</a></h3>
 <div class="sect3">
-<h4 id="resources-reservation-delete_request_fields"><a class="link" href="#resources-reservation-delete_request_fields">Request fields</a></h4>
-<div class="paragraph">
-<p>Snippet request-fields not found for operation::delete-reservation</p>
-</div>
-</div>
-<div class="sect3">
 <h4 id="resources-reservation-delete_curl_request"><a class="link" href="#resources-reservation-delete_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://localhost:8080/api/reservation/11' -i -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjIzMjg2NTgsImV4cCI6MTkzODMyODY1OCwiYWNjb3VudElkIjo5LCJlbWFpbCI6IlJlc2VydmF0aW9uRGVsZXRlQGVhbWlsLmNvbSIsInJvbGUiOiJVU0VSIn0.EYY8kNkOqGM1uC89zy0CQ_N7TbspO6h1YN8qX6dWJ2s'</code></pre>
+    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjI0OTg2NDYsImV4cCI6MTkzODQ5ODY0NiwiYWNjb3VudElkIjo5LCJlbWFpbCI6IlJlc2VydmF0aW9uRGVsZXRlQGVhbWlsLmNvbSIsInJvbGUiOiJVU0VSIn0.6VtsfhaR2eoTfyUIPUFCIzVNa6LL4wwTRqDB_f8go7g'</code></pre>
 </div>
 </div>
 </div>
@@ -2431,7 +2419,7 @@ Content-Length: 96
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/reservation/11 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjIzMjg2NTgsImV4cCI6MTkzODMyODY1OCwiYWNjb3VudElkIjo5LCJlbWFpbCI6IlJlc2VydmF0aW9uRGVsZXRlQGVhbWlsLmNvbSIsInJvbGUiOiJVU0VSIn0.EYY8kNkOqGM1uC89zy0CQ_N7TbspO6h1YN8qX6dWJ2s
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJpYXQiOjE3MjI0OTg2NDYsImV4cCI6MTkzODQ5ODY0NiwiYWNjb3VudElkIjo5LCJlbWFpbCI6IlJlc2VydmF0aW9uRGVsZXRlQGVhbWlsLmNvbSIsInJvbGUiOiJVU0VSIn0.6VtsfhaR2eoTfyUIPUFCIzVNa6LL4wwTRqDB_f8go7g
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2537,7 +2525,7 @@ Content-Length: 96
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-07-30 14:10:14 +0900
+Last updated 2024-07-30 23:28:56 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

@@ -7,7 +7,5 @@ import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-    List<Reservation> findAllByAccountId(Long accountId);
-
     boolean existsByMeetingIdAndAccountId(Long meetingId, Long accountId);
 }

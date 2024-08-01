@@ -1,5 +1,6 @@
 package com.learn.restapiwithboot.reservation.service;
 
+import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.domain.QAccount;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.core.exceptions.enums.ExceptionType;
@@ -41,16 +42,16 @@ public class ReservationService {
     public Page<ReservationResponse> getAllReservation(Long accountId, Pageable pageable) {
 
         List<Reservation> reservationList = jpaQueryFactory.selectFrom(QReservation.reservation)
-                .where(QReservation.reservation.accountId.eq(accountId))
-                .leftJoin(QMeeting.meeting).on(QReservation.reservation.meetingId.eq(QMeeting.meeting.id))
-                .leftJoin(QAccount.account).on(QReservation.reservation.accountId.eq(QAccount.account.id))
+                .where(QReservation.reservation.account.id.eq(accountId))
+                .leftJoin(QMeeting.meeting).on(QReservation.reservation.meeting.id.eq(QMeeting.meeting.id))
+                .leftJoin(QAccount.account).on(QReservation.reservation.account.id.eq(QAccount.account.id))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(queryDslUtil.orderSpecifiers(pageable, Reservation.class, "reservation"))
                 .fetch();
 
         int size = jpaQueryFactory.selectFrom(QReservation.reservation)
-                .where(QReservation.reservation.accountId.eq(accountId))
+                .where(QReservation.reservation.account.id.eq(accountId))
                 .fetch().size();
 
         List<ReservationResponse> collect = reservationList.stream()
@@ -76,25 +77,20 @@ public class ReservationService {
     @Transactional
     public ReservationResponse createReservation(Long accountId, ReservationRequest reservationRequest) {
 
-        if (!accountRepository.existsById(accountId)) {
-            throw ExceptionType.ACCOUNT_NOT_FOUND.getException();
-        }
-        if (!meetingRepository.existsById(reservationRequest.getMeetingId())) {
-            throw ExceptionType.RESOURCE_RESERVATION_NOT_FOUND.getException();
-        }
         if (reservationRepository.existsByMeetingIdAndAccountId(reservationRequest.getMeetingId(), accountId)) {
             throw ExceptionType.APPLICANT_ALREADY_EXCEPTION.getException();
         }
-
-        Reservation reservation = reservationMapper.reservationRequestToReservation(reservationRequest);
-
-        Meeting meeting = meetingRepository.findByIdWithLock(reservation.getMeetingId())
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
+        Meeting meeting = meetingRepository.findByIdWithLock(reservationRequest.getMeetingId())
                 .orElseThrow(ExceptionType.RESOURCE_MEETING_NOT_FOUND::getException);
 
         meeting.increaseReservedMembers();
         meetingRepository.save(meeting);
 
-        reservation.setAccountId(accountId);
+        Reservation reservation = new Reservation();
+        reservation.setMeeting(meeting);
+        reservation.setAccount(account);
         reservationRepository.save(reservation);
 
         return reservationMapper.reservationToReservationResponse(reservation);
@@ -105,14 +101,14 @@ public class ReservationService {
 
         Reservation reservation = jpaQueryFactory.selectFrom(QReservation.reservation)
                 .where(QReservation.reservation.id.eq(ReservationId)
-                        .and(QReservation.reservation.accountId.eq(accountId)))
+                        .and(QReservation.reservation.account.id.eq(accountId)))
                 .fetchOne();
 
         if (reservation == null) {
             throw ExceptionType.RESOURCE_RESERVATION_NOT_FOUND.getException();
         }
 
-        Meeting meeting = meetingRepository.findByIdWithLock(reservation.getMeetingId())
+        Meeting meeting = meetingRepository.findByIdWithLock(reservation.getMeeting().getId())
                 .orElseThrow(ExceptionType.RESOURCE_MEETING_NOT_FOUND::getException);
 
         meeting.decreaseReservedMembers();
