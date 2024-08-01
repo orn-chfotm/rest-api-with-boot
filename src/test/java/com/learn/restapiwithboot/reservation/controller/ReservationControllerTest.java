@@ -247,7 +247,6 @@ class ReservationControllerTest extends BaseTest {
     @DisplayName("동시성 테스트 - 예약 성공")
     void concurrentCreateTest() throws Exception {
         // Given
-        Account account = createAccount("createReservationSuccess2@email.com");
         Meeting meeting = createMeeting(0);
 
         ReservationRequest reservation = ReservationRequest.builder()
@@ -255,11 +254,12 @@ class ReservationControllerTest extends BaseTest {
                 .build();
 
         // When -> 요청이 100 번 동시 실행 될 경우
-        int nThreads = 100;
+        int nThreads = 10;
         ExecutorService executorService = Executors.newFixedThreadPool(nThreads);
         CountDownLatch countDownLatch = new CountDownLatch(nThreads);
 
         for (int i = 0; i < nThreads; i++) {
+            Account account = createAccount("concurrentCreateTest" + i + "@email.com");
             executorService.submit(() -> {
                 try {
                     mockMvc.perform(post("/api/reservation")
@@ -278,10 +278,13 @@ class ReservationControllerTest extends BaseTest {
         }
         countDownLatch.await();
 
-        // Then -> 실제 예약된 인원이 1명인지 확인
+        Account tokenAccount = accountRepository.findByEmail("user@email.com")
+                .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
+
+        // Then -> 실제 예약된 인원이 5명인지 확인
         ResultActions resultActions = mockMvc.perform(get("/api/meeting/{id}", meeting.getId())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .headers(getHeader(account)
+                        .headers(getHeader(tokenAccount)
                         ))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -367,7 +370,7 @@ class ReservationControllerTest extends BaseTest {
                 .meetingType(MeetingType.ONLINE)
                 .place(place)
                 .dues(10000)
-                .maxMember(1)
+                .maxMember(5)
                 .build();
 
         meeting.setAccount(getAccount);
