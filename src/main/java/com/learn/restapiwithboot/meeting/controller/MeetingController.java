@@ -37,15 +37,16 @@ public class MeetingController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateMeeting(@AuthenticationPrincipal String accountId,
-                                           @PathVariable Long id,
+    public ResponseEntity<?> updateMeeting(@PathVariable Long id,
+                                           @AuthenticationPrincipal String accountId,
                                            @RequestBody @Valid MeetingRequest meetingRequest) {
-        return SuccessResponse.of(meetingService.updateMeeting(Long.parseLong(accountId), id, meetingRequest));
+        return SuccessResponse.of(meetingService.updateMeeting(id, Long.parseLong(accountId), meetingRequest));
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteMeeting(@AuthenticationPrincipal String accountId) {
-        meetingService.deleteMeeting(Long.parseLong(accountId));
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteMeeting(@PathVariable Long id,
+                                           @AuthenticationPrincipal String accountId) {
+        meetingService.deleteMeeting(id, Long.parseLong(accountId));
         return SuccessResponse.of(null);
     }
 }

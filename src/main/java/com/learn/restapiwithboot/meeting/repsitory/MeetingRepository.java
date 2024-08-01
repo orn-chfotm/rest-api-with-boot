@@ -13,4 +13,8 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select m from Meeting m where m.id = :id")
     Optional<Meeting> findByIdWithLock(Long id);
+
+    Optional<Meeting> findByIdAndAccountId(Long id, Long accountId);
+
+    boolean existsByIdAndAccountId(Long id, Long accountId);
 }

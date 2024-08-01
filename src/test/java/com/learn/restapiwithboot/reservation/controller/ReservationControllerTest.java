@@ -236,8 +236,7 @@ class ReservationControllerTest extends BaseTest {
                         ),
                         relaxedResponseFields(
                                 fieldWithPath("statusCode").description("Status Code"),
-                                fieldWithPath("message").description("response message"),
-                                fieldWithPath("data.id").description("reservation ID")
+                                fieldWithPath("message").description("response message")
                         )
                 ));
 

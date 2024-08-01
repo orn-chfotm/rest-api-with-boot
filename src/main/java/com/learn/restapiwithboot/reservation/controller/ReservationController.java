@@ -31,8 +31,9 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteReservation(@AuthenticationPrincipal String accountId,
-                                               @PathVariable Long id) {
-        return SuccessResponse.of(reservationService.deleteReservation(Long.parseLong(accountId), id));
+    public ResponseEntity<?> deleteReservation(@PathVariable Long id,
+                                               @AuthenticationPrincipal String accountId) {
+        reservationService.deleteReservation(id, Long.parseLong(accountId));
+        return SuccessResponse.of(null);
     }
 }

@@ -97,10 +97,10 @@ public class ReservationService {
     }
 
     @Transactional
-    public ReservationResponse deleteReservation(Long accountId, Long ReservationId) {
+    public void deleteReservation(Long id, Long accountId) {
 
         Reservation reservation = jpaQueryFactory.selectFrom(QReservation.reservation)
-                .where(QReservation.reservation.id.eq(ReservationId)
+                .where(QReservation.reservation.id.eq(id)
                         .and(QReservation.reservation.account.id.eq(accountId)))
                 .fetchOne();
 
@@ -113,8 +113,7 @@ public class ReservationService {
 
         meeting.decreaseReservedMembers();
         meetingRepository.save(meeting);
-        reservationRepository.deleteById(ReservationId);
 
-        return ReservationResponse.builder().id(ReservationId).build();
+        reservationRepository.deleteById(id);
     }
 }

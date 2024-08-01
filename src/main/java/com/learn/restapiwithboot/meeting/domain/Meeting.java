@@ -60,7 +60,7 @@ public class Meeting extends BaseTimeEntity {
 
     @Comment("모임 등록자")
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reg_account_id", referencedColumnName = "id")
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
     private Account account;
 
     public void setAccount(Account account) {

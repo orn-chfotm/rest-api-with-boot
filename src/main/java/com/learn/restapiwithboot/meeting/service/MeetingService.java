@@ -45,11 +45,11 @@ public class MeetingService {
 
     @Transactional
     public MeetingResponse createMeeting(Long accountId, MeetingRequest meetingRequest) {
-        Account regAccount = accountRepository.findById(accountId)
+        Account account = accountRepository.findById(accountId)
                 .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
 
         Meeting meeting = meetingMapper.meetingRequestToMeeting(meetingRequest);
-        meeting.setAccount(regAccount);
+        meeting.setAccount(account);
 
         Meeting savedMeeting = meetingRepository.save(meeting);
 
@@ -57,8 +57,8 @@ public class MeetingService {
     }
 
     @Transactional
-    public MeetingResponse updateMeeting(Long id, Long meetingId, MeetingRequest meetingRequest) {
-        Meeting meeting = meetingRepository.findById(meetingId)
+    public MeetingResponse updateMeeting(Long id, Long accountId, MeetingRequest meetingRequest) {
+        Meeting meeting = meetingRepository.findByIdAndAccountId(id, accountId)
                 .orElseThrow(ExceptionType.RESOURCE_MEETING_NOT_FOUND::getException);
 
         meetingMapper.updateMeetingFromRequest(meetingRequest, meeting);
@@ -67,10 +67,13 @@ public class MeetingService {
     }
 
     @Transactional
-    public void deleteMeeting(Long accountId) {
-        if (!meetingRepository.existsById(accountId)) {
+    public void deleteMeeting(Long id, Long accountId) {
+        if (!meetingRepository.existsById(id)) {
             throw ExceptionType.RESOURCE_MEETING_NOT_FOUND.getException();
         }
-        meetingRepository.deleteById(accountId);
+        if (!meetingRepository.existsByIdAndAccountId(id, accountId)) {
+            throw ExceptionType.RESOURCE_MEETING_NOT_FOUND.getException();
+        }
+        meetingRepository.deleteById(id);
     }
 }
