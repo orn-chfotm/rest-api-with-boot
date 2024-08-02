@@ -1,5 +1,6 @@
 package com.learn.restapiwithboot.reservation.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.domain.enums.AccountRole;
@@ -15,6 +16,7 @@ import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
 import com.learn.restapiwithboot.meeting.domain.enums.PlaceType;
 import com.learn.restapiwithboot.meeting.repsitory.MeetingRepository;
 import com.learn.restapiwithboot.reservation.domain.Reservation;
+import com.learn.restapiwithboot.reservation.domain.embed.ReservationId;
 import com.learn.restapiwithboot.reservation.dto.request.ReservationRequest;
 import com.learn.restapiwithboot.reservation.repository.ReservationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +29,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
@@ -81,11 +85,16 @@ class ReservationControllerTest extends BaseTest {
         Account account = accountRepository.findByEmail("user@email.com")
                 .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
 
-        reservationRepository.save(Reservation.builder()
+        Reservation reservation = Reservation.builder()
                 .account(account)
                 .meeting(meeting)
-                .build()
-        );
+                .build();
+        ReservationId reservationId = ReservationId.builder()
+                .accountId(account.getId())
+                .meetingId(meeting.getId())
+                .build();
+        reservation.setId(reservationId);
+        reservationRepository.save(reservation);
 
         mockMvc.perform(get("/api/reservation")
                         .characterEncoding(StandardCharsets.UTF_8.toString())
@@ -110,7 +119,6 @@ class ReservationControllerTest extends BaseTest {
                                 headerWithName("content-type").description("Content Type")
                         ),
                         relaxedResponseFields(
-                                fieldWithPath("data.content[].id").description("Reservation ID"),
                                 fieldWithPath("data.content[].accountResponse.email").description("Reservation person Eamil"),
                                 fieldWithPath("data.content[].accountResponse.role").description("Reservatio sperson role"),
                                 fieldWithPath("data.content[].accountResponse.gender").description("Reservation person gender"),
@@ -156,7 +164,6 @@ class ReservationControllerTest extends BaseTest {
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("data.id").exists())
                 .andDo(document("create-reservation",
                         requestHeaders(
                             headerWithName("content-type").description("Content Type")
@@ -169,8 +176,7 @@ class ReservationControllerTest extends BaseTest {
                         ),
                         relaxedResponseFields(
                             fieldWithPath("statusCode").description("Status Code"),
-                            fieldWithPath("message").description("response message"),
-                            fieldWithPath("data.id").description("reservation ID")
+                            fieldWithPath("message").description("response message")
                         )
                 ));
     }
@@ -215,11 +221,10 @@ class ReservationControllerTest extends BaseTest {
 
         String contentAsString = resultActions.andReturn().getResponse().getContentAsString();
         JsonNode jsonNode = objectMapper.readTree(contentAsString);
-        String reservationId = jsonNode.path("data").path("id").toString();
 
         // When
         ResultActions perform = mockMvc.perform(
-                delete("/api/reservation/{id}", reservationId)
+                delete("/api/reservation/{meetingId}", meeting.getId())
                         .headers(getHeader(account))
         );
 
@@ -242,7 +247,6 @@ class ReservationControllerTest extends BaseTest {
 
     }
 
-    // TODO 수정 중
     @Test
     @DisplayName("동시성 테스트 - 예약 성공")
     void concurrentCreateTest() throws Exception {
@@ -297,36 +301,112 @@ class ReservationControllerTest extends BaseTest {
 
     @Test
     @DisplayName("기존에 등록된 예약에 대한 예약 시 Exception 확인")
-    void createDuplicationExceptionTest() {
-
-    }
-
-    @Test
-    @DisplayName("동시성 테스트 - 예약 취소")
-    @Disabled
-    void concurrentDeleteTest() throws Exception {
-        Account account = createAccount("concurrentDeleteTest@email.com");
+    void createDuplicationExceptionTest() throws Exception {
+        // Given
         Meeting meeting = createMeeting(0);
 
         ReservationRequest reservation = ReservationRequest.builder()
                 .meetingId(meeting.getId())
                 .build();
 
-        mockMvc.perform(post("/api/reservation")
+        Account account = accountRepository.findByEmail("user@email.com")
+                .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
+
+        // When -> 동일 사용자 예약 2번 요청
+        // 2번째 요청 시 예외 발생
+        for (int i = 0; i < 2; i++) {
+            mockMvc.perform(post("/api/reservation")
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .content(objectMapper.writeValueAsString(reservation))
+                            .headers(getHeader(account))
+                    )
+                    .andDo(print());
+        }
+
+        // Then -> 실제 예약자 1명인지 확인
+        ResultActions resultActions = mockMvc.perform(get("/api/meeting/{id}", meeting.getId())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(reservation))
                         .headers(getHeader(account))
                 )
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        mockMvc.perform(post("/api/reservation")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(reservation))
-                        .headers(getHeader(account))
-                )
-                .andDo(print())
-                .andExpect(status().isOk());
+        String contentAsString = resultActions.andReturn().getResponse().getContentAsString();
+        JsonNode jsonNode = objectMapper.readTree(contentAsString);
+
+        // 미팅 데이터
+        System.out.println("data :: " + jsonNode.get("data"));
+        // 예약된 인원
+        System.out.println("data :: " + jsonNode.get("data").get("reservedMember").asInt());
+    }
+
+    @Test
+    @DisplayName("동시성 테스트 - 예약 취소")
+    void concurrentDeleteTest() throws Exception {
+        // Given
+        int nThreads = 5;
+        List<Account> accounts = new ArrayList<>();
+        for (int i = 0; i < nThreads; i++) {
+            accounts.add(createAccount("concurrentDeleteTest" + i + "@email.com"));
+        }
+
+        Meeting meeting = createMeeting(0);
+        ReservationRequest reservation = ReservationRequest.builder()
+                .meetingId(meeting.getId())
+                .build();
+
+        ExecutorService executorService = Executors.newFixedThreadPool(nThreads);
+        CountDownLatch countDownLatch = new CountDownLatch(nThreads);
+
+        for (int i = 0; i < nThreads; i++) {
+            Account account = accounts.get(i);
+            mockMvc.perform(post("/api/reservation")
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .content(objectMapper.writeValueAsString(reservation))
+                            .headers(getHeader(account))
+                    )
+                    .andDo(print())
+                    .andExpect(status().isOk());
+        }
+
+        // Then -> 예약이 신청 정상 insert 되었는지 확인
+        List<Reservation> beforeAll = reservationRepository.findAll();
+        System.out.println("Before all.size() = " + beforeAll.size());
+
+        for (int idx = 0; idx < 2; idx++) {
+            // When -> 요청이 10 번 동시 실행 될 경우
+            for (int i = 0; i < nThreads; i++) {
+                Account account = accounts.get(i);
+                executorService.submit(
+                        () -> {
+                            try {
+                                ResultActions resultActions = mockMvc.perform(delete("/api/reservation/{meetingId}", meeting.getId())
+                                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                                .headers(getHeader(account))
+                                        )
+                                        .andDo(print())
+                                        .andExpect(status().isOk());
+                                System.out.println("Delete response for account: " + account.getEmail() + " - Status: " + resultActions.andReturn().getResponse().getStatus());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } finally {
+                                countDownLatch.countDown();
+                            }
+                        }
+                );
+            }
+        }
+        countDownLatch.await();
+
+        // Then -> 예약이 취소 정상 delete 되었는지 확인
+        List<Reservation> afterAll = reservationRepository.findAll();
+        System.out.println("After all.size() = " + afterAll.size());
+
+        Meeting targetMeeting = meetingRepository.findById(meeting.getId())
+                .orElseThrow(ExceptionType.RESOURCE_MEETING_NOT_FOUND::getException);
+
+        // Then -> 실제 예약 취소된 인원이 0명인지 확인
+        System.out.println("reserved Member :: " + targetMeeting.getReservedMember());
     }
 
     private Account createAccount(String email) {

@@ -8,14 +8,11 @@ import lombok.*;
 @NoArgsConstructor
 public class ReservationResponse {
 
-    private Long id;
-
     private AccountResponse accountResponse;
     private MeetingResponse meetingResponse;
 
     @Builder
-    public ReservationResponse(Long id, AccountResponse accountResponse, MeetingResponse meetingResponse) {
-        this.id = id;
+    public ReservationResponse(AccountResponse accountResponse, MeetingResponse meetingResponse) {
         this.accountResponse = accountResponse;
         this.meetingResponse = meetingResponse;
     }

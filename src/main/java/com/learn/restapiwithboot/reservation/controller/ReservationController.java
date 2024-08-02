@@ -30,10 +30,10 @@ public class ReservationController {
         return SuccessResponse.of(reservationService.createReservation(Long.parseLong(accountId), reservationRequest));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteReservation(@PathVariable Long id,
+    @DeleteMapping("/{meetingId}")
+    public ResponseEntity<?> deleteReservation(@PathVariable Long meetingId,
                                                @AuthenticationPrincipal String accountId) {
-        reservationService.deleteReservation(id, Long.parseLong(accountId));
+        reservationService.deleteReservation(meetingId, Long.parseLong(accountId));
         return SuccessResponse.of(null);
     }
 }

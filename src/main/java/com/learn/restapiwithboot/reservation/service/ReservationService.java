@@ -10,6 +10,7 @@ import com.learn.restapiwithboot.meeting.domain.QMeeting;
 import com.learn.restapiwithboot.meeting.repsitory.MeetingRepository;
 import com.learn.restapiwithboot.reservation.domain.QReservation;
 import com.learn.restapiwithboot.reservation.domain.Reservation;
+import com.learn.restapiwithboot.reservation.domain.embed.ReservationId;
 import com.learn.restapiwithboot.reservation.dto.request.ReservationRequest;
 import com.learn.restapiwithboot.reservation.dto.response.ReservationResponse;
 import com.learn.restapiwithboot.reservation.mapper.ReservationMapper;
@@ -77,30 +78,41 @@ public class ReservationService {
     @Transactional
     public ReservationResponse createReservation(Long accountId, ReservationRequest reservationRequest) {
 
-        if (reservationRepository.existsByMeetingIdAndAccountId(reservationRequest.getMeetingId(), accountId)) {
-            throw ExceptionType.APPLICANT_ALREADY_EXCEPTION.getException();
-        }
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
         Meeting meeting = meetingRepository.findByIdWithLock(reservationRequest.getMeetingId())
                 .orElseThrow(ExceptionType.RESOURCE_MEETING_NOT_FOUND::getException);
 
+        ReservationId reservationId = ReservationId.builder()
+                .accountId(account.getId())
+                .meetingId(meeting.getId())
+                .build();
+        if (reservationRepository.existsById(reservationId)) {
+            throw ExceptionType.APPLICANT_ALREADY_EXCEPTION.getException();
+        }
+
         meeting.increaseReservedMembers();
         meetingRepository.save(meeting);
 
-        Reservation reservation = new Reservation();
-        reservation.setMeeting(meeting);
-        reservation.setAccount(account);
+        Reservation reservation = Reservation.builder()
+                .account(account)
+                .meeting(meeting)
+                .build();
+
+        reservation.setId(reservationId);
         reservationRepository.save(reservation);
 
         return reservationMapper.reservationToReservationResponse(reservation);
     }
 
     @Transactional
-    public void deleteReservation(Long id, Long accountId) {
+    public void deleteReservation(Long meetingId, Long accountId) {
+
+        Meeting meeting = meetingRepository.findByIdWithLock(meetingId)
+                .orElseThrow(ExceptionType.RESOURCE_MEETING_NOT_FOUND::getException);
 
         Reservation reservation = jpaQueryFactory.selectFrom(QReservation.reservation)
-                .where(QReservation.reservation.id.eq(id)
+                .where(QReservation.reservation.meeting.id.eq(meetingId)
                         .and(QReservation.reservation.account.id.eq(accountId)))
                 .fetchOne();
 
@@ -108,12 +120,14 @@ public class ReservationService {
             throw ExceptionType.RESOURCE_RESERVATION_NOT_FOUND.getException();
         }
 
-        Meeting meeting = meetingRepository.findByIdWithLock(reservation.getMeeting().getId())
-                .orElseThrow(ExceptionType.RESOURCE_MEETING_NOT_FOUND::getException);
-
         meeting.decreaseReservedMembers();
         meetingRepository.save(meeting);
 
-        reservationRepository.deleteById(id);
+        ReservationId reservationId = ReservationId.builder()
+                .accountId(accountId)
+                .meetingId(meetingId)
+                .build();
+
+        reservationRepository.deleteById(reservationId);
     }
 }

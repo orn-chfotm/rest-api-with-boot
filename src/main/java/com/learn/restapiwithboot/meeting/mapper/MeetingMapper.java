@@ -16,5 +16,6 @@ public interface MeetingMapper {
     MeetingResponse meetingToMeetingResponse(Meeting meeting);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "account", ignore = true)
     void updateMeetingFromRequest(MeetingRequest meetingRequest, @MappingTarget Meeting meeting);
 }
