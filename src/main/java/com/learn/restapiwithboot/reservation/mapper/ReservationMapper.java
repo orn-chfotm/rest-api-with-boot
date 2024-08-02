@@ -16,5 +16,4 @@ public interface ReservationMapper {
     @Mapping(source = "meeting", target = "meetingResponse")
     ReservationResponse reservationToReservationResponse(Reservation reservation);
 
-    Reservation reservationRequestToReservation(ReservationRequest reservationRequest);
 }

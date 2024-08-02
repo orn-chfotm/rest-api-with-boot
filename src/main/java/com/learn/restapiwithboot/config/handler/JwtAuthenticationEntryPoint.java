@@ -23,7 +23,6 @@ import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 @RequiredArgsConstructor
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    private final ObjectMapper objectMapper;
     private final HandlerResponse handlerResponse;
 
     @Override

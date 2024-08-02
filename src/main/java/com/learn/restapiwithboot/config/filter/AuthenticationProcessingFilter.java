@@ -32,22 +32,19 @@ public class AuthenticationProcessingFilter extends AbstractAuthenticationProces
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        if (request.getMethod().equals(HttpMethod.POST.toString())) {
-            if (request.getInputStream().available() == 0) {
-                throw new BadCredentialsException("Request body is empty");
-            }
-
-            AccountRequest accountRequest = objectMapper.readValue(request.getInputStream(), AccountRequest.class);
-
-            if (accountRequest.getEmail() == null || accountRequest.getPassword() == null) {
-                throw new BadCredentialsException("Email or password is null");
-            }
-
-            return this.getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(
-                    accountRequest.getEmail(),
-                    accountRequest.getPassword()
-            ));
+        if (request.getInputStream().available() == 0) {
+            throw new BadCredentialsException("Request body is empty");
         }
-        return null;
+
+        AccountRequest accountRequest = objectMapper.readValue(request.getInputStream(), AccountRequest.class);
+
+        if (accountRequest.getEmail() == null || accountRequest.getPassword() == null) {
+            throw new BadCredentialsException("Email or password is null");
+        }
+
+        return this.getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(
+                accountRequest.getEmail(),
+                accountRequest.getPassword()
+        ));
     }
 }

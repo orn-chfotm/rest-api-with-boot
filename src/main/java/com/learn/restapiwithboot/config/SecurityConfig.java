@@ -85,6 +85,7 @@ public class SecurityConfig{
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
         authenticationManagerBuilder.authenticationProvider(jwtAuthenticationProvider());
+        authenticationManagerBuilder.authenticationProvider(daoAuthenticationProvider());
         return authenticationConfiguration.getAuthenticationManager();
     }
 
@@ -92,7 +93,7 @@ public class SecurityConfig{
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
                 .mvcMatchers("/docs/index.html")
-                .requestMatchers(PathRequest.toH2Console())
+                //.requestMatchers(PathRequest.toH2Console())
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
