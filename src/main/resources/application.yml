@@ -20,6 +20,12 @@ logging:
       hibernate:
         SQL: DEBUG
         type: TRACE
+server:
+  servlet:
+    encoding:
+      enabled: true
+      force: true
+      charset: utf-8
 
 jwt:
   header: Authorization

@@ -20,7 +20,7 @@ This cmdlet will create Postgres instance so that you can connect to a database 
 ### Getting into the Postgres container
 
 ```
-docker exec -i -t ndb bash
+docker exec -i -t postgres_rest_boot bash
 ```
 
 Then you will see the containers bash as a root user.
