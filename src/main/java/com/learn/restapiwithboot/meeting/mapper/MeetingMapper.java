@@ -4,7 +4,6 @@ import com.learn.restapiwithboot.meeting.domain.Meeting;
 import com.learn.restapiwithboot.meeting.dto.request.MeetingRequest;
 import com.learn.restapiwithboot.meeting.dto.response.MeetingResponse;
 import org.mapstruct.*;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring", uses = {PlaceMapper.class, AddressMapper.class})
 public interface MeetingMapper {

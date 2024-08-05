@@ -13,7 +13,7 @@ public enum AccountRole {
     ADMIN("ADMIN"),
     USER("USER", "ADMIN");
 
-    private List<String> value;
+    private final List<String> value;
 
     AccountRole(String... value) {
         this.value = List.of(value);

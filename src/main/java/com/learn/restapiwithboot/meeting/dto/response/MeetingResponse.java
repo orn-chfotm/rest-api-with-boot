@@ -1,6 +1,5 @@
 package com.learn.restapiwithboot.meeting.dto.response;
 
-import com.learn.restapiwithboot.account.dto.response.AccountResponse;
 import com.learn.restapiwithboot.meeting.domain.embed.Place;
 import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
 import lombok.Builder;
@@ -8,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter

@@ -11,7 +11,8 @@ import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
-@Getter @NoArgsConstructor
+@Getter
+@NoArgsConstructor
 @Embeddable
 public class Place {
 

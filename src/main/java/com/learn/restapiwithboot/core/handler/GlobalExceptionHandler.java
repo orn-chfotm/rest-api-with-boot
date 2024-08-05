@@ -2,7 +2,6 @@ package com.learn.restapiwithboot.core.handler;
 
 import com.learn.restapiwithboot.core.dto.response.FailResponse;
 import com.learn.restapiwithboot.core.exceptions.BaseException;
-import com.learn.restapiwithboot.core.exceptions.impl.*;
 import com.learn.restapiwithboot.core.exceptions.enums.ErrorMessage;
 import io.jsonwebtoken.JwtException;
 import lombok.Builder;
@@ -15,7 +14,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

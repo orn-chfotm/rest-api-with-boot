@@ -1,6 +1,5 @@
 package com.learn.restapiwithboot.meeting.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,8 +1,8 @@
 package com.learn.restapiwithboot.config.filter;
 
 import com.learn.restapiwithboot.config.properties.JwtProperties;
-import com.learn.restapiwithboot.config.token.JwtTokenProvider;
 import com.learn.restapiwithboot.config.token.JwtAuthenticationToken;
+import com.learn.restapiwithboot.config.token.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
