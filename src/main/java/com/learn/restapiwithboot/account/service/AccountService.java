@@ -3,18 +3,16 @@ package com.learn.restapiwithboot.account.service;
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.domain.enums.AccountRole;
 import com.learn.restapiwithboot.account.dto.request.AccountRequest;
+import com.learn.restapiwithboot.account.dto.request.AccountUpdateReqeust;
 import com.learn.restapiwithboot.account.dto.response.AccountResponse;
-import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.account.mapper.AccountMapper;
+import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.core.exceptions.enums.ExceptionType;
-import com.learn.restapiwithboot.core.exceptions.impl.AccountExistenceException;
-import com.learn.restapiwithboot.core.exceptions.impl.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -64,5 +62,14 @@ public class AccountService {
                 .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
 
         return accountMapper.accountToAccountResponse(getAccount);
+    }
+
+    public AccountResponse updateAccount(long accountId, AccountUpdateReqeust accountUpdateReqeust) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
+
+        Account toAccount = accountMapper.accountUpdateRequestToAccount(accountUpdateReqeust, account);
+
+        return accountMapper.accountToAccountResponse(toAccount);
     }
 }

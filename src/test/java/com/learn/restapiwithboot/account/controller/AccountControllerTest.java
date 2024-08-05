@@ -5,6 +5,7 @@ import com.learn.restapiwithboot.account.dto.request.AccountRequest;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.config.token.JwtTokenProvider;
 import com.learn.restapiwithboot.common.BaseTest;
+import com.learn.restapiwithboot.core.exceptions.enums.ExceptionType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,8 +120,8 @@ class AccountControllerTest extends BaseTest {
                 ));
     }
 
-   @Test
-   @DisplayName("회원 탈퇴 테스트")
+    @Test
+    @DisplayName("회원 탈퇴 테스트")
     void deleteAccountTest() throws Exception {
        // Given
        String email = "userTest2@eamil.com";
@@ -152,5 +153,13 @@ class AccountControllerTest extends BaseTest {
                        )
                ));
 
-   }
+    }
+
+    @Test
+    @DisplayName("회원 정보 수정 테스트")
+    void updateAccountTest() {
+        // Given
+        Account beforeAccount = accountRepository.findByEmail("user@email.com")
+                .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
+    }
 }

@@ -1,6 +1,7 @@
 package com.learn.restapiwithboot.account.controller;
 
 import com.learn.restapiwithboot.account.dto.request.AccountRequest;
+import com.learn.restapiwithboot.account.dto.request.AccountUpdateReqeust;
 import com.learn.restapiwithboot.account.service.AccountService;
 import com.learn.restapiwithboot.core.dto.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,12 @@ public class AccountController {
     @GetMapping
     public ResponseEntity<?> getAccountInfo(@AuthenticationPrincipal String accountId) {
         return SuccessResponse.of(accountService.getAccountInfo(Long.parseLong(accountId)));
+    }
+
+    @PutMapping
+    public ResponseEntity<?> updateAccount(@AuthenticationPrincipal String accountId,
+                                           @RequestBody @Valid AccountUpdateReqeust accountUpdateReqeust) {
+        return SuccessResponse.of(accountService.updateAccount(Long.parseLong(accountId), accountUpdateReqeust));
     }
 
 }
