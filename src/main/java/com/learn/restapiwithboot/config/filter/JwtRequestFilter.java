@@ -1,6 +1,5 @@
 package com.learn.restapiwithboot.config.filter;
 
-import com.learn.restapiwithboot.config.properties.JwtProperties;
 import com.learn.restapiwithboot.config.token.JwtAuthenticationToken;
 import com.learn.restapiwithboot.config.token.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -22,14 +21,13 @@ import java.io.IOException;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final JwtProperties jwtProperties;
     private final AuthenticationManager authenticationManager;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = jwtTokenProvider.extractToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token, jwtProperties.getAccessToken().getSecretKey())) {
+        if (token != null && jwtTokenProvider.accessTokenValidate(token)) {
             JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(token);
             jwtAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             try {

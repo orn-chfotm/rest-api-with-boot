@@ -5,6 +5,7 @@ import com.learn.restapiwithboot.account.domain.enums.AccountRole;
 import com.learn.restapiwithboot.config.properties.JwtProperties;
 import com.learn.restapiwithboot.core.exceptions.enums.ExceptionType;
 import io.jsonwebtoken.*;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,7 +18,6 @@ import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,6 +29,7 @@ public class JwtTokenProvider {
 
     private final JwtProperties jwtproperties;
     private static final Map<String, Object> CLAIMS_HEADER = Map.of("type", "JWT", "alg", "HS256");
+    private final InnerJwtTokenProvider innerClass = new InnerJwtTokenProvider();
 
     /**
      * Request Header Authentication JwtToken extract
@@ -41,38 +42,21 @@ public class JwtTokenProvider {
         return null;
     }
 
-    public String generateToken(Account account, JwtProperties.TonkenProperties tokenProperties) {
-        return Jwts.builder()
-                .setHeader(CLAIMS_HEADER)
-                .setClaims(generateClaims(account, tokenProperties.getExpTime()))
-                .signWith(tokenProperties.getSecretKey(), SignatureAlgorithm.HS256)
-                .compact();
-    }
-
     public String generateAccessToken(Account account) {
-        return generateToken(account, this.jwtproperties.getAccessToken());
+        return innerClass.generateToken(account, this.jwtproperties.getAccessToken());
     }
 
     public String generateRefreshToken(Account account) {
-        return generateToken(account, this.jwtproperties.getRefreshToken());
+        return innerClass.generateToken(account, this.jwtproperties.getRefreshToken());
     }
 
-    /**
-     * Token Validation
-     */
-    public boolean validateToken(String token, Key tokenKey) {
-        try {
-            return getClaims(token, tokenKey) != null;
-        } catch (ExpiredJwtException e) {
-            log.warn("ExpiredJwtException :: {}", e.getMessage());
-            return false;
-        } catch (InvalidClaimException e) {
-            log.warn("InvalidClaimException :: {}", e.getMessage());
-            return false;
-        } catch (JwtException e) {
-            log.warn("Token Exception :: {}", e.getMessage());
-            return false;
-        }
+
+    public boolean accessTokenValidate(String token) {
+        return innerClass.validateToken(token, this.jwtproperties.getAccessToken().getSecretKey());
+    }
+
+    public boolean refreshTokenValidate(String token) {
+        return innerClass.validateToken(token, this.jwtproperties.getRefreshToken().getSecretKey());
     }
 
     /**
@@ -80,58 +64,96 @@ public class JwtTokenProvider {
      * new JwtAtuhenticationToken
      */
     public JwtAuthenticationToken getAuthentication(String token) {
-        Claims claims = getClaims(token, this.jwtproperties.getAccessToken().getSecretKey());
-        return new JwtAuthenticationToken(claims.get("accountId").toString(), token, this.getAuthorities(claims));
-    }
-
-    /* Get Token Claims */
-    public Claims getClaims(String token, Key tokenKey) {
-        return Jwts.parserBuilder()
-                .setSigningKey(tokenKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        Claims claims = innerClass.getClaims(token, this.jwtproperties.getAccessToken().getSecretKey());
+        return new JwtAuthenticationToken(claims.get("accountId").toString(), token, innerClass.getAuthorities(claims));
     }
 
     /**
-     * Generate Claims
+     * Use AuthService.class
+     * For get RefreshToken Claims
      */
-    private Claims generateClaims(Account account, int expTime) {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime expirationTime = now.plusMinutes(expTime);
-
-        Claims claims = Jwts.claims()
-                .setIssuedAt(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()))
-                .setExpiration(Date.from(expirationTime.atZone(ZoneId.systemDefault()).toInstant()));
-
-        claims.put("accountId", account.getId());
-        claims.put("email", account.getEmail());
-        claims.put("role", account.getRole());
-
-        return claims;
+    public Claims getRefreshTokenClaims(String token) {
+        return innerClass.getClaims(token, this.jwtproperties.getRefreshToken().getSecretKey());
     }
 
-    /**
-     * Get Conversion Authorities
-     */
-    private Collection<? extends GrantedAuthority> getAuthorities(Claims claims) {
-        String role = (String) claims.get("role");
+    @NoArgsConstructor
+    private static class InnerJwtTokenProvider {
 
-        if (role == null) {
-            log.warn("Claims Role is Null :: {}", claims.get("email"));
-            throw ExceptionType.BAD_CREDENTIALS_EXCEPTION.getException();
+        /**
+         * Generate Claims
+         */
+        public Claims generateClaims(Account account, int expTime) {
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime expirationTime = now.plusMinutes(expTime);
+
+            Claims claims = Jwts.claims()
+                    .setIssuedAt(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()))
+                    .setExpiration(Date.from(expirationTime.atZone(ZoneId.systemDefault()).toInstant()));
+
+            claims.put("accountId", account.getId());
+            claims.put("email", account.getEmail());
+            claims.put("role", account.getRole());
+
+            return claims;
         }
 
-        Set<String> roles = new HashSet<>();
-        try {
-             roles = AccountRole.valueOf(role).getValue();
-        } catch (IllegalArgumentException e) {
-            log.warn("IllegalArgumentException :: {}", e.getMessage());
-            throw ExceptionType.BAD_CREDENTIALS_EXCEPTION.getException();
+        /* Get Token Claims */
+        public Claims getClaims(String token, Key tokenKey) {
+            return Jwts.parserBuilder()
+                    .setSigningKey(tokenKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
         }
-        return roles.stream()
-                .map(enumRoles -> new SimpleGrantedAuthority("ROLE_" + enumRoles))
-                .collect(Collectors.toSet());
+
+        /**
+         * Get Conversion Authorities
+         */
+        public Collection<? extends GrantedAuthority> getAuthorities(Claims claims) {
+            String role = (String) claims.get("role");
+
+            if (role == null) {
+                log.warn("Claims Role is Null :: {}", claims.get("email"));
+                throw ExceptionType.BAD_CREDENTIALS_EXCEPTION.getException();
+            }
+
+            Set<String> roles;
+            try {
+                roles = AccountRole.valueOf(role).getValue();
+            } catch (IllegalArgumentException e) {
+                log.warn("IllegalArgumentException :: {}", e.getMessage());
+                throw ExceptionType.BAD_CREDENTIALS_EXCEPTION.getException();
+            }
+
+            return roles.stream()
+                    .map(enumRoles -> new SimpleGrantedAuthority("ROLE_" + enumRoles))
+                    .collect(Collectors.toSet());
+        }
+
+        /**
+         * Token Validation
+         */
+        public boolean validateToken(String token, Key tokenKey) {
+            try {
+                return getClaims(token, tokenKey) != null;
+            } catch (ExpiredJwtException e) {
+                log.warn("ExpiredJwtException :: {}", e.getMessage());
+                return false;
+            } catch (InvalidClaimException e) {
+                log.warn("InvalidClaimException :: {}", e.getMessage());
+                return false;
+            } catch (JwtException e) {
+                log.warn("Token Exception :: {}", e.getMessage());
+                return false;
+            }
+        }
+
+        public String generateToken(Account account, JwtProperties.TokenProperties tokenProperties) {
+            return Jwts.builder()
+                    .setHeader(CLAIMS_HEADER)
+                    .setClaims(generateClaims(account, tokenProperties.getExpTime()))
+                    .signWith(tokenProperties.getSecretKey(), SignatureAlgorithm.HS256)
+                    .compact();
+        }
     }
-
 }

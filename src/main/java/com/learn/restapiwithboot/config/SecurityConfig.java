@@ -8,7 +8,6 @@ import com.learn.restapiwithboot.config.handler.CustomAuthenticationFailureHandl
 import com.learn.restapiwithboot.config.handler.CustomAuthenticationSuccessHandler;
 import com.learn.restapiwithboot.config.handler.JwtAccessDeniedHandler;
 import com.learn.restapiwithboot.config.handler.JwtAuthenticationEntryPoint;
-import com.learn.restapiwithboot.config.properties.JwtProperties;
 import com.learn.restapiwithboot.config.provider.JwtAuthenticationProvider;
 import com.learn.restapiwithboot.config.token.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +33,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig{
 
-    private final JwtProperties jwtProperties;
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
     private final CustomUserDetailService customUserDetailService;
@@ -71,7 +69,7 @@ public class SecurityConfig{
 
     @Bean
     public JwtRequestFilter jwtRequestFilter() throws Exception {
-        return new JwtRequestFilter(jwtTokenProvider, jwtProperties, authenticationManager());
+        return new JwtRequestFilter(jwtTokenProvider, authenticationManager());
     }
 
     @Bean

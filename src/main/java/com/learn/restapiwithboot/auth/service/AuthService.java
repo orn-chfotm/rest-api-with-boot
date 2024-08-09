@@ -3,16 +3,11 @@ package com.learn.restapiwithboot.auth.service;
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.auth.dto.response.AuthResponse;
-import com.learn.restapiwithboot.auth.dto.request.AuthRequest;
 import com.learn.restapiwithboot.config.token.JwtTokenProvider;
-import com.learn.restapiwithboot.config.properties.JwtProperties;
 import com.learn.restapiwithboot.core.exceptions.enums.ExceptionType;
-import com.learn.restapiwithboot.core.exceptions.impl.ResourceNotFoundException;
-import com.learn.restapiwithboot.core.exceptions.impl.TokenInvalidException;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -22,15 +17,14 @@ public class AuthService {
 
     private final AccountRepository accountRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    private final JwtProperties jwtProperties;
 
     public AuthResponse getRefresh(String refreshToken) {
-        if (!this.jwtTokenProvider.validateToken(refreshToken, this.jwtProperties.getRefreshToken().getSecretKey())) {
+        if (!this.jwtTokenProvider.refreshTokenValidate(refreshToken)) {
             log.warn("Refresh Token이 유효하지 않습니다.");
             throw ExceptionType.INVALID_REFRESH_TOKEN_EXCEPTION.getException();
         }
 
-        Claims claims = this.jwtTokenProvider.getClaims(refreshToken, this.jwtProperties.getRefreshToken().getSecretKey());
+        Claims claims = this.jwtTokenProvider.getRefreshTokenClaims(refreshToken);
         String email = claims.get("email").toString();
 
         Account account = accountRepository.findByEmail(email)

@@ -18,12 +18,12 @@ public class JwtProperties {
     private String header;
     private String prefix;
 
-    private TonkenProperties accessToken;
-    private TonkenProperties refreshToken;
+    private TokenProperties accessToken;
+    private TokenProperties refreshToken;
 
     @Getter
     @Setter
-    public static class TonkenProperties {
+    public static class TokenProperties {
         private int expTime;
 
         private Key secretKey;
