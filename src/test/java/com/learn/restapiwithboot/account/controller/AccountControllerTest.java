@@ -5,7 +5,8 @@ import com.learn.restapiwithboot.account.dto.request.AccountRequest;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.config.token.JwtTokenProvider;
 import com.learn.restapiwithboot.common.BaseTest;
-import com.learn.restapiwithboot.core.exceptions.enums.ExceptionType;
+import com.learn.restapiwithboot.core.exceptions.enums.impl.AccountErrorType;
+import com.learn.restapiwithboot.core.exceptions.exception.BaseException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -160,6 +161,6 @@ class AccountControllerTest extends BaseTest {
     void updateAccountTest() {
         // Given
         Account beforeAccount = accountRepository.findByEmail("user@email.com")
-                .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
+                .orElseThrow(() -> new BaseException(AccountErrorType.ACCOUNT_NOT_FOUND));
     }
 }

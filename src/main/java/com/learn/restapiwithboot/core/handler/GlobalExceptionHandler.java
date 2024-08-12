@@ -1,13 +1,14 @@
 package com.learn.restapiwithboot.core.handler;
 
 import com.learn.restapiwithboot.core.dto.response.FailResponse;
-import com.learn.restapiwithboot.core.exceptions.BaseException;
-import com.learn.restapiwithboot.core.exceptions.enums.ErrorMessage;
+import com.learn.restapiwithboot.core.exceptions.exception.BaseException;
+import com.learn.restapiwithboot.core.exceptions.enums.ErrorType;
+import com.learn.restapiwithboot.core.exceptions.enums.impl.CommonErrorType;
+import com.learn.restapiwithboot.core.exceptions.enums.impl.CredentialsErrorType;
 import io.jsonwebtoken.JwtException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -28,11 +29,10 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({Exception.class})
     protected ResponseEntity<FailResponse<Void>> hadleException(Exception exception) {
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        ErrorMessage invalidJwtDecode = ErrorMessage.NOT_FOUND;
-        return ResponseEntity.status(status).body(new FailResponse<>(
-                invalidJwtDecode.getStatus(),
-                invalidJwtDecode.getMessage()
+        ErrorType errorType = CommonErrorType.NOT_FOUND;
+        return ResponseEntity.status(errorType.getStatus()).body(new FailResponse<>(
+                errorType.getStatus(),
+                errorType.getMessage()
         ));
     }
 
@@ -44,11 +44,10 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({RuntimeException.class})
     protected ResponseEntity<FailResponse<Void>> handleRuntimeException(RuntimeException exception) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        ErrorMessage notFound = ErrorMessage.NOT_FOUND;
-        return ResponseEntity.status(status).body(new FailResponse<>(
-                notFound.getStatus(),
-                notFound.getMessage()
+        ErrorType errorType = CommonErrorType.NOT_FOUND;
+        return ResponseEntity.status(errorType.getStatus()).body(new FailResponse<>(
+                errorType.getStatus(),
+                errorType.getMessage()
         ));
     }
 
@@ -60,11 +59,10 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({JwtException.class})
     protected ResponseEntity<FailResponse<Void>> hadleJwtException(JwtException exception) {
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        ErrorMessage invalidJwtDecode = ErrorMessage.INVALID_JWT_TOKEN;
-        return ResponseEntity.status(status).body(new FailResponse<>(
-                invalidJwtDecode.getStatus(),
-                invalidJwtDecode.getMessage()
+        ErrorType errorType = CredentialsErrorType.INVALID_JWT_TOKEN;
+        return ResponseEntity.status(errorType.getStatus()).body(new FailResponse<>(
+                errorType.getStatus(),
+                errorType.getMessage()
         ));
     }
 
@@ -76,7 +74,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({MethodArgumentNotValidException.class})
     protected ResponseEntity<FailResponse<List<ValidationErrorResponse>>> hadleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
-        ErrorMessage invalidInputValue = ErrorMessage.INVALID_INPUT_VALUE;
+        ErrorType errorType = CredentialsErrorType.INVALID_INPUT_VALUE;
         List<ValidationErrorResponse> notValidList = new ArrayList<>();
         for (FieldError fieldError : exception.getFieldErrors()) {
             notValidList.add(ValidationErrorResponse.builder()
@@ -87,8 +85,8 @@ public class GlobalExceptionHandler {
         }
 
         return ResponseEntity.badRequest().body(new FailResponse<>(
-                invalidInputValue.getStatus(),
-                invalidInputValue.getMessage(),
+                errorType.getStatus(),
+                errorType.getMessage(),
                 notValidList
         ));
     }
@@ -111,14 +109,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     *  Custom Exception 예외 처리 통합 -> BaseException.class extentds Exceptions
-     *  <p>
-     *      ResourceNotFoundException 예외 처리 - JPA find 시 조회 기준에 맞는 결과 값이 없을 때 발생하는 예외 처리
-     *      TokenInvalidException 예외 처리 - JWT 토큰이 유효하지 않을 때 발생하는 예외 처리
-     *      BadCredentialsException 예외 처리 - 인증, 인가 과정 시 발생하는 예외 처리
-     *      AccountExistenceException 예외 처리 - 계정 생성 시 이미 존재하는 계정, 탈퇴한 계정일 때 발생하는 예외 처리
-     *      ApplicantsCountException 예외 처리 - 신청자 수 초과, 미만 시 발생하는 예외 처리
-     *  </p>
+     *  예외 처리 통합 -> BaseException.class
      */
     @ExceptionHandler({BaseException.class})
     protected ResponseEntity<FailResponse<Void>> hadleResourceNotFoundException(BaseException exception) {

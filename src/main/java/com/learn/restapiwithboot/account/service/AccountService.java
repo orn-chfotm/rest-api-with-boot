@@ -7,7 +7,8 @@ import com.learn.restapiwithboot.account.dto.request.AccountUpdateReqeust;
 import com.learn.restapiwithboot.account.dto.response.AccountResponse;
 import com.learn.restapiwithboot.account.mapper.AccountMapper;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
-import com.learn.restapiwithboot.core.exceptions.enums.ExceptionType;
+import com.learn.restapiwithboot.core.exceptions.exception.BaseException;
+import com.learn.restapiwithboot.core.exceptions.enums.impl.AccountErrorType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,9 +30,9 @@ public class AccountService {
 
         if (getAccount.isPresent()) {
             if (getAccount.get().isWithdraw()) {
-               throw ExceptionType.ACCOUNT_WITHDRAWAL_EXCEPTION.getException();
+                throw new BaseException(AccountErrorType.ACCOUNT_WITHDRAWAL);
             } else {
-                throw ExceptionType.ACCOUNT_EXIST_EXCEPTION.getException();
+                throw new BaseException(AccountErrorType.ACCOUNT_EXIST);
             }
         }
 
@@ -47,10 +48,10 @@ public class AccountService {
     @Transactional
     public void deleteAccount(Long accountId) {
         Account getAccount = accountRepository.findById(accountId)
-                .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
+                .orElseThrow(() -> new BaseException(AccountErrorType.ACCOUNT_NOT_FOUND));
 
         if (getAccount.isWithdraw()) {
-            throw ExceptionType.ACCOUNT_WITHDRAWAL_EXCEPTION.getException();
+            throw new BaseException(AccountErrorType.ACCOUNT_WITHDRAWAL);
         }
 
         getAccount.withDraw();
@@ -59,14 +60,14 @@ public class AccountService {
     @Transactional(readOnly = true)
     public AccountResponse getAccountInfo(Long accountId) {
         Account getAccount = accountRepository.findById(accountId)
-                .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
+                .orElseThrow(() -> new BaseException(AccountErrorType.ACCOUNT_NOT_FOUND));
 
         return accountMapper.accountToAccountResponse(getAccount);
     }
 
     public AccountResponse updateAccount(long accountId, AccountUpdateReqeust accountUpdateReqeust) {
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
+                .orElseThrow(() -> new BaseException(AccountErrorType.ACCOUNT_NOT_FOUND));
 
         Account toAccount = accountMapper.accountUpdateRequestToAccount(accountUpdateReqeust, account);
 

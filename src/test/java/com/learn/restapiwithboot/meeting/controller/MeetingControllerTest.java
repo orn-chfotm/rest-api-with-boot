@@ -4,7 +4,8 @@ import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.config.token.JwtTokenProvider;
 import com.learn.restapiwithboot.common.BaseTest;
-import com.learn.restapiwithboot.core.exceptions.enums.ExceptionType;
+import com.learn.restapiwithboot.core.exceptions.enums.impl.AccountErrorType;
+import com.learn.restapiwithboot.core.exceptions.exception.BaseException;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
 import com.learn.restapiwithboot.meeting.domain.embed.Address;
 import com.learn.restapiwithboot.meeting.domain.embed.Place;
@@ -21,7 +22,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -410,7 +410,7 @@ class MeetingControllerTest extends BaseTest {
                 .build();
 
         Account regAccount = accountRepository.findByEmail("user@email.com")
-                .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
+                .orElseThrow(() -> new BaseException(AccountErrorType.ACCOUNT_NOT_FOUND));
         meeting.setAccount(regAccount);
 
         return meetingRepository.save(meeting);

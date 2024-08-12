@@ -1,6 +1,5 @@
 package com.learn.restapiwithboot.config.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.auth.dto.response.AuthResponse;
 import com.learn.restapiwithboot.config.authentication.CustomUser;
@@ -8,6 +7,7 @@ import com.learn.restapiwithboot.config.token.JwtTokenProvider;
 import com.learn.restapiwithboot.core.handler.response.HandlerResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -16,8 +16,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
-import static javax.servlet.http.HttpServletResponse.SC_OK;
 
 @Slf4j
 @Component
@@ -37,6 +35,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                 .refreshToken(this.jwtTokenProvider.generateRefreshToken(account))
                 .build();
 
-        handlerResponse.setHandlerResponse(response, SC_OK, authResponse);
+        handlerResponse.setHandlerResponse(response, HttpStatus.OK, authResponse);
     }
 }

@@ -2,14 +2,14 @@ package com.learn.restapiwithboot.meeting.domain;
 
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.core.domain.BaseTimeEntity;
-import com.learn.restapiwithboot.core.exceptions.enums.ExceptionType;
+import com.learn.restapiwithboot.core.exceptions.enums.impl.ResourceErrorType;
+import com.learn.restapiwithboot.core.exceptions.exception.BaseException;
 import com.learn.restapiwithboot.meeting.domain.embed.Place;
 import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
@@ -69,14 +69,14 @@ public class Meeting extends BaseTimeEntity {
 
     public void increaseReservedMembers() {
         if (this.reservedMember >= maxMember) {
-            throw ExceptionType.APPLICANT_MAX_EXCEPTION.getException();
+            throw new BaseException(ResourceErrorType.APPLICANT_MAX);
         }
         this.reservedMember++;
     }
 
     public void decreaseReservedMembers() {
         if (this.reservedMember <= 0) {
-            throw ExceptionType.APPLICANT_MIN_EXCEPTION.getException();
+            throw new BaseException(ResourceErrorType.APPLICANT_MIN);
         }
         this.reservedMember--;
     }
