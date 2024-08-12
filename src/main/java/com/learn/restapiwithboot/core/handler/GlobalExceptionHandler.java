@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<FailResponse<Void>> hadleException(Exception exception) {
         ErrorType errorType = CommonErrorType.NOT_FOUND;
         return ResponseEntity.status(errorType.getStatus()).body(new FailResponse<>(
-                errorType.getStatus(),
+                errorType.getStatus().value(),
                 errorType.getMessage()
         ));
     }
@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<FailResponse<Void>> handleRuntimeException(RuntimeException exception) {
         ErrorType errorType = CommonErrorType.NOT_FOUND;
         return ResponseEntity.status(errorType.getStatus()).body(new FailResponse<>(
-                errorType.getStatus(),
+                errorType.getStatus().value(),
                 errorType.getMessage()
         ));
     }
@@ -61,7 +61,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<FailResponse<Void>> hadleJwtException(JwtException exception) {
         ErrorType errorType = CredentialsErrorType.INVALID_JWT_TOKEN;
         return ResponseEntity.status(errorType.getStatus()).body(new FailResponse<>(
-                errorType.getStatus(),
+                errorType.getStatus().value(),
                 errorType.getMessage()
         ));
     }
@@ -85,7 +85,7 @@ public class GlobalExceptionHandler {
         }
 
         return ResponseEntity.badRequest().body(new FailResponse<>(
-                errorType.getStatus(),
+                errorType.getStatus().value(),
                 errorType.getMessage(),
                 notValidList
         ));
@@ -113,6 +113,6 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({BaseException.class})
     protected ResponseEntity<FailResponse<Void>> hadleResourceNotFoundException(BaseException exception) {
-        return ResponseEntity.badRequest().body(new FailResponse<>(exception.getStatus(), exception.getMessage()));
+        return ResponseEntity.badRequest().body(new FailResponse<>(exception.getStatus().value(), exception.getMessage()));
     }
 }

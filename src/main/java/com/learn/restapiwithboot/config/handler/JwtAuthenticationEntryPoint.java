@@ -24,7 +24,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         log.warn("AuthenticationEntryPoint :: {}", authException.getMessage());
-        FailResponse<Object> failResponse = new FailResponse<>(HttpStatus.FORBIDDEN, authException.getMessage());
+        FailResponse<Object> failResponse = new FailResponse<>(HttpStatus.FORBIDDEN.value(), authException.getMessage());
 
         handlerResponse.setHandlerResponse(response, HttpStatus.FORBIDDEN, failResponse);
     }
