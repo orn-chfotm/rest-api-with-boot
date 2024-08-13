@@ -7,9 +7,9 @@ import com.learn.restapiwithboot.account.domain.enums.Gender;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.common.BaseTest;
 import com.learn.restapiwithboot.config.token.JwtTokenProvider;
-import com.learn.restapiwithboot.core.exceptions.exception.BaseException;
 import com.learn.restapiwithboot.core.exceptions.enums.impl.AccountErrorType;
 import com.learn.restapiwithboot.core.exceptions.enums.impl.ResourceErrorType;
+import com.learn.restapiwithboot.core.exceptions.exception.impl.BasicException;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
 import com.learn.restapiwithboot.meeting.domain.embed.Address;
 import com.learn.restapiwithboot.meeting.domain.embed.Place;
@@ -46,7 +46,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class ReservationControllerTest extends BaseTest {
@@ -83,7 +82,7 @@ class ReservationControllerTest extends BaseTest {
         Meeting meeting = createMeeting(0);
 
         Account account = accountRepository.findByEmail("user@email.com")
-                .orElseThrow(() -> new BaseException(AccountErrorType.ACCOUNT_NOT_FOUND));
+                .orElseThrow(() -> new BasicException(AccountErrorType.ACCOUNT_NOT_FOUND));
 
         Reservation reservation = Reservation.builder()
                 .account(account)
@@ -283,7 +282,7 @@ class ReservationControllerTest extends BaseTest {
         countDownLatch.await();
 
         Account tokenAccount = accountRepository.findByEmail("user@email.com")
-                .orElseThrow(() -> new BaseException(AccountErrorType.ACCOUNT_NOT_FOUND));
+                .orElseThrow(() -> new BasicException(AccountErrorType.ACCOUNT_NOT_FOUND));
 
         // Then -> 실제 예약된 인원이 5명인지 확인
         ResultActions resultActions = mockMvc.perform(get("/api/meeting/{id}", meeting.getId())
@@ -310,7 +309,7 @@ class ReservationControllerTest extends BaseTest {
                 .build();
 
         Account account = accountRepository.findByEmail("user@email.com")
-                .orElseThrow(() -> new BaseException(AccountErrorType.ACCOUNT_NOT_FOUND));
+                .orElseThrow(() -> new BasicException(AccountErrorType.ACCOUNT_NOT_FOUND));
 
         // When -> 동일 사용자 예약 2번 요청
         // 2번째 요청 시 예외 발생
@@ -403,7 +402,7 @@ class ReservationControllerTest extends BaseTest {
         System.out.println("After all.size() = " + afterAll.size());
 
         Meeting targetMeeting = meetingRepository.findById(meeting.getId())
-                .orElseThrow(() -> new BaseException(ResourceErrorType.RESOURCE_MEETING_NOT_FOUND));
+                .orElseThrow(() -> new BasicException(ResourceErrorType.RESOURCE_MEETING_NOT_FOUND));
 
         // Then -> 실제 예약 취소된 인원이 0명인지 확인
         System.out.println("reserved Member :: " + targetMeeting.getReservedMember());
@@ -423,7 +422,7 @@ class ReservationControllerTest extends BaseTest {
 
     private Meeting createMeeting(int index) {
         Account getAccount = accountRepository.findByEmail("user@email.com")
-                .orElseThrow(() -> new BaseException(AccountErrorType.ACCOUNT_NOT_FOUND));
+                .orElseThrow(() -> new BasicException(AccountErrorType.ACCOUNT_NOT_FOUND));
 
         Random random = new Random();
         Integer postalNum = 10000 + random.nextInt(60000); // 10000 ~ 59999

@@ -3,10 +3,10 @@ package com.learn.restapiwithboot.account.controller;
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.dto.request.AccountRequest;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
-import com.learn.restapiwithboot.config.token.JwtTokenProvider;
 import com.learn.restapiwithboot.common.BaseTest;
+import com.learn.restapiwithboot.config.token.JwtTokenProvider;
 import com.learn.restapiwithboot.core.exceptions.enums.impl.AccountErrorType;
-import com.learn.restapiwithboot.core.exceptions.exception.BaseException;
+import com.learn.restapiwithboot.core.exceptions.exception.impl.BasicException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +16,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class AccountControllerTest extends BaseTest {
 
@@ -161,6 +162,6 @@ class AccountControllerTest extends BaseTest {
     void updateAccountTest() {
         // Given
         Account beforeAccount = accountRepository.findByEmail("user@email.com")
-                .orElseThrow(() -> new BaseException(AccountErrorType.ACCOUNT_NOT_FOUND));
+                .orElseThrow(() -> new BasicException(AccountErrorType.ACCOUNT_NOT_FOUND));
     }
 }

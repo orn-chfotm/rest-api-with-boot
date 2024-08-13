@@ -4,7 +4,7 @@ import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.domain.enums.AccountRole;
 import com.learn.restapiwithboot.config.properties.JwtProperties;
 import com.learn.restapiwithboot.core.exceptions.enums.impl.CredentialsErrorType;
-import com.learn.restapiwithboot.core.exceptions.exception.BaseException;
+import com.learn.restapiwithboot.core.exceptions.exception.impl.BasicException;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -110,7 +110,7 @@ public class JwtTokenProvider {
 
         if (role == null) {
             log.warn("Claims Role is Null :: {}", claims.get("email"));
-            throw new BaseException(CredentialsErrorType.BAD_CREDENTIALS);
+            throw new BasicException(CredentialsErrorType.BAD_CREDENTIALS);
         }
 
         Set<String> roles;
@@ -118,7 +118,7 @@ public class JwtTokenProvider {
             roles = AccountRole.valueOf(role).getValue();
         } catch (IllegalArgumentException e) {
             log.warn("IllegalArgumentException :: {}", e.getMessage());
-            throw new BaseException(CredentialsErrorType.BAD_CREDENTIALS);
+            throw new BasicException(CredentialsErrorType.BAD_CREDENTIALS);
         }
 
         return roles.stream()

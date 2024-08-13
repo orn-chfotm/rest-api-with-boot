@@ -3,7 +3,7 @@ package com.learn.restapiwithboot.meeting.domain;
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.core.domain.BaseTimeEntity;
 import com.learn.restapiwithboot.core.exceptions.enums.impl.ResourceErrorType;
-import com.learn.restapiwithboot.core.exceptions.exception.BaseException;
+import com.learn.restapiwithboot.core.exceptions.exception.impl.BasicException;
 import com.learn.restapiwithboot.meeting.domain.embed.Place;
 import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
 import lombok.*;
@@ -69,14 +69,14 @@ public class Meeting extends BaseTimeEntity {
 
     public void increaseReservedMembers() {
         if (this.reservedMember >= maxMember) {
-            throw new BaseException(ResourceErrorType.APPLICANT_MAX);
+            throw new BasicException(ResourceErrorType.APPLICANT_MAX);
         }
         this.reservedMember++;
     }
 
     public void decreaseReservedMembers() {
         if (this.reservedMember <= 0) {
-            throw new BaseException(ResourceErrorType.APPLICANT_MIN);
+            throw new BasicException(ResourceErrorType.APPLICANT_MIN);
         }
         this.reservedMember--;
     }

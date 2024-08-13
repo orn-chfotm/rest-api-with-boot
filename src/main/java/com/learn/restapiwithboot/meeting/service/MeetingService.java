@@ -2,9 +2,9 @@ package com.learn.restapiwithboot.meeting.service;
 
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
-import com.learn.restapiwithboot.core.exceptions.exception.BaseException;
 import com.learn.restapiwithboot.core.exceptions.enums.impl.AccountErrorType;
 import com.learn.restapiwithboot.core.exceptions.enums.impl.ResourceErrorType;
+import com.learn.restapiwithboot.core.exceptions.exception.impl.BasicException;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
 import com.learn.restapiwithboot.meeting.dto.request.MeetingRequest;
 import com.learn.restapiwithboot.meeting.dto.response.MeetingResponse;
@@ -40,7 +40,7 @@ public class MeetingService {
 
     public MeetingResponse getMeeting(Long id) {
         Meeting meeting = meetingRepository.findById(id)
-                .orElseThrow(() -> new BaseException(ResourceErrorType.RESOURCE_MEETING_NOT_FOUND));
+                .orElseThrow(() -> new BasicException(ResourceErrorType.RESOURCE_MEETING_NOT_FOUND));
 
         return meetingMapper.meetingToMeetingResponse(meeting);
     }
@@ -48,7 +48,7 @@ public class MeetingService {
     @Transactional
     public MeetingResponse createMeeting(Long accountId, MeetingRequest meetingRequest) {
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new BaseException(AccountErrorType.ACCOUNT_NOT_FOUND));
+                .orElseThrow(() -> new BasicException(AccountErrorType.ACCOUNT_NOT_FOUND));
 
         Meeting meeting = meetingMapper.meetingRequestToMeeting(meetingRequest);
         meeting.setAccount(account);
@@ -61,7 +61,7 @@ public class MeetingService {
     @Transactional
     public MeetingResponse updateMeeting(Long id, Long accountId, MeetingRequest meetingRequest) {
         Meeting meeting = meetingRepository.findByIdAndAccountId(id, accountId)
-                .orElseThrow(() -> new BaseException(ResourceErrorType.RESOURCE_MEETING_NOT_FOUND));
+                .orElseThrow(() -> new BasicException(ResourceErrorType.RESOURCE_MEETING_NOT_FOUND));
 
         meetingMapper.updateMeetingFromRequest(meetingRequest, meeting);
 
@@ -71,10 +71,10 @@ public class MeetingService {
     @Transactional
     public void deleteMeeting(Long id, Long accountId) {
         if (!meetingRepository.existsById(id)) {
-            throw new BaseException(ResourceErrorType.RESOURCE_MEETING_NOT_FOUND);
+            throw new BasicException(ResourceErrorType.RESOURCE_MEETING_NOT_FOUND);
         }
         if (!meetingRepository.existsByIdAndAccountId(id, accountId)) {
-            throw new BaseException(ResourceErrorType.RESOURCE_MEETING_NOT_FOUND);
+            throw new BasicException(ResourceErrorType.RESOURCE_MEETING_NOT_FOUND);
         }
         meetingRepository.deleteById(id);
     }

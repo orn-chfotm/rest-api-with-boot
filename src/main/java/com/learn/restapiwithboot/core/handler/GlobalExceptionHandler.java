@@ -1,10 +1,11 @@
 package com.learn.restapiwithboot.core.handler;
 
 import com.learn.restapiwithboot.core.dto.response.FailResponse;
-import com.learn.restapiwithboot.core.exceptions.exception.BaseException;
 import com.learn.restapiwithboot.core.exceptions.enums.ErrorType;
 import com.learn.restapiwithboot.core.exceptions.enums.impl.CommonErrorType;
 import com.learn.restapiwithboot.core.exceptions.enums.impl.CredentialsErrorType;
+import com.learn.restapiwithboot.core.exceptions.exception.BaseException;
+import com.learn.restapiwithboot.core.exceptions.exception.impl.BasicException;
 import io.jsonwebtoken.JwtException;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,6 +23,18 @@ import java.util.List;
 public class GlobalExceptionHandler {
 
     /**
+     * 최상위 Exception 처리
+     */
+    @ExceptionHandler({Throwable.class})
+    protected ResponseEntity<FailResponse<Void>> hadleThrowable(Throwable exception) {
+        ErrorType errorType = CommonErrorType.INTERNAL_SERVER_ERROR;
+        return ResponseEntity.status(errorType.getStatus()).body(new FailResponse<>(
+                errorType.getStatus().value(),
+                errorType.getMessage()
+        ));
+    }
+
+    /**
      * Exception 예외 처리
      * <p>
      *      Root Exception 예외 처리로 Exception을 처리하면 모든 예외를 처리할 수 있다.
@@ -29,7 +42,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({Exception.class})
     protected ResponseEntity<FailResponse<Void>> hadleException(Exception exception) {
-        ErrorType errorType = CommonErrorType.NOT_FOUND;
+        ErrorType errorType = CommonErrorType.BAD_REQEUST;
         return ResponseEntity.status(errorType.getStatus()).body(new FailResponse<>(
                 errorType.getStatus().value(),
                 errorType.getMessage()
@@ -44,7 +57,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({RuntimeException.class})
     protected ResponseEntity<FailResponse<Void>> handleRuntimeException(RuntimeException exception) {
-        ErrorType errorType = CommonErrorType.NOT_FOUND;
+        ErrorType errorType = CommonErrorType.INTERNAL_SERVER_ERROR;
         return ResponseEntity.status(errorType.getStatus()).body(new FailResponse<>(
                 errorType.getStatus().value(),
                 errorType.getMessage()
@@ -109,10 +122,10 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     *  예외 처리 통합 -> BaseException.class
+     *  예외 처리 통합 -> BasicException.class
      */
-    @ExceptionHandler({BaseException.class})
-    protected ResponseEntity<FailResponse<Void>> hadleResourceNotFoundException(BaseException exception) {
+    @ExceptionHandler({BasicException.class})
+    protected ResponseEntity<FailResponse<Void>> hadleBasicException(BasicException exception) {
         return ResponseEntity.badRequest().body(new FailResponse<>(exception.getStatus().value(), exception.getMessage()));
     }
 }
