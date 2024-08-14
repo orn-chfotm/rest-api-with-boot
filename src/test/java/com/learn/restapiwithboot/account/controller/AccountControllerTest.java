@@ -6,7 +6,7 @@ import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.common.BaseTest;
 import com.learn.restapiwithboot.config.token.JwtTokenProvider;
 import com.learn.restapiwithboot.core.exceptions.enums.impl.AccountErrorType;
-import com.learn.restapiwithboot.core.exceptions.exception.impl.BasicException;
+import com.learn.restapiwithboot.core.exceptions.exception.ext.BasicException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

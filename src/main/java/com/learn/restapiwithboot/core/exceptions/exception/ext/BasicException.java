@@ -1,4 +1,4 @@
-package com.learn.restapiwithboot.core.exceptions.exception.impl;
+package com.learn.restapiwithboot.core.exceptions.exception.ext;
 
 import com.learn.restapiwithboot.core.exceptions.enums.ErrorType;
 import com.learn.restapiwithboot.core.exceptions.exception.BaseException;

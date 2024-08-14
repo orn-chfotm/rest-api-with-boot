@@ -4,7 +4,7 @@ import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.domain.enums.AccountRole;
 import com.learn.restapiwithboot.config.properties.JwtProperties;
 import com.learn.restapiwithboot.core.exceptions.enums.impl.CredentialsErrorType;
-import com.learn.restapiwithboot.core.exceptions.exception.impl.BasicException;
+import com.learn.restapiwithboot.core.exceptions.exception.ext.BasicException;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

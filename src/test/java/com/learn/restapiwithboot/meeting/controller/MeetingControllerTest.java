@@ -5,7 +5,7 @@ import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.common.BaseTest;
 import com.learn.restapiwithboot.config.token.JwtTokenProvider;
 import com.learn.restapiwithboot.core.exceptions.enums.impl.AccountErrorType;
-import com.learn.restapiwithboot.core.exceptions.exception.impl.BasicException;
+import com.learn.restapiwithboot.core.exceptions.exception.ext.BasicException;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
 import com.learn.restapiwithboot.meeting.domain.embed.Address;
 import com.learn.restapiwithboot.meeting.domain.embed.Place;

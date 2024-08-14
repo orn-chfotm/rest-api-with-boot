@@ -3,7 +3,7 @@ package com.learn.restapiwithboot.config.authentication;
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.core.exceptions.enums.impl.AccountErrorType;
-import com.learn.restapiwithboot.core.exceptions.exception.impl.BasicException;
+import com.learn.restapiwithboot.core.exceptions.exception.ext.BasicException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

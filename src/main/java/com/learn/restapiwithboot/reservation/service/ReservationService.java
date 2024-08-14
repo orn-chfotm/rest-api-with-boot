@@ -5,7 +5,7 @@ import com.learn.restapiwithboot.account.domain.QAccount;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
 import com.learn.restapiwithboot.core.exceptions.enums.impl.AccountErrorType;
 import com.learn.restapiwithboot.core.exceptions.enums.impl.ResourceErrorType;
-import com.learn.restapiwithboot.core.exceptions.exception.impl.BasicException;
+import com.learn.restapiwithboot.core.exceptions.exception.ext.BasicException;
 import com.learn.restapiwithboot.core.query.QueryDslUtil;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
 import com.learn.restapiwithboot.meeting.domain.QMeeting;

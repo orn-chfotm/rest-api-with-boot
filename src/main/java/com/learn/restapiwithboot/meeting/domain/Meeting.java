@@ -3,7 +3,7 @@ package com.learn.restapiwithboot.meeting.domain;
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.core.domain.BaseTimeEntity;
 import com.learn.restapiwithboot.core.exceptions.enums.impl.ResourceErrorType;
-import com.learn.restapiwithboot.core.exceptions.exception.impl.BasicException;
+import com.learn.restapiwithboot.core.exceptions.exception.ext.BasicException;
 import com.learn.restapiwithboot.meeting.domain.embed.Place;
 import com.learn.restapiwithboot.meeting.domain.enums.MeetingType;
 import lombok.*;
