@@ -61,19 +61,6 @@ public class ReservationService {
         return new PageImpl<>(collect, pageable, size);
     }
 
-    /* MapStruct 사용 전 코드
-    private ReservationResponse converToResponse(Reservation reservation) {
-        return ReservationResponse.builder()
-                .id(reservation.getId())
-                .accountResponse(this.convertToDto(reservation.getAccount(), AccountResponse.class))
-                .meetingResponse(this.convertToDto(reservation.getMeeting(), MeetingResponse.class))
-                .build();
-    }
-
-    private <D> D convertToDto(Object entity, Class<D> dtoClass) {
-        return modelMapper.map(entity, dtoClass);
-    }*/
-
     @Transactional
     public ReservationResponse createReservation(Long accountId, ReservationRequest reservationRequest) {
 

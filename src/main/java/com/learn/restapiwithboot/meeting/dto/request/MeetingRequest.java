@@ -36,7 +36,6 @@ public class MeetingRequest {
     private Integer maxMember;
 
     @NotNull(message = "모임 날짜를 입력해주세요.")
-    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime meetingDate;
 
