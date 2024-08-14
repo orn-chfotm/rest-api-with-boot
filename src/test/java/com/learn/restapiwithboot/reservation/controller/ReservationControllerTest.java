@@ -37,6 +37,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.JsonFieldType.OBJECT;
@@ -296,7 +297,10 @@ class ReservationControllerTest extends BaseTest {
         String contentAsString = resultActions.andReturn().getResponse().getContentAsString();
         JsonNode jsonNode = objectMapper.readTree(contentAsString);
 
-        System.out.println("Meeting reservedMember :: " + jsonNode.get("data").get("reservedMember").asInt());
+        int reservedMember = jsonNode.get("data").get("reservedMember").asInt();
+        assertEquals(5, reservedMember);
+
+        System.out.println("Meeting reservedMember :: " + reservedMember);
     }
 
     @Test
@@ -406,6 +410,7 @@ class ReservationControllerTest extends BaseTest {
                 .orElseThrow(ExceptionType.RESOURCE_MEETING_NOT_FOUND::getException);
 
         // Then -> 실제 예약 취소된 인원이 0명인지 확인
+        assertEquals(0,targetMeeting.getReservedMember());
         System.out.println("reserved Member :: " + targetMeeting.getReservedMember());
     }
 
