@@ -1,8 +1,5 @@
 package com.learn.restapiwithboot.account.domain.enums;
 
-import com.learn.restapiwithboot.core.exceptions.enums.ExceptionType;
-
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

@@ -2,10 +2,9 @@ package com.learn.restapiwithboot.config.authentication;
 
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
-import com.learn.restapiwithboot.core.exceptions.enums.ExceptionType;
+import com.learn.restapiwithboot.core.exceptions.enums.impl.AccountErrorType;
+import com.learn.restapiwithboot.core.exceptions.exception.ext.BasicException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,7 +19,7 @@ public class CustomUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Account account = accountRepository.findByEmail(email)
-                .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
+                .orElseThrow(() -> new BasicException(AccountErrorType.ACCOUNT_NOT_FOUND));
 
         return new CustomUser(account);
     }

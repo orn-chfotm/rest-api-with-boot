@@ -3,7 +3,9 @@ package com.learn.restapiwithboot.reservation.service;
 import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.account.domain.QAccount;
 import com.learn.restapiwithboot.account.repository.AccountRepository;
-import com.learn.restapiwithboot.core.exceptions.enums.ExceptionType;
+import com.learn.restapiwithboot.core.exceptions.enums.impl.AccountErrorType;
+import com.learn.restapiwithboot.core.exceptions.enums.impl.ResourceErrorType;
+import com.learn.restapiwithboot.core.exceptions.exception.ext.BasicException;
 import com.learn.restapiwithboot.core.query.QueryDslUtil;
 import com.learn.restapiwithboot.meeting.domain.Meeting;
 import com.learn.restapiwithboot.meeting.domain.QMeeting;
@@ -63,16 +65,16 @@ public class ReservationService {
     public ReservationResponse createReservation(Long accountId, ReservationRequest reservationRequest) {
 
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(ExceptionType.ACCOUNT_NOT_FOUND::getException);
+                .orElseThrow(() -> new BasicException(AccountErrorType.ACCOUNT_NOT_FOUND));
         Meeting meeting = meetingRepository.findByIdWithLock(reservationRequest.getMeetingId())
-                .orElseThrow(ExceptionType.RESOURCE_MEETING_NOT_FOUND::getException);
+                .orElseThrow(() -> new BasicException(ResourceErrorType.RESOURCE_MEETING_NOT_FOUND));
 
         ReservationId reservationId = ReservationId.builder()
                 .accountId(account.getId())
                 .meetingId(meeting.getId())
                 .build();
         if (reservationRepository.existsById(reservationId)) {
-            throw ExceptionType.APPLICANT_ALREADY_EXCEPTION.getException();
+            throw new BasicException(ResourceErrorType.APPLICANT_ALREADY);
         }
 
         meeting.increaseReservedMembers();
@@ -93,7 +95,7 @@ public class ReservationService {
     public void deleteReservation(Long meetingId, Long accountId) {
 
         Meeting meeting = meetingRepository.findByIdWithLock(meetingId)
-                .orElseThrow(ExceptionType.RESOURCE_MEETING_NOT_FOUND::getException);
+                .orElseThrow(() -> new BasicException(ResourceErrorType.RESOURCE_MEETING_NOT_FOUND));
 
         Reservation reservation = jpaQueryFactory.selectFrom(QReservation.reservation)
                 .where(QReservation.reservation.meeting.id.eq(meetingId)
@@ -101,7 +103,7 @@ public class ReservationService {
                 .fetchOne();
 
         if (reservation == null) {
-            throw ExceptionType.RESOURCE_RESERVATION_NOT_FOUND.getException();
+            throw new BasicException(ResourceErrorType.RESOURCE_RESERVATION_NOT_FOUND);
         }
 
         meeting.decreaseReservedMembers();
