@@ -1,8 +1,6 @@
 package com.learn.restapiwithboot.core.exceptions.exception;
 
 import com.learn.restapiwithboot.core.exceptions.enums.ErrorType;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 public class BaseException extends RuntimeException {
@@ -13,7 +11,12 @@ public class BaseException extends RuntimeException {
         this.errorType = errorType;
     }
 
-    protected ErrorType getErrorType() {
+    /**
+     * Exception의 특정 불변 객체 ErrorType을 반환한다.
+     *
+     * @return ErrorType
+     */
+    public ErrorType getErrorType() {
         return this.errorType;
     }
 
@@ -36,5 +39,4 @@ public class BaseException extends RuntimeException {
     public String getMessage() {
         return this.errorType.getMessage();
     }
-
 }

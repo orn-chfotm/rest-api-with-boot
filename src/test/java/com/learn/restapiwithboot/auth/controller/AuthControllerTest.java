@@ -164,7 +164,7 @@ class AuthControllerTest extends BaseTest {
                         .param("refreshToken", refreshToken + "fail") // 잘못된 RefreshToken
                 )
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
 
 }

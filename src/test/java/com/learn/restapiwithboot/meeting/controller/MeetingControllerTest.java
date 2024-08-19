@@ -181,7 +181,7 @@ class MeetingControllerTest extends BaseTest {
                         .headers(getHeader(getToken()))
                 )
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test

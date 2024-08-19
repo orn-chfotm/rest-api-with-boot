@@ -27,10 +27,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({Throwable.class})
     protected ResponseEntity<FailResponse<Void>> hadleThrowable(Throwable exception) {
         ErrorType errorType = CommonErrorType.INTERNAL_SERVER_ERROR;
-        return ResponseEntity.status(errorType.getStatus()).body(new FailResponse<>(
-                errorType.getStatus().value(),
-                errorType.getMessage()
-        ));
+        return errorType.getResponse();
     }
 
     /**
@@ -42,25 +39,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({Exception.class})
     protected ResponseEntity<FailResponse<Void>> hadleException(Exception exception) {
         ErrorType errorType = CommonErrorType.BAD_REQEUST;
-        return ResponseEntity.status(errorType.getStatus()).body(new FailResponse<>(
-                errorType.getStatus().value(),
-                errorType.getMessage()
-        ));
-    }
-
-    /**
-     * RuntimeException 예외 처리
-     * <p>
-     *      Root RuntimeException 예외 처리로 Exception을 처리하면 모든 예외를 처리할 수 있다.
-     * </p>
-     */
-    @ExceptionHandler({RuntimeException.class})
-    protected ResponseEntity<FailResponse<Void>> handleRuntimeException(RuntimeException exception) {
-        ErrorType errorType = CommonErrorType.INTERNAL_SERVER_ERROR;
-        return ResponseEntity.status(errorType.getStatus()).body(new FailResponse<>(
-                errorType.getStatus().value(),
-                errorType.getMessage()
-        ));
+        return errorType.getResponse();
     }
 
     /**
@@ -72,10 +51,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({JwtException.class})
     protected ResponseEntity<FailResponse<Void>> hadleJwtException(JwtException exception) {
         ErrorType errorType = CredentialsErrorType.INVALID_JWT_TOKEN;
-        return ResponseEntity.status(errorType.getStatus()).body(new FailResponse<>(
-                errorType.getStatus().value(),
-                errorType.getMessage()
-        ));
+        return errorType.getResponse();
     }
 
     /**
@@ -125,6 +101,6 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({BasicException.class})
     protected ResponseEntity<FailResponse<Void>> hadleBasicException(BasicException exception) {
-        return ResponseEntity.badRequest().body(new FailResponse<>(exception.getStatus().value(), exception.getMessage()));
+        return exception.getErrorType().getResponse();
     }
 }
