@@ -12,14 +12,14 @@ import java.util.Map;
 public class FailResponse<T> extends BasicResponse {
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private T errs;
+    private T detailMessage;
 
     public FailResponse(Integer statusCode, String exceptionMessage) {
         super(statusCode, exceptionMessage);
     }
 
-    public FailResponse(Integer statusCode, String message, T errs) {
+    public FailResponse(Integer statusCode, String message, T detailMessage) {
         super(statusCode, message);
-        this.errs = errs;
+        this.detailMessage = detailMessage;
     }
 }
