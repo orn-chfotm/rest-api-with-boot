@@ -26,6 +26,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         log.warn("AuthenticationEntryPoint :: {}", authException.getMessage());
         FailResponse<Object> failResponse = new FailResponse<>(HttpStatus.FORBIDDEN.value(), authException.getMessage());
 
-        handlerResponse.setHandlerResponse(response, HttpStatus.FORBIDDEN, failResponse);
+        handlerResponse.setHandlerResponse(HttpStatus.FORBIDDEN, failResponse);
     }
 }

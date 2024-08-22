@@ -35,6 +35,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                 .refreshToken(this.jwtTokenProvider.generateRefreshToken(account))
                 .build();
 
-        handlerResponse.setHandlerResponse(response, HttpStatus.OK, authResponse);
+        handlerResponse.setHandlerResponse(HttpStatus.OK, authResponse);
     }
 }

@@ -26,6 +26,6 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
         log.warn("Login Fail : {}", exception.getMessage());
         FailResponse<Object> failResponse = new FailResponse<>(HttpStatus.UNAUTHORIZED.value(), exception.getMessage());
 
-        authenticationResponseHandler.setHandlerResponse(response, HttpStatus.UNAUTHORIZED, failResponse);
+        authenticationResponseHandler.setHandlerResponse(HttpStatus.UNAUTHORIZED, failResponse);
     }
 }

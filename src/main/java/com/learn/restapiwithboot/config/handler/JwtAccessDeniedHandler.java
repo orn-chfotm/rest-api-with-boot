@@ -26,6 +26,6 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
         log.warn("Access Denied Handler :: {}", accessDeniedException.getMessage());
         FailResponse<Object> failResponse = new FailResponse<>(HttpStatus.UNAUTHORIZED.value(), accessDeniedException.getMessage());
 
-        handlerResponse.setHandlerResponse(response, HttpStatus.UNAUTHORIZED, failResponse);
+        handlerResponse.setHandlerResponse(HttpStatus.UNAUTHORIZED, failResponse);
     }
 }
