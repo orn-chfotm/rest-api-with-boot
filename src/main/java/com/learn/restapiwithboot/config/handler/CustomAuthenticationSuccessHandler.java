@@ -4,7 +4,7 @@ import com.learn.restapiwithboot.account.domain.Account;
 import com.learn.restapiwithboot.auth.dto.response.AuthResponse;
 import com.learn.restapiwithboot.config.authentication.CustomUser;
 import com.learn.restapiwithboot.config.token.JwtTokenProvider;
-import com.learn.restapiwithboot.core.handler.response.HandlerResponse;
+import com.learn.restapiwithboot.core.util.HttpServletUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ import java.io.IOException;
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final HandlerResponse handlerResponse;
+    private final HttpServletUtils httpServletUtils;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -35,6 +35,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                 .refreshToken(this.jwtTokenProvider.generateRefreshToken(account))
                 .build();
 
-        handlerResponse.setHandlerResponse(response, HttpStatus.OK, authResponse);
+        httpServletUtils.setHandlerResponse(HttpStatus.OK, authResponse);
     }
 }

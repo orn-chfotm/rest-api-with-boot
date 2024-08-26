@@ -1,14 +1,16 @@
 package com.learn.restapiwithboot.core.handler;
 
 import com.learn.restapiwithboot.core.dto.response.FailResponse;
-import com.learn.restapiwithboot.core.exceptions.enums.ErrorType;
 import com.learn.restapiwithboot.core.exceptions.enums.impl.CommonErrorType;
 import com.learn.restapiwithboot.core.exceptions.enums.impl.CredentialsErrorType;
 import com.learn.restapiwithboot.core.exceptions.exception.ext.BasicException;
+import com.learn.restapiwithboot.core.handler.response.HandlerResponse;
 import io.jsonwebtoken.JwtException;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,49 +20,36 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
+@RequiredArgsConstructor
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private final HandlerResponse handlerResponse;
 
     /**
      * 최상위 Exception 처리
      */
     @ExceptionHandler({Throwable.class})
-    protected ResponseEntity<FailResponse<Void>> hadleThrowable(Throwable exception) {
-        ErrorType errorType = CommonErrorType.INTERNAL_SERVER_ERROR;
-        return ResponseEntity.status(errorType.getStatus()).body(new FailResponse<>(
-                errorType.getStatus().value(),
-                errorType.getMessage()
-        ));
+    protected ResponseEntity<FailResponse<Object>> handleThrowable(Throwable e) {
+        log.error("Handle [{}] with a message ::", e.getClass().getName() ,e);
+        return FailResponse.ofExceptionResponse(CommonErrorType.INTERNAL_SERVER_ERROR, null);
     }
 
     /**
-     * Exception 예외 처리
+     * Runtime Exception 예외 처리
      * <p>
-     *      Root Exception 예외 처리로 Exception을 처리하면 모든 예외를 처리할 수 있다.
-     * </p>
-     */
-    @ExceptionHandler({Exception.class})
-    protected ResponseEntity<FailResponse<Void>> hadleException(Exception exception) {
-        ErrorType errorType = CommonErrorType.BAD_REQEUST;
-        return ResponseEntity.status(errorType.getStatus()).body(new FailResponse<>(
-                errorType.getStatus().value(),
-                errorType.getMessage()
-        ));
-    }
-
-    /**
-     * RuntimeException 예외 처리
-     * <p>
-     *      Root RuntimeException 예외 처리로 Exception을 처리하면 모든 예외를 처리할 수 있다.
+     *      UnChecked Exception
+     *      커스텀 Exception에서 처리되지 못한 예외 공통 처리
      * </p>
      */
     @ExceptionHandler({RuntimeException.class})
-    protected ResponseEntity<FailResponse<Void>> handleRuntimeException(RuntimeException exception) {
-        ErrorType errorType = CommonErrorType.INTERNAL_SERVER_ERROR;
-        return ResponseEntity.status(errorType.getStatus()).body(new FailResponse<>(
-                errorType.getStatus().value(),
-                errorType.getMessage()
-        ));
+    protected ResponseEntity<FailResponse<Object>> handleException(RuntimeException e) {
+        log.error("Handle [{}] with a message ::", e.getClass().getName() ,e);
+        if(e instanceof BasicException) {
+            return FailResponse.ofExceptionResponse(((BasicException) e).getErrorType(), null);
+        }
+        return FailResponse.ofExceptionResponse(CommonErrorType.BAD_REQEUST, null);
     }
 
     /**
@@ -70,12 +59,9 @@ public class GlobalExceptionHandler {
      * </p>
      */
     @ExceptionHandler({JwtException.class})
-    protected ResponseEntity<FailResponse<Void>> hadleJwtException(JwtException exception) {
-        ErrorType errorType = CredentialsErrorType.INVALID_JWT_TOKEN;
-        return ResponseEntity.status(errorType.getStatus()).body(new FailResponse<>(
-                errorType.getStatus().value(),
-                errorType.getMessage()
-        ));
+    protected ResponseEntity<FailResponse<Object>> handleJwtException(JwtException e) {
+        log.error("Handle [{}] with a message ::", e.getClass().getName() ,e);
+        return FailResponse.ofExceptionResponse(CredentialsErrorType.INVALID_JWT_TOKEN, null);
     }
 
     /**
@@ -85,27 +71,21 @@ public class GlobalExceptionHandler {
      *  </p>
      */
     @ExceptionHandler({MethodArgumentNotValidException.class})
-    protected ResponseEntity<FailResponse<List<ValidationErrorResponse>>> hadleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
-        ErrorType errorType = CredentialsErrorType.INVALID_INPUT_VALUE;
+    protected ResponseEntity<FailResponse<Object>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        log.error("Handle [{}] with a message ::", e.getClass().getName() ,e);
         List<ValidationErrorResponse> notValidList = new ArrayList<>();
-        for (FieldError fieldError : exception.getFieldErrors()) {
+        for (FieldError fieldError : e.getFieldErrors()) {
             notValidList.add(ValidationErrorResponse.builder()
-                            .field(fieldError.getField())
-                            .message(fieldError.getDefaultMessage())
+                    .field(fieldError.getField())
+                    .message(fieldError.getDefaultMessage())
                     .build()
             );
         }
-
-        return ResponseEntity.badRequest().body(new FailResponse<>(
-                errorType.getStatus().value(),
-                errorType.getMessage(),
-                notValidList
-        ));
+        return FailResponse.ofExceptionResponse(CredentialsErrorType.INVALID_INPUT_VALUE, notValidList);
     }
 
     /**
      * '@Valuid' 예외 처리시 에러 메시지를 담을 Response 객체
-     * Inner Class
      */
     @Getter
     @Setter
@@ -120,11 +100,4 @@ public class GlobalExceptionHandler {
         }
     }
 
-    /**
-     *  예외 처리 통합 -> BasicException.class
-     */
-    @ExceptionHandler({BasicException.class})
-    protected ResponseEntity<FailResponse<Void>> hadleBasicException(BasicException exception) {
-        return ResponseEntity.badRequest().body(new FailResponse<>(exception.getStatus().value(), exception.getMessage()));
-    }
 }
