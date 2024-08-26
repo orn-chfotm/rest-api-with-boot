@@ -1,8 +1,7 @@
-package com.learn.restapiwithboot.core.handler.response;
+package com.learn.restapiwithboot.core.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -13,10 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-@Slf4j
-@RequiredArgsConstructor
 @Component
-public class HandlerResponse {
+@RequiredArgsConstructor
+public class HttpServletUtils {
 
     private final ObjectMapper objectMapper;
 

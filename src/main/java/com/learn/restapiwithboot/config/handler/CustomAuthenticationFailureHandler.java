@@ -1,7 +1,7 @@
 package com.learn.restapiwithboot.config.handler;
 
 import com.learn.restapiwithboot.core.dto.response.FailResponse;
-import com.learn.restapiwithboot.core.handler.response.HandlerResponse;
+import com.learn.restapiwithboot.core.util.HttpServletUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,13 +19,13 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
-    private final HandlerResponse authenticationResponseHandler;
+    private final HttpServletUtils httpServletUtils;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         log.warn("Login Fail : {}", exception.getMessage());
         FailResponse<Object> failResponse = new FailResponse<>(HttpStatus.UNAUTHORIZED.value(), exception.getMessage());
 
-        authenticationResponseHandler.setHandlerResponse(HttpStatus.UNAUTHORIZED, failResponse);
+        httpServletUtils.setHandlerResponse(HttpStatus.UNAUTHORIZED, failResponse);
     }
 }
