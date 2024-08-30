@@ -3,6 +3,7 @@
 - Spring boot 환경
   - Exception Handler 구현
   - Response Entity 객체 공통화
+  - 도메인 별 패키지 구조
 - REST API
   - Rest(GET, POST, PUT, DELETE, UPDATE)를 활용하여 BackEnd 로직 구현
   - 변환을 위한 Mapper Lib 선택 및 구현
